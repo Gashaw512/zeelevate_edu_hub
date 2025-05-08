@@ -1,0 +1,109 @@
+/* Base Styles */
+.student-dashboard {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .dashboard-header {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+  }
+  
+  .dashboard-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  /* Progress Styles */
+  .progress-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+  }
+  
+  .progress-item {
+    text-align: center;
+  }
+  
+  .course-name {
+    display: block;
+    margin-top: 10px;
+    color: #2C3E50;
+  }
+  
+  /* Assignment Styles */
+  .assignment-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .status-icon {
+    margin-right: 15px;
+    font-size: 1.5rem;
+  }
+  
+  .icon.completed { color: #00BFFF; }
+  .icon.missing { color: #db4437; }
+  .icon.pending { color: #f4b400; }
+  
+  .assignment-info h4 {
+    margin: 0;
+    color: #2C3E50;
+  }
+  
+  /* Attendance Grid */
+  .attendance-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+  }
+  
+  .attendance-day {
+    padding: 8px;
+    text-align: center;
+    border-radius: 4px;
+  }
+  
+  .present { background: #00BFFF20; color: #00BFFF; }
+  .absent { background: #db443720; color: #db4437; }
+  
+  /* Notifications */
+  .notification-item {
+    position: relative;
+    padding: 10px;
+    margin: 5px 0;
+    background: #f8f9fa;
+    border-radius: 4px;
+  }
+  
+  .unread { font-weight: 500; }
+  
+  .unread-dot {
+    width: 8px;
+    height: 8px;
+    background: #00BFFF;
+    border-radius: 50%;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+  }
