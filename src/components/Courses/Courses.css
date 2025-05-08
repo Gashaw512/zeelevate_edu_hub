@@ -1,0 +1,144 @@
+/* Courses.css */
+.course-section {
+  padding: 3rem 1.5rem;
+  background: #f8f9fa;
+}
+
+.course-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.course-section__title {
+  font-size: 2rem;
+  color: #1a365d;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.course-section__subtitle {
+  color: #4a5568;
+  text-align: center;
+  margin-bottom: 3rem;
+  font-size: 1.1rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.course-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.course-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.course-card__icon {
+  background: #2b6cb0;
+  color: white;
+  padding: 1.5rem;
+  display: grid;
+  place-items: center;
+}
+
+.course-card__content {
+  padding: 1.5rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.course-card__title {
+  font-size: 1.4rem;
+  color: #2d3748;
+  margin: 1rem 0;
+}
+
+.course-card__description {
+  color: #4a5568;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.course-card__learning {
+  margin-bottom: 1.5rem;
+}
+
+.course-card__learning h3 {
+  font-size: 1.1rem;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+.course-card__learning ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.course-card__learning li {
+  padding: 0.3rem 0;
+  color: #4a5568;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.course-card__meta {
+  margin-top: auto;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 1.5rem;
+}
+
+.course-card__requirements p {
+  color: #718096;
+  font-size: 0.9rem;
+  margin: 0.3rem 0;
+}
+
+.course-card__pricing {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.course-card__price {
+  text-align: right;
+}
+
+.course-card__amount {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2b6cb0;
+  display: block;
+}
+
+.course-card__duration {
+  font-size: 0.9rem;
+  color: #718096;
+}
+
+/* Enroll Button Styles */
+.enroll-button {
+  background: #2b6cb0;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+
+.enroll-button:hover {
+  background: #2c5282;
+}

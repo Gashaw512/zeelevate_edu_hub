@@ -1,0 +1,110 @@
+/* ======== SIGN IN PAGE STYLING ======== */
+.sign-in-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .sign-in-container h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #2C3E50;
+  }
+  
+  .sign-in-container input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+  }
+  
+  .sign-in-container input:focus {
+    border-color: #00BFFF; /* Blue border on focus */
+  }
+  
+  .sign-in-container button {
+    background-color: #00BFFF;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 100%;
+    margin-bottom: 15px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .sign-in-container button:hover {
+    background-color: #00FF00; /* Green on hover */
+  }
+  
+  .sign-in-container button:active {
+    background-color: #008B8B; /* Darker shade on active */
+  }
+  
+  /* ======== SOCIAL BUTTONS STYLING ======== */
+  .social-auth-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .social-auth-button {
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .social-auth-button svg {
+    margin-right: 8px;
+    width: 20px;
+    height: 20px;
+  }
+  
+  .social-auth-button.google-button {
+    background-color: #DB4437;
+    color: white;
+  }
+  
+  .social-auth-button.google-button:hover {
+    background-color: #FF0000;
+  }
+  
+  .social-auth-button.linkedin-button {
+    background-color: #0A66C2;
+    color: white;
+  }
+  
+  .social-auth-button.linkedin-button:hover {
+    background-color: #004182;
+  }
+  
+  /* ======== AUTH LINKS STYLING ======== */
+  .auth-links {
+    margin-top: 20px;
+  }
+  
+  .auth-links a {
+    color: #00BFFF;
+    text-decoration: none;
+  }
+  
+  .auth-links a:hover {
+    text-decoration: underline;
+  }
+  

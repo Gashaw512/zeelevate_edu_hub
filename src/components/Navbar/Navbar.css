@@ -1,0 +1,148 @@
+/* ======== NAVBAR STYLING ======== */
+
+nav {
+  padding: 2% 6%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2C3E50; /* Deep Navy background */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+/* Logo Image */
+nav img {
+  width: 150px;
+}
+
+/* Navbar links container */
+.nav-links {
+  flex: 1;
+  text-align: center;
+}
+
+/* List item container */
+.nav-links ul li {
+  display: inline-block;
+  list-style: none;
+  padding: 8px 12px;
+  position: relative;
+}
+
+/* Anchor link styling */
+.nav-links ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+/* Underline animation on hover */
+.nav-links ul li::after {
+  content: "";
+  width: 0%;
+  height: 2px;
+  background: #00BFFF;
+  display: block;
+  margin: auto;
+  transition: 0.5s;
+}
+
+.nav-links ul li:hover::after {
+  width: 100%;
+}
+
+/* Hide menu icons by default */
+nav .fas {
+  display: none;
+}
+
+/* Ensure body content isn't hidden under navbar */
+body {
+  margin-top: 80px;
+}
+
+/* ======== AUTH BUTTONS STYLING ======== */
+
+/* Auth buttons container aligned to the right */
+.auth-buttons-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Individual button styling */
+.auth-button {
+  background-color: #00BFFF;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+/* Hover effect */
+.auth-button:hover {
+  background-color: #00FF00;
+}
+
+/* Active/click effect */
+.auth-button:active {
+  background-color: #008B8B;
+}
+
+/* ======== RESPONSIVE STYLING (Mobile) ======== */
+
+@media (max-width: 768px) {
+  .nav-links ul li {
+    display: block;
+  }
+
+  .nav-links {
+    position: fixed;
+    background: #34495E;
+    height: 100vh;
+    width: 200px;
+    top: 0;
+    right: -200px;
+    text-align: left;
+    z-index: 2;
+    transition: 0.3s;
+  }
+
+  nav .fas {
+    display: block;
+    color: #fff;
+    margin: 10px;
+    font-size: 22px;
+    cursor: pointer;
+  }
+
+  .nav-links ul {
+    padding: 30px;
+  }
+
+  .nav-links ul li a:hover {
+    color: #00FF00;
+  }
+
+  /* Make auth buttons vertical on mobile */
+  .auth-buttons-container {
+    position: absolute;
+    top: 10px;
+    right: 60px;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+  }
+
+  .auth-button {
+    width: 120px;
+    padding: 10px 0;
+  }
+}
