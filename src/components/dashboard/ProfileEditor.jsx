@@ -20,7 +20,7 @@ const ProfileEditor = () => {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
         />
-        <button type="submit">Update Profile</button>
+        <button type="submit"  >Update Profile</button>
       </form>
     </div>
   );

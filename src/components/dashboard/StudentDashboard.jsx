@@ -1,12 +1,8 @@
 import React from 'react';
 import CourseProgress from './CourseProgress';
-// import AssignmentList from './AssignmentList';
 import AssignmentList from './ AssignmentList';
-// import AttendanceCalendar from './AttendanceCalendar';
 import AttendanceCalendar from './ AttendanceCalendar';
-// import NotificationCenter from './NotificationCenter';
 import NotificationCenter from './NotificationCenter';
-// import ProfileEditor from './ProfileEditor';
 import ProfileEditor from './ProfileEditor';
 import './StudentDashboard.css';
 
