@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-
 import Home from "../pages/Home";
 import About from "../pages/About";
 import Blog from "../pages/Blog";
@@ -8,7 +7,9 @@ import Course from "../pages/Course";
 import SignInPage from "../pages/SignInPage";
 import SignUpPage from "../pages/SignUpPage";
 import PrivateRoute from "../components/auth/PrivateRoute";
-import StudentDashboardPage from "../pages/StudentDashboardPage";
+import StudentDashboardPage from "../pages/StudentDashboardPage"; // Import both
+
+import { StudentDashboardRoutes } from "../components/dashboard/StudentDashboard";
 
 const AppRoutes = () => {
   return (
@@ -22,9 +23,12 @@ const AppRoutes = () => {
       <Route path="/signup" element={<SignUpPage />} />
       <Route path="/student/dashboard" element={
         <PrivateRoute role="student">
-          <StudentDashboardPage />
+          <StudentDashboardPage /> {/* Render the layout component */}
         </PrivateRoute>
-      } />
+      }>
+        {/* Define child routes here */}
+        <Route path="*" element={<StudentDashboardRoutes />} /> {/* Render all dashboard routes within the outlet */}
+      </Route>
     </Routes>
   );
 };

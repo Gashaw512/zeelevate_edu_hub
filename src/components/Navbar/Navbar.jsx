@@ -2,7 +2,8 @@ import "./Navbar.css";
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import {auth} from "../../firebase/auth";
+import { auth } from "../../firebase/auth";
+import ProfileDropdown from "../auth/profileDropdown/ProfileDropDown";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faBars } from "@fortawesome/free-solid-svg-icons";
@@ -84,7 +85,11 @@ const Navbar = () => {
             <Link to="/signup"><button className="auth-button" onClick={hideMenu}>SIGN UP</button></Link>
           </>
         ) : (
-          <button className="auth-button" onClick={() => { auth.signOut(); hideMenu(); }}>LOGOUT</button>
+          <div className="ml-4">
+            <ProfileDropdown
+              avatarUrl={user.photoURL || '/default-profile.png'}
+            />
+          </div>
         )}
 
       </div>

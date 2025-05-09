@@ -1,12 +1,14 @@
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // 👈 Changed import
 import AppRoutes from "./routes/AppRoutes";
-import { AuthProvider } from "./context/AuthContext"; // ✅ import AuthProvider
+import { AuthProvider } from "./context/AuthContext";
 
 const App = () => {
   return (
-    <AuthProvider>       {/* ✅ Provide global auth context */}
+    <AuthProvider>
       <Router>
-        <AppRoutes />
+        <Routes> {/* 👈 Changed Switch to Routes */}
+          <Route path="*" element={<AppRoutes />} /> {/* 👈 Render AppRoutes as an element */}
+        </Routes>
       </Router>
     </AuthProvider>
   );

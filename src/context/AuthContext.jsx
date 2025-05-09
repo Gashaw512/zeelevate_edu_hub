@@ -1,37 +1,46 @@
-/*
-File: src/context/AuthContext.jsx
-*/
-import React, { useContext, useEffect, useState, createContext } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+// src/context/AuthContext.jsx
 
-import {auth} from "../firebase/auth";
-import {db} from "../firebase/firestore"
+import React, { createContext, useContext, useEffect, useState } from 'react'
+import { onAuthStateChanged, signOut } from 'firebase/auth'
+import { doc, getDoc } from 'firebase/firestore'
 
-const AuthContext = createContext();
+import { auth } from '../firebase/auth'
+import { db } from '../firebase/firestore'
 
-export const useAuth = () => useContext(AuthContext);
+const AuthContext = createContext()
+
+export const useAuth = () => useContext(AuthContext)
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-        setUser({ ...firebaseUser, ...userDoc.data() });
+        const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid))
+        setUser({ ...firebaseUser, ...userDoc.data() })
       } else {
-        setUser(null);
+        setUser(null)
       }
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
+      setLoading(false)
+    })
+
+    return () => unsubscribe()
+  }, [])
+
+  const logout = async () => {
+    try {
+      await signOut(auth)
+      setUser(null)
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
+  }
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
-      {children}
+    <AuthContext.Provider value={{ user, loading, logout }}>
+      {!loading && children}
     </AuthContext.Provider>
-  );
-};
+  )
+}
