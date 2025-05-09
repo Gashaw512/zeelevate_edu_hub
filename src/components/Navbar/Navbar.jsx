@@ -32,13 +32,7 @@ const Navbar = () => {
   };
 
   const handleHomeClick = () => {
-    if (user) {
-      // If a user is logged in, redirect to the student dashboard
-      navigate('/student-page');
-    } else {
-      // If no user is logged in, redirect to the public home page ("/")
-      navigate('/');
-    }
+    event.preventDefault();
     hideMenu(); // Optionally hide the mobile menu after navigation
   };
 
