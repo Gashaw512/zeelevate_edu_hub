@@ -1,38 +1,23 @@
 // src/components/common/ProfileDropdown.jsx
 
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-// import { useAuth } from '../../context/AuthContext'
-import { useAuth } from '../../../context/AuthContext'
-import ProfileOptionItem from './ProfileOptionItem'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
+import ProfileOptionItem from './ProfileOptionItem';
+import { defaultProfileDropdownOptions } from "../../../data/navbarLinks";
 
 const ProfileDropdown = ({ avatarUrl = "/default-profile.png", customOptions }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const { logout } = useAuth()
-  const navigate = useNavigate()
+  const [isOpen, setIsOpen] = useState(false);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
-    await logout()
-    navigate('//signin')
-  }
+    await logout();
+    navigate('/signin'); // Corrected the redirect path
+  };
 
-  // Default options if none are passed
-  const defaultOptions = [
-    {
-      name: 'My Profile',
-      path: 'my-profile',
-      icon: '👤'
-    },
-    {
-      name: 'Sign Out',
-      action: handleLogout,
-      icon: '🚪'
-    }
-  ]
-
-  const profileOptions = customOptions || defaultOptions
-
-  const closeDropdown = () => setIsOpen(false)
+  const profileOptions = customOptions || defaultProfileDropdownOptions;
+  const closeDropdown = () => setIsOpen(false);
 
   return (
     <div className="relative">
@@ -54,12 +39,13 @@ const ProfileDropdown = ({ avatarUrl = "/default-profile.png", customOptions }) 
               key={option.name}
               option={option}
               closeDropdown={closeDropdown}
+              handleLogout={handleLogout} // Pass the handleLogout function
             />
           ))}
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ProfileDropdown
+export default ProfileDropdown;

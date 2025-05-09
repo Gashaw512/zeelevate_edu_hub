@@ -1,48 +1,46 @@
 // Data file for NavBar links and other links
+import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 
 export const navbarLinks = [
-    {
-      name: "Dashboard",
-      path: "/student/dashboard",
-      icon: "🏠"
-    },
+
     {
       name: "Home",
       path: "/",
-      icon: "🏡"
+      // icon: "🏡"
     },
     {
       name: "About",
       path: "/about",
-      icon: "ℹ️"
+      // icon: "ℹ️"
     },
     {
       name: "Courses",
       path: "/course",
-      icon: "📚"
+      // icon: "📚"
     },
     {
       name: "Blog",
       path: "/blog",
-      icon: "📝"
+      // icon: "📝"
     },
     {
       name: "Contact",
       path: "/contact",
-      icon: "📞"
+      // icon: "📞"
     }
   ];
   
-  export const profileDropdownOptions = [
+  export const defaultProfileDropdownOptions = [
     {
       name: "My Profile",
-      path: "/dashboard/my-profile",
+      path: "my-profile",
       icon: "👤"
     },
     {
       name: "Sign Out",
-      action: "logout",  // Function reference will be added later dynamically
-      icon: "🚪"
+      action: "logout", // It will implement dynamically for latter
+      icon: faRightFromBracket
     }
   ];
+
   

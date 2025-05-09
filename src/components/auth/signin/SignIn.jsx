@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Import useEffect
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../../../firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext'; // Import useAuth
 import "./SignIn.css";
 
 const provider = new GoogleAuthProvider();
@@ -10,12 +11,20 @@ const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const { user } = useAuth(); // Get the user state from AuthContext
+
+  useEffect(() => {
+    // Redirect to dashboard if user is already logged in
+    if (user) {
+      navigate('/student/dashboard');
+    }
+  }, [user, navigate]);
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate('/student/dashboard');
+      // The useEffect above will handle the navigation once the user state updates
     } catch (err) {
       alert(err.message);
     }
@@ -24,7 +33,7 @@ const SignIn = () => {
   const handleGoogleLogin = async () => {
     try {
       await signInWithPopup(auth, provider);
-      navigate('/student/dashboard');
+      // The useEffect above will handle the navigation once the user state updates
     } catch (err) {
       alert(err.message);
     }
@@ -54,7 +63,7 @@ const SignIn = () => {
         />
         <button type="submit">Sign In</button>
       </form>
-      
+
       <div className="social-auth-container">
         <button className="social-auth-button google-button" onClick={handleGoogleLogin}>
           {/* Google Icon */}
