@@ -1,35 +1,105 @@
 .about-us {
-  width: 80%;
-  margin: auto;
-  padding-top: 80px;
-  padding-bottom: 50px;
+  padding: 4rem 2rem;
+  background: #f8f9fa;
 }
 
-.about-col {
-  flex-basis: 48%;
-  padding: 30px 2px;
+.content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.about-col img {
-  width: 100%;
+.about-content h1 {
+  color: #2C3E50;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
 }
 
-.about-col h1 {
-  padding-top: 0;
-  font-size: 2rem;
+.founder-profiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
 }
 
-.about-col p {
-  padding: 15px 0 25px;
-  font-size: 1.2rem;
+.founder-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-.red-btn {
-  border: 1px solid #f44336;
-  background: transparent;
-  color: #f44336;
+.founder-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+  object-fit: cover;
 }
 
-.red-btn:hover {
-  color: #fff;
+.social-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.social-links a {
+  color: #00BFFF;
+  font-size: 1.5rem;
+  transition: color 0.3s ease;
+}
+
+.org-story {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+}
+
+.specializations {
+  columns: 2;
+  list-style: none;
+  padding: 0;
+}
+
+.specializations li {
+  padding: 0.5rem 0;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.specializations li::before {
+  content: "•";
+  color: #00BFFF;
+  position: absolute;
+  left: 0;
+}
+
+.video-section {
+  margin: 3rem 0;
+  aspect-ratio: 16/9;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cta-btn {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background-color: #00BFFF;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .specializations {
+    columns: 1;
+  }
+  
+  .about-content h1 {
+    font-size: 2rem;
+  }
 }

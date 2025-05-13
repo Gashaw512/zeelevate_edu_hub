@@ -1,30 +1,87 @@
 /* Footer section styles */
-.footer {
+.zeelevate-footer {
   width: 100%;
   text-align: center;
-  padding: 30px 8%;
+  padding: 40px 5%;
+  background-color: #1e293b;
+  color: #f8fafc;
 }
 
-.footer h4 {
-  margin-bottom: 25px;
-  margin-top: 20px;
-  font-size: 1.4rem;
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.zeelevate-footer h4 {
+  color: #00BFFF;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
   font-weight: 600;
 }
 
-.footer p {
-  font-size: 1.2rem;
+.zeelevate-footer p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto 2rem;
 }
 
-.footer .icons .fab {
-  color: #f44336;
-  margin: 0 13px;
-  cursor: pointer;
-  font-size: 1.2rem;
-  padding: 18px 0;
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.social-links a {
+  color: #94a3b8;
+  font-size: 1.5rem;
+  transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+  color: #00BFFF;
+}
+
+.footer-meta {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #334155;
+}
+
+.copyright {
+  font-size: 0.95rem;
+  color: #94a3b8;
+  margin-bottom: 0.5rem;
+}
+
+.made-with {
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
 }
 
 .fa-heart {
-  color: #f44336;
-  font-size: 1.2rem;
+  color: #00BFFF;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .zeelevate-footer {
+    padding: 30px 5%;
+  }
+  
+  .zeelevate-footer h4 {
+    font-size: 1.3rem;
+  }
+  
+  .zeelevate-footer p {
+    font-size: 1rem;
+  }
+  
+  .social-links {
+    gap: 1.5rem;
+  }
 }

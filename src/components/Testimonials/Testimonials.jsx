@@ -1,56 +1,61 @@
 import "./Testimonials.css";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
+const user1 = "/images/user1.jpg";
+const user2 = "/images/user2.jpg";
 
 const Testimonials = () => {
   return (
-    <section className="testimonials">
-      <h1>What Our Student Says</h1>
-      <p>
-        Discover what our students have to say about their transformative
-        experiences.
-      </p>
-      <div className="row">
-        <div className="testimonial-col">
-          <img src="/images/user1.jpg" alt="" />
-          <div>
-            <p>
-              &quot;The educational journey here is truly transformative. A
-              nurturing environment that fosters both personal and academic
-              growth.&quot;
+    <section className="zeelevate-testimonials">
+      <div className="testimonials-header">
+        <h2>Student Success Stories</h2>
+        <p>Hear from our learners about their Zeelevate journey</p>
+      </div>
+      
+      <div className="testimonials-grid">
+        <div className="testimonial-card">
+          <img src={user1} alt="Python student" />
+          <div className="testimonial-content">
+            <p className="quote">
+              "Zeelevate's Python course transformed how I approach problem-solving. 
+              The practical projects helped me land my first tech internship!"
             </p>
-            <h3>Christine Berkley</h3>
-            <div className="stars">
-              {[...Array(4)].map((_, i) => (
-                <FontAwesomeIcon
-                  key={i}
-                  icon={faStar}
-                  className="filled-star"
-                />
-              ))}
-              <FontAwesomeIcon icon={faStar} className="empty-star" />
+            <div className="student-info">
+              <h3>Sarah Johnson</h3>
+              <p className="course-tag">Python Programming Student</p>
+              <div className="rating">
+                {[...Array(5)].map((_, i) => (
+                  <FontAwesomeIcon
+                    key={i}
+                    icon={faStar}
+                    className="star"
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="testimonial-col">
-          <img src="/images/user2.jpg" alt="" />
-          <div>
-            <p>
-              &quot; This institutional goes beyond education; it&apos;s a
-              community that nurtures creativity and critical thinking. Truly
-              exceptional! &quot;
+        <div className="testimonial-card">
+          <img src={user2} alt="Finance student" />
+          <div className="testimonial-content">
+            <p className="quote">
+              "The financial literacy program gave me confidence to manage my 
+              college expenses and even start investing small amounts."
             </p>
-            <h3>David Byer</h3>
-            <div className="stars">
-              {[...Array(5)].map((_, i) => (
-                <FontAwesomeIcon
-                  key={i}
-                  icon={faStar}
-                  className="filled-star"
-                />
-              ))}
+            <div className="student-info">
+              <h3>Michael Chen</h3>
+              <p className="course-tag">Financial Literacy Student</p>
+              <div className="rating">
+                {[...Array(4)].map((_, i) => (
+                  <FontAwesomeIcon
+                    key={i}
+                    icon={faStar}
+                    className="star"
+                  />
+                ))}
+                <FontAwesomeIcon icon={faStar} className="star empty" />
+              </div>
             </div>
           </div>
         </div>

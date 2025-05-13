@@ -1,40 +1,50 @@
 import "./Footer.css";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFacebookF,
-  faTwitter,
   faInstagram,
   faLinkedinIn,
+  faYoutube,
 } from "@fortawesome/free-brands-svg-icons";
-
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 const Footer = () => {
   return (
-    <section className="footer">
-      <h4>About Us</h4>
-      <p>
-        Comitted to the pursuit of knowledge and the empowerment of individuals,
-        our institution stands as a beacon of learning and inspiration. We are
-        on a mission to nurture inquisitive minds, encourage creativity, and
-        drive positive change. Our dedicated team strives to provide a
-        supportive learning environment that fosters personal growth and
-        academic ecellence. Join us on a journey of discovery, where education
-        transcends boundaries and transforms lives.
-      </p>
+    <footer className="zeelevate-footer">
+      <div className="footer-content">
+        <h4>Empowering Digital Futures</h4>
+        <p>
+          Zeelevate Academy is dedicated to equipping learners with essential 21st-century skills 
+          through courses in Python programming, financial literacy, digital citizenship, and 
+          college preparation. Join our community to transform your digital capabilities and 
+          unlock new opportunities in today's tech-driven world.
+        </p>
+        
+        <div className="social-links">
+          <a href="https://facebook.com/zeelevate" target="_blank" rel="noopener noreferrer">
+            <FontAwesomeIcon icon={faFacebookF} />
+          </a>
+          <a href="https://linkedin.com/company/zeelevate" target="_blank" rel="noopener noreferrer">
+            <FontAwesomeIcon icon={faLinkedinIn} />
+          </a>
+          <a href="https://instagram.com/zeelevate" target="_blank" rel="noopener noreferrer">
+            <FontAwesomeIcon icon={faInstagram} />
+          </a>
+          <a href="https://youtube.com/zeelevate" target="_blank" rel="noopener noreferrer">
+            <FontAwesomeIcon icon={faYoutube} />
+          </a>
+        </div>
 
-      <div className="icons">
-        <FontAwesomeIcon icon={faFacebookF} className="fab" />
-        <FontAwesomeIcon icon={faTwitter} className="fab" />
-        <FontAwesomeIcon icon={faInstagram} className="fab" />
-        <FontAwesomeIcon icon={faLinkedinIn} className="fab" />
+        <div className="footer-meta">
+          <p className="copyright">
+            © 2023 Zeelevate Academy. All rights reserved.
+          </p>
+          <p className="made-with">
+            Crafted with <FontAwesomeIcon icon={faHeart} /> for digital learners
+          </p>
+        </div>
       </div>
-
-      <p>
-        Made with <FontAwesomeIcon icon={faHeart} className="fa-heart" /> by SSK
-      </p>
-    </section>
+    </footer>
   );
 };
 

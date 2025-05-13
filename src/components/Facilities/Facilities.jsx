@@ -1,33 +1,40 @@
 import "./Facilities.css";
+const network = "/images/network.png";
+const laptop = "/images/laptop.jpg";
 
 const Facilities = () => {
   return (
     <section className="facilities">
-      <h1>Our Facilities</h1>
-      <p>Immerse yourself in a world of exceptional amenities and services.</p>
-      <div className="row">
+      <div className="facilities-header">
+        <h2>Our Facilities</h2>
+        <p>
+          Discover the resources and environment Zeelevate provides to empower your
+          learning journey.
+        </p>
+      </div>
+      <div className="facilities-grid">
         <div className="facilities-col">
-          <img src="/images/library.png" alt="" />
-          <h3>World Class Library</h3>
-          <p>
-            Dive into a sea of knowledge with our state-of-the-art library. An
-            oasis for intellectual exploration.
+          <img src="/images/library.png" alt="World Class Learning Resources" />
+          <h3>World-Class Learning Resources</h3>
+          <p className="facilities-text">
+            Access a wealth of knowledge and materials to support your growth in digital
+            and financial literacy, and programming.
           </p>
         </div>
         <div className="facilities-col">
-          <img src="/images/basketball.png" alt="" />
-          <h3>Largest Play Ground</h3>
-          <p>
-            Unleash your energy on our expansive playground. A haven for sports
-            enthusiasts and active minds.
+          <img src={network} alt="Engaging Community Forums" />
+          <h3>Engaging Community Forums</h3>
+          <p className="facilities-text">
+            Connect with peers and instructors in our interactive forums, fostering collaboration
+            and a supportive learning community.
           </p>
         </div>
         <div className="facilities-col">
-          <img src="/images/cafeteria.png" alt="" />
-          <h3>Tasty and Healthy Food</h3>
-          <p>
-            Indulge your taste buds with our delightful and nutritious cuisine.
-            Fuel for both body and mind.
+          <img src={laptop} alt="Flexible Online Access" />
+          <h3>Flexible Online Access</h3>
+          <p className="facilities-text">
+            Learn at your convenience with our accessible online platform, designed for
+            flexible learning anytime, anywhere.
           </p>
         </div>
       </div>

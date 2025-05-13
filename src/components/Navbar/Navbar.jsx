@@ -38,8 +38,8 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <Link to="/" className="logo">
-        <img src={logo} alt="Logo" />
+      <Link to="/" className="img">
+        <img src={""} alt="Zeelevate Logo" />
       </Link>
 
       <div className="nav-links" ref={navLinkRef}>

@@ -1,17 +1,24 @@
 import { Link } from "react-router-dom";
-
 import "./TextBox.css";
 
 const TextBox = () => {
   return (
     <div className="text-box">
-      <h1>World&apos;s Biggest University</h1>
+      <h1>Empowering Digital Futures</h1>
       <p>
-        Making website is now one of the easiest thing in the world. You just
-        need to learn HTML, CSS, <br /> JavaScript and you are good to go.
+        Master essential 21st century skills with our comprehensive programs in:<br />
       </p>
-      <Link to="/" className="hero-btn">
-        Visit us To Know More
+
+      <div className="program-list">
+        <ul>
+          <li>Python programming</li>
+          <li>Financial literacy</li>
+          <li>Digital citizenship</li>
+          <li>College preparation</li>
+        </ul>
+      </div>
+      <Link to="/about" className="cta-btn">
+        Explore Our Programs
       </Link>
     </div>
   );
