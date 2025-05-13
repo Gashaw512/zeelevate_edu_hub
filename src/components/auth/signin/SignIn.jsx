@@ -1,91 +1,131 @@
-import React, { useState, useEffect } from 'react'; // Import useEffect
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { auth } from '../../../firebase/auth';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../context/AuthContext'; // Import useAuth
-import "./SignIn.css";
+import React, { useState, useEffect } from 'react'; 
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'; 
+import { useNavigate } from 'react-router-dom'; 
+import { auth } from '../../../firebase/auth'; 
+import { useAuth } from '../../../context/AuthContext'; 
+import { FcGoogle } from 'react-icons/fc'; 
+import { FaLinkedin } from 'react-icons/fa'; 
+import './SignIn.css'; 
+import logo from "/images/zel.jpg"; 
 
-const provider = new GoogleAuthProvider();
+const provider = new GoogleAuthProvider(); 
 
-const SignIn = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate();
-  const { user } = useAuth(); // Get the user state from AuthContext
+const SignIn = () => { 
+  const [formData, setFormData] = useState({ email: '', password: '' }); 
+  const [error, setError] = useState(''); 
+  const navigate = useNavigate(); 
+  const { user } = useAuth(); 
 
-  useEffect(() => {
-    // Redirect to dashboard if user is already logged in
-    if (user) {
-      navigate('/student/dashboard');
-    }
-  }, [user, navigate]);
+  useEffect(() => { 
+    if (user) { 
+      navigate('/student/dashboard'); 
+    } 
+  }, [user, navigate]); 
 
-  const handleEmailLogin = async (e) => {
-    e.preventDefault();
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // The useEffect above will handle the navigation once the user state updates
-    } catch (err) {
-      alert(err.message);
-    }
-  };
+  const handleChange = (e) => { 
+    setFormData({ ...formData, [e.target.name]: e.target.value }); 
+  }; 
 
-  const handleGoogleLogin = async () => {
-    try {
-      await signInWithPopup(auth, provider);
-      // The useEffect above will handle the navigation once the user state updates
-    } catch (err) {
-      alert(err.message);
-    }
-  };
+  const handleSubmit = async (e) => { 
+    e.preventDefault(); 
+    setError(''); 
+    try { 
+      await signInWithEmailAndPassword(auth, formData.email, formData.password); 
+    } catch (err) { 
+      setError(err.message || 'Failed to sign in.'); 
+    } 
+  }; 
 
-  const handleLinkedInLogin = () => {
-    alert('LinkedIn sign-in will require backend OAuth integration.');
-  };
+  const handleGoogleLogin = async () => { 
+    setError(''); 
+    try { 
+      await signInWithPopup(auth, provider); 
+    } catch (err) { 
+      setError(err.message || 'Google sign-in failed.'); 
+    } 
+  }; 
 
-  return (
-    <div className="auth-container sign-in-container">
-      <h2>Sign In</h2>
-      <form onSubmit={handleEmailLogin}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Sign In</button>
-      </form>
+  const handleLinkedInLogin = () => { 
+    setError('LinkedIn sign-in is not yet implemented.'); 
+  }; 
 
-      <div className="social-auth-container">
-        <button className="social-auth-button google-button" onClick={handleGoogleLogin}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path d="M12 2c-2.21 0-4.21.9-5.65 2.35l-1.5-1.5c1.51-1.52 3.5-2.35 6.15-2.35 4.73 0 8.55 3.87 8.55 8.65s-3.83 8.65-8.55 8.65c-2.99 0-5.56-1.55-7.07-3.81l1.5-1.5c1.06 1.15 2.59 1.89 3.57 1.89 2.93 0 5.32-2.34 5.32-5.33 0-2.93-2.34-5.33-5.32-5.33z" />
-          </svg>
-          Sign in with Google
-        </button>
-        <button className="social-auth-button linkedin-button" onClick={handleLinkedInLogin}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path d="M4.98 3.5c0-.3-.3-.5-.6-.5h-.9c-.3 0-.5.2-.5.5v16c0 .3.3.5.5.5h.9c.3 0 .6-.2.6-.5v-16zM12.15 4c-1.64 0-2.99 1.35-2.99 2.99v9.99c0 1.65 1.35 2.99 2.99 2.99 1.64 0 2.99-1.34 2.99-2.99v-9.99c0-1.64-1.35-2.99-2.99-2.99zm0 12c-.55 0-.99-.44-.99-.99v-6.99c0-.55.44-.99.99-.99.55 0 .99.44.99.99v6.99c0 .55-.44.99-.99.99z" />
-          </svg>
-          Sign in with LinkedIn (Mock)
-        </button>
-      </div>
+  const handleExternalSignIn = (providerName) => { 
+    if (providerName === 'Google') { 
+      handleGoogleLogin(); 
+    } else if (providerName === 'LinkedIn') { 
+      handleLinkedInLogin(); 
+    } 
+  }; 
 
-      <div className="auth-links">
-        <a href="/forgot-password">Forgot Password?</a>
-        <span> • </span>
-        <a href="/signup">Create Account</a>
-      </div>
-    </div>
-  );
-};
+  const externalProviders = [ 
+    { name: 'Google', icon: <FcGoogle className="mr-2 h-5 w-5" />, label: 'Continue with Google' }, 
+    { name: 'LinkedIn', icon: <FaLinkedin className="mr-2 h-5 w-5 text-blue-700" />, label: 'Continue with LinkedIn' } 
+  ]; 
+
+  return ( 
+    <div className="sign-in-container"> 
+      <div className="logo"> 
+        <img src={logo} alt="Zeelevate Logo" /> 
+      </div> 
+      <h2 className="welcome-text">Welcome</h2> 
+      <p className="login-instruction">Login to Zeelevate Academy to continue your learning journey</p> 
+
+      <form onSubmit={handleSubmit} className="form-container"> 
+        <div className="input-container"> 
+          <input 
+            type="email" 
+            name="email" 
+            placeholder="you@example.com" 
+            value={formData.email} 
+            onChange={handleChange} 
+            required 
+            className="input" 
+          /> 
+        </div> 
+        <div className="input-container"> 
+          <input 
+            type="password" 
+            name="password" 
+            placeholder="••••••••" 
+            value={formData.password} 
+            onChange={handleChange} 
+            required 
+            className="input" 
+          /> 
+        </div> 
+        <button type="submit" className="button">Login</button> 
+      </form> 
+
+      {error && <p className="text-red-500 text-sm text-center mt-2">{error}</p>} 
+
+      <div className="forgot-password"> 
+        <a href="/reset-password" className="link">Forgot Password?</a> 
+      </div> 
+
+      <div className="sign-up"> 
+        <p>Do not have an account? <a href="/signup" className="link">Sign Up</a></p> 
+      </div> 
+
+      <div className="divider"> 
+        <span className="divider-text">OR</span> 
+      </div> 
+
+      <div className="external-signin"> 
+        <div className="social-auth-container"> 
+          {externalProviders.map((provider) => ( 
+            <button 
+              key={provider.name} 
+              onClick={() => handleExternalSignIn(provider.name)} 
+              className={`social-auth-button ${provider.name.toLowerCase()}-button`} 
+            > 
+              {provider.icon} 
+              {provider.label} 
+            </button> 
+          ))} 
+        </div> 
+      </div> 
+    </div> 
+  ); 
+}; 
 
 export default SignIn;

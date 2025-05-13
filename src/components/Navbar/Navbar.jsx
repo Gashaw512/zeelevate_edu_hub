@@ -7,7 +7,7 @@ import { Link, NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faBars, faBell } from "@fortawesome/free-solid-svg-icons"; // Import faBell
 import { navbarLinks } from "../../data/navbarLinks";
-import logo from "/images/logo.png";
+import logo from "/images/zel.jpg";
 // import NotificationCenter from "../dashboard/NotificationCenter";
 
 const Navbar = () => {
