@@ -1,24 +1,29 @@
 # 🎓 Educational Institution Website
 
-Welcome to the **Educational Institution Website** repository! This project is a fully responsive and modern website designed for educational institutions, built using React.js. THe website features various sections including About Us, Blog, Courses, and Contact Us, each tailored to provide a comprehensive and engaging user experience.
+Welcome to the **Zeelevate Academy** repository!
 
 ### 🌐 Live Preview
 
-Check out the live version of the website [here](https://react-college-website.vercel.app/)
+Check out the live version of the website [here](https://zeelevate-zcademy.vercel.app/)
 
 ### 🌐 Screenshots
 
 Here's a sneak peek of what the website looks like:
-![Educational Institution Website](./public/preview.png)
+<!-- ![Educational Institution Website](./public/preview.png) -->
 
 ### 🛠️ Tech Stack
 
 - **Frontend:** React.js
-- **Styling:** CSS
+- **Backend:** Node.js
+- **Database:** Firebase
+- **Payment Processing:** Square
 - **Routing:** React Router DOM
+- **Styling:** CSS
 
----
+### 🚀 Features
 
-Thank you for checking out, If you find this project helpful, please consider giving it a ⭐.
+- User-friendly interface
+- Secure payment integration
+- Real-time data updates
 
----
+Feel free to explore, contribute, and enhance Zeelevate Academy!
