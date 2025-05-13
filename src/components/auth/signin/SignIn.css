@@ -1,37 +1,37 @@
 /* ======== SIGN IN PAGE STYLING ======== */
+.sign-in-container {
+  max-width: 450px;
+  margin: 50px auto;
+  padding: 40px 30px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  position: relative;
+}
+
 .logo {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 40px; /* Increased margin for better spacing */
+  margin-bottom: 40px;
 }
 
-.sign-in-container {
-  max-width: 450px;
-  margin: 50px auto;
-  padding: 40px 30px; /* Increased vertical padding */
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow */
-  text-align: center;
-  position: relative; 
+.logo-image {
+  width: 160px;
 }
 
-.sign-in-container img {
-  width: 160px; /* Slightly larger logo */
-}
-
-.sign-in-container .welcome-text {
-  font-size: 2.2rem; /* Slightly larger heading */
+.welcome-text {
+  font-size: 2.2rem;
   margin-bottom: 12px;
-  color: #1e293b; /* Darker shade for better contrast */
+  color: #1e293b; /* Primary text color */
   font-weight: 600;
 }
 
-.sign-in-container .login-instruction {
+.login-instruction {
   font-size: 1.1rem;
   margin-bottom: 35px;
-  color: #64748b; /* Better contrast color */
+  color: #64748b; /* Secondary text color */
   line-height: 1.5;
 }
 
@@ -40,84 +40,91 @@
   position: relative;
 }
 
-.sign-in-container input {
+.input {
   width: 100%;
-  padding: 14px 16px; /* Slightly more horizontal padding */
+  padding: 14px 16px;
   font-size: 1rem;
-  border: 2px solid #e2e8f0; /* Thicker border */
+  border: 2px solid #e2e8f0; /* Border color */
   border-radius: 8px;
   outline: none;
   box-sizing: border-box;
   transition: all 0.3s ease;
 }
 
-.sign-in-container input:focus {
-  border-color: #00BFFF;
-  box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.1); /* Add focus ring */
+.input:focus {
+  border-color: #00BFFF; /* Accent color */
+  box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.1);
 }
 
-.sign-in-container input::placeholder {
-  color: #94a3b8; /* Better placeholder color */
+.input::placeholder {
+  color: #94a3b8; /* Placeholder color */
 }
 
-.sign-in-container button[type="submit"] {
-  background-color: #00BFFF;
-  color: white;
-  border: none;
+.button {
+  width: 100%;
   padding: 14px;
   font-size: 1.1rem;
-  font-weight: 500; /* Medium font weight */
+  font-weight: 500;
   cursor: pointer;
   border-radius: 8px;
-  width: 100%;
   transition: all 0.3s ease;
   margin-top: 10px;
+  border: none;
 }
 
-.sign-in-container button[type="submit"]:hover {
-  background-color: #009ACD; /* Better hover color */
-  transform: translateY(-1px); /* Subtle lift effect */
+.primary-button {
+  background-color: #00BFFF; /* Accent color */
+  color: white;
 }
 
-.sign-in-container button[type="submit"]:active {
+.primary-button:hover {
+  background-color: #009ACD;
+  transform: translateY(-1px);
+}
+
+.primary-button:active {
   transform: translateY(0);
 }
 
-/* Error message styling */
-.text-red-500 {
+.error-message {
   color: #ef4444;
   margin-top: 12px;
   font-size: 0.95rem;
+  text-align: center;
 }
 
-.forgot-password, .sign-up {
+.forgot-password,
+.sign-up {
   margin-top: 18px;
 }
 
-.forgot-password a, .sign-up a {
+.link {
   font-size: 1rem;
-  color: #00BFFF;
-  font-weight: 500; /* Medium weight for links */
   text-decoration: none;
   transition: color 0.2s ease;
+  font-weight: 500;
 }
 
-.forgot-password a:hover, .sign-up a:hover {
-  color: #009ACD; /* Darker hover color */
+.link:hover {
   text-decoration: underline;
 }
 
-/* Improved divider styling */
+.primary-link {
+  color: #00BFFF; /* Accent color for primary links */
+}
+
+.primary-link:hover {
+  color: #009ACD;
+}
+
 /* Divider */
 .divider {
-  /* margin: 1.5rem 0; */
   position: relative;
   text-align: center;
   font-size: 0.85rem;
   color: #666;
-
-  margin: 32px -30px; /* Compensate for container padding */
-  width: calc(100% + 60px); /* Expand beyond container padding */
+  margin: 32px -30px;
+  width: calc(100% + 60px);
 }
 
 .divider::before,
@@ -128,9 +135,7 @@
   background-color: #ccc;
   top: 50%;
   width: 40%;
-
   flex: 1;
-
   margin: 0 1rem;
 }
 
@@ -146,21 +151,25 @@
   position: relative;
   padding: 0 12px;
   background-color: white;
-  color: #64748b;
+  color: #64748b; /* Secondary text color */
   font-size: 0.95rem;
   font-weight: 500;
   z-index: 1;
 }
 
-/* Social auth improvements */
+/* Social Auth */
+.external-signin {
+  margin-top: 24px;
+}
+
 .social-auth-container {
   display: flex;
   flex-direction: column;
-  gap: 16px; /* Slightly larger gap */
+  gap: 12px;
 }
 
 .social-auth-button {
-  padding: 14px;
+  padding: 12px;
   font-size: 1rem;
   border-radius: 8px;
   display: flex;
@@ -168,28 +177,34 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 1px solid transparent; /* Add border transition */
+  border: 1px solid #e2e8f0; /* Light border for social buttons */
+  background-color: white;
 }
 
 .social-auth-button:hover {
-  transform: translateY(-1px); /* Add lift effect */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow on hover */
+  background-color: #f8fafc; /* Light hover background */
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .social-auth-button:active {
   transform: translateY(0);
 }
 
-.social-auth-button.google-button:hover {
-  background-color: #c1351d; /* Better hover state */
-}
-
-.social-auth-button.linkedin-button:hover {
-  background-color: #094882; /* Better hover state */
-}
-
-.social-auth-button svg {
-  margin-right: 12px; /* Consistent spacing */
-  width: 20px;
+.social-icon {
+  margin-right: 10px;
   height: 20px;
+  width: 20px;
+}
+
+.social-button-label {
+  font-weight: 500;
+}
+
+.linkedin-button {
+  color: #007bff; /* LinkedIn brand color */
+}
+
+.linkedin-button:hover {
+  background-color: #e1f3ff; /* Light hover for LinkedIn */
 }

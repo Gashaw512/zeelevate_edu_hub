@@ -1,25 +1,36 @@
+/* General Section Styles */
 .about-us {
   padding: 4rem 2rem;
-  background: #f8f9fa;
+  background: #f8fafc;
+  /* Add more general section styles if needed */
 }
 
-.content-wrapper {
+.about-us-container { /* Renamed from content-wrapper */
   max-width: 1200px;
   margin: 0 auto;
+  /* Add any specific container styling */
 }
 
-.about-content h1 {
-  color: #2C3E50;
+/* About Content */
+.about-content {
+  /* Add any specific styling for the content wrapper */
+}
+
+.about-us-title { /* More specific class */
+  color: #2c3e50;
   font-size: 2.5rem;
   margin-bottom: 2rem;
   text-align: center;
+  /* Add any specific heading styles */
 }
 
+/* Founder Profiles */
 .founder-profiles {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
   margin-bottom: 3rem;
+  /* Add any specific grid styles */
 }
 
 .founder-card {
@@ -28,6 +39,12 @@
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
+  transition: transform 0.3s ease-in-out; /* Smooth hover effect */
+}
+
+.founder-card:hover {
+  transform: translateY(-5px); /* Slight lift on hover */
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
 }
 
 .founder-image {
@@ -36,32 +53,78 @@
   border-radius: 50%;
   margin: 0 auto 1rem;
   object-fit: cover;
+  /* Add any specific image styles */
 }
+
+.founder-name { /* More specific class */
+  color: #333; /* Darker name */
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  /* Add any specific name styles */
+}
+
+.founder-role { /* More specific class */
+  color: #777; /* Lighter role */
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+  /* Add any specific role styles */
+}
+
+.founder-bio { /* More specific class */
+  color: #555;
+  font-size: 1.1rem;
+  /* Add any specific bio styles */
+}
+
 
 .social-links {
   display: flex;
   gap: 1rem;
   justify-content: center;
   margin-top: 1rem;
+  /* Add any specific social links styles */
 }
 
 .social-links a {
   color: #00BFFF;
   font-size: 1.5rem;
   transition: color 0.3s ease;
+  /* Add any specific social icon styles */
 }
 
+.social-links a:hover {
+  color: #0099cc; /* Slightly darker on hover */
+}
+
+/* Organization Story */
 .org-story {
   margin: 3rem 0;
   padding: 2rem;
   background: white;
   border-radius: 12px;
+  /* Add any specific story styles */
+}
+
+.org-story-title { /* More specific class */
+  color: #2c3e50;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  /* Add any specific story title styles */
+}
+
+.org-story-text { /* More specific class */
+  color: #555;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  /* Add any specific story text styles */
 }
 
 .specializations {
   columns: 2;
   list-style: none;
   padding: 0;
+  /* Add any specific specializations styles */
 }
 
 .specializations li {
@@ -77,14 +140,24 @@
   left: 0;
 }
 
+/* Video Section */
 .video-section {
   margin: 3rem 0;
   aspect-ratio: 16/9;
   border-radius: 12px;
   overflow: hidden;
+  /* Add any specific video section styles */
 }
 
-.cta-btn {
+.intro-video { /* More specific class */
+  width: 100%;
+  height: 100%;
+  /* Add any specific video styles */
+}
+
+
+/* CTA Button */
+.about-us-cta-btn { /* More specific class */
   display: inline-block;
   padding: 1rem 2rem;
   background-color: #00BFFF;
@@ -92,14 +165,20 @@
   border-radius: 8px;
   text-decoration: none;
   transition: all 0.3s ease;
+  /* Add any specific CTA button styles */
 }
 
+.about-us-cta-btn:hover {
+  background-color: #0099cc; /* Slightly darker on hover */
+}
+
+/* Media Queries */
 @media (max-width: 768px) {
   .specializations {
     columns: 1;
   }
-  
-  .about-content h1 {
+
+  .about-us-title {
     font-size: 2rem;
   }
 }

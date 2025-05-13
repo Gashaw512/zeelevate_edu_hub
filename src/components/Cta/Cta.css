@@ -1,29 +1,93 @@
-/* CTA (call to action) Section Styles */
+/* CTA (Call to Action) Section Styles */
 .cta {
   margin: 100px auto;
   width: 80%;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-    url(/images/banner2.jpg);
+  /* Using a more subtle background with the primary blue */
+  background-image: linear-gradient(rgba(0, 123, 255, 0.7), rgba(0, 123, 255, 0.7)), /* Adjusted blue RGB */
+    url(/images/banner2.jpg); /* Ensure you have this image */
   background-position: center;
   background-size: cover;
   border-radius: 10px;
   text-align: center;
   padding: 100px 0;
+  /* Using a light gray background instead */
+  background-color: #f8fafc; /* Light gray from Facilities */
 }
 
 .cta h1 {
-  color: #fff;
-  margin-bottom: 40px;
+  color: #fff; /* White for contrast on the blue overlay */
+  font-size: 2.2rem;
+  margin-bottom: 20px;
   padding: 0;
 }
 
-.cta a {
+.cta p {
+  color: #f0f0f0; /* Lighter shade of gray for better readability on the overlay */
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+}
+
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.hero-btn {
+  display: inline-block;
+  padding: 12px 30px;
+  color: #fff;
+  /* Using the accent blue for the primary button */
+  background-color: #00BFFF; /* Accent blue from Testimonials */
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
   text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.hero-btn:hover {
+  background-color: #0099cc; /* A slightly darker shade of the accent blue */
+}
+
+.enroll-btn {
+  /* Inheriting from hero-btn */
+}
+
+.enroll-btn:hover {
+  /* Inheriting from hero-btn:hover */
+}
+
+.learn-more-btn {
+  /* Using a neutral gray for secondary action */
+  background-color: #64748b; /* Gray from Facilities paragraph */
+}
+
+.learn-more-btn:hover {
+  background-color: #475569; /* Darker gray */
 }
 
 /* Responsive styles for smaller screens */
 @media (max-width: 768px) {
+  .cta {
+    padding: 60px 0;
+  }
+
   .cta h1 {
-    font-size: 22px;
+    font-size: 1.8rem;
+  }
+
+  .cta p {
+    font-size: 1rem;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hero-btn {
+    width: 100%;
   }
 }

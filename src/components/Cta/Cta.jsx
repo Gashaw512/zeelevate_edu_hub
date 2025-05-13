@@ -1,18 +1,23 @@
 import { Link } from "react-router-dom";
-
 import "./Cta.css";
 
 const Cta = () => {
   return (
     <section className="cta">
       <h1>
-        Enroll For Our Various Online Courses
-        <br />
-        Anywhere From The World
+        Empower Your Future With Our Online Courses
       </h1>
-      <Link to="/contact" className="hero-btn">
-        CONTACT US
-      </Link>
+      <p>
+        Unlock your potential in digital literacy, financial literacy, and programming.
+      </p>
+      <div className="cta-buttons">
+        <a href="https://www.teachable.com/" target="_blank" rel="noopener noreferrer" className="hero-btn enroll-btn">
+          Enroll Now
+        </a>
+        <Link to="/about" className="hero-btn learn-more-btn">
+          Learn More
+        </Link>
+      </div>
     </section>
   );
 };
