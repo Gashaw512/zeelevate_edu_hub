@@ -12,35 +12,32 @@ const Footer = () => {
   return (
     <footer className="zeelevate-footer">
       <div className="footer-content">
-        <h4>Empowering Digital Futures</h4>
-        <p>
-          Zeelevate Academy is dedicated to equipping learners with essential 21st-century skills 
-          through courses in Python programming, financial literacy, digital citizenship, and 
-          college preparation. Join our community to transform your digital capabilities and 
-          unlock new opportunities in today's tech-driven world.
+        <h4 className="footer-title">Empowering Digital Futures</h4>
+        <p className="footer-description">
+          Zeelevate is on a mission to bridge the digital divide by offering inclusive, accessible, and impactful courses in Python programming, digital literacy, financial literacy, and college preparation. Whether you're a teen or adult, our platform supports your journey to becoming digitally confident.
         </p>
-        
+
         <div className="social-links">
-          <a href="https://facebook.com/zeelevate" target="_blank" rel="noopener noreferrer">
+          <a href="https://facebook.com/zeelevate" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
             <FontAwesomeIcon icon={faFacebookF} />
           </a>
-          <a href="https://linkedin.com/company/zeelevate" target="_blank" rel="noopener noreferrer">
+          <a href="https://linkedin.com/company/zeelevate" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
             <FontAwesomeIcon icon={faLinkedinIn} />
           </a>
-          <a href="https://instagram.com/zeelevate" target="_blank" rel="noopener noreferrer">
+          <a href="https://instagram.com/zeelevate" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
             <FontAwesomeIcon icon={faInstagram} />
           </a>
-          <a href="https://youtube.com/zeelevate" target="_blank" rel="noopener noreferrer">
+          <a href="https://youtube.com/zeelevate" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
             <FontAwesomeIcon icon={faYoutube} />
           </a>
         </div>
 
         <div className="footer-meta">
           <p className="copyright">
-            © 2023 Zeelevate Academy. All rights reserved.
+            © {new Date().getFullYear()} Zeelevate Academy. All rights reserved.
           </p>
           <p className="made-with">
-            Crafted with <FontAwesomeIcon icon={faHeart} /> for digital learners
+            Crafted with <FontAwesomeIcon icon={faHeart} /> for tomorrow’s digital leaders.
           </p>
         </div>
       </div>

@@ -2,26 +2,23 @@
 .about-us {
   padding: 4rem 2rem;
   background: #f8fafc;
-  /* Add more general section styles if needed */
 }
 
-.about-us-container { /* Renamed from content-wrapper */
+.about-us-container {
   max-width: 1200px;
   margin: 0 auto;
-  /* Add any specific container styling */
 }
 
 /* About Content */
 .about-content {
-  /* Add any specific styling for the content wrapper */
+  /* Reserved for any future inner layout enhancements */
 }
 
-.about-us-title { /* More specific class */
+.about-us-title {
   color: #2c3e50;
   font-size: 2.5rem;
   margin-bottom: 2rem;
   text-align: center;
-  /* Add any specific heading styles */
 }
 
 /* Founder Profiles */
@@ -30,7 +27,6 @@
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
   margin-bottom: 3rem;
-  /* Add any specific grid styles */
 }
 
 .founder-card {
@@ -39,12 +35,12 @@
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
-  transition: transform 0.3s ease-in-out; /* Smooth hover effect */
+  transition: transform 0.3s ease-in-out;
 }
 
 .founder-card:hover {
-  transform: translateY(-5px); /* Slight lift on hover */
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
 }
 
 .founder-image {
@@ -53,123 +49,133 @@
   border-radius: 50%;
   margin: 0 auto 1rem;
   object-fit: cover;
-  /* Add any specific image styles */
 }
 
-.founder-name { /* More specific class */
-  color: #333; /* Darker name */
+.founder-name {
+  color: #333;
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
-  /* Add any specific name styles */
 }
 
-.founder-role { /* More specific class */
-  color: #777; /* Lighter role */
+.founder-role {
+  color: #777;
   font-size: 1rem;
   margin-bottom: 0.8rem;
-  /* Add any specific role styles */
 }
 
-.founder-bio { /* More specific class */
+.founder-bio {
   color: #555;
   font-size: 1.1rem;
-  /* Add any specific bio styles */
+  line-height: 1.6;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
-
+/* Social Media Links */
 .social-links {
   display: flex;
   gap: 1rem;
   justify-content: center;
   margin-top: 1rem;
-  /* Add any specific social links styles */
 }
 
 .social-links a {
-  color: #00BFFF;
+  color: #00bfff;
   font-size: 1.5rem;
   transition: color 0.3s ease;
-  /* Add any specific social icon styles */
 }
 
 .social-links a:hover {
-  color: #0099cc; /* Slightly darker on hover */
+  color: #0099cc;
 }
 
 /* Organization Story */
 .org-story {
-  margin: 3rem 0;
+  margin: 3rem auto;
   padding: 2rem;
   background: white;
   border-radius: 12px;
-  /* Add any specific story styles */
+  max-width: 900px;
 }
 
-.org-story-title { /* More specific class */
+.org-story-title {
   color: #2c3e50;
   font-size: 1.8rem;
   margin-bottom: 1.5rem;
-  /* Add any specific story title styles */
+  text-align: center;
 }
 
-.org-story-text { /* More specific class */
+.org-story-text {
   color: #555;
   font-size: 1.1rem;
   line-height: 1.6;
   margin-bottom: 1rem;
-  /* Add any specific story text styles */
+  text-align: center;
 }
 
 .specializations {
   columns: 2;
   list-style: none;
   padding: 0;
-  /* Add any specific specializations styles */
+  margin-top: 1rem;
 }
 
 .specializations li {
   padding: 0.5rem 0;
   position: relative;
   padding-left: 1.5rem;
+  transition: color 0.2s ease;
 }
 
 .specializations li::before {
   content: "•";
-  color: #00BFFF;
+  color: #00bfff;
   position: absolute;
   left: 0;
 }
 
+.specializations li:hover {
+  color: #0099cc;
+}
+
 /* Video Section */
 .video-section {
-  margin: 3rem 0;
-  aspect-ratio: 16/9;
-  border-radius: 12px;
+  position: relative;
+  padding-top: 56.25%;
+  height: 0;
   overflow: hidden;
-  /* Add any specific video section styles */
+  border-radius: 12px;
+  margin: 3rem 0;
 }
 
-.intro-video { /* More specific class */
+.intro-video {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  /* Add any specific video styles */
+  border: none;
 }
 
-
 /* CTA Button */
-.about-us-cta-btn { /* More specific class */
+.about-us-cta-btn {
   display: inline-block;
   padding: 1rem 2rem;
-  background-color: #00BFFF;
+  background-color: #00bfff;
   color: white;
   border-radius: 8px;
   text-decoration: none;
-  transition: all 0.3s ease;
-  /* Add any specific CTA button styles */
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-align: center;
+  margin: 2rem auto 0;
 }
 
-.about-us-cta-btn:hover {
-  background-color: #0099cc; /* Slightly darker on hover */
+.about-us-cta-btn:hover,
+.about-us-cta-btn:focus {
+  background-color: #0099cc;
+  transform: translateY(-2px);
+  outline: none;
 }
 
 /* Media Queries */
@@ -180,5 +186,14 @@
 
   .about-us-title {
     font-size: 2rem;
+  }
+
+  .org-story-title,
+  .org-story-text {
+    text-align: left;
+  }
+
+  .founder-bio {
+    font-size: 1rem;
   }
 }
