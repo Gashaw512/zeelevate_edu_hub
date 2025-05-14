@@ -1,4 +1,3 @@
-import React from "react";
 import PropTypes from 'prop-types';
 import "./Courses.css";
 import CourseCard from "./courseCard/CourseCard";
@@ -6,7 +5,7 @@ import CourseCard from "./courseCard/CourseCard";
 const Courses = ({
   title = "Explore Our Learning Tracks",
   subtitle = "Beginner-friendly courses for digital empowerment.",
-  courses,
+  courses = [], // Default to an empty array
   enrollLabel = "Enroll Now",
 }) => {
   return (
@@ -15,15 +14,19 @@ const Courses = ({
         {title && <h2 id="course-heading" className="course-section__title">{title}</h2>}
         {subtitle && <p className="course-section__subtitle">{subtitle}</p>}
 
-        <div className="course-grid">
-          {courses.map((course) => (
-            <CourseCard key={course.id} course={course} enrollLabel={enrollLabel} />
-          ))}
-        </div>
+        {courses.length > 0 ? (
+          <div className="course-grid">
+            {courses.map((course) => (
+              <CourseCard key={course.id} course={course} enrollLabel={enrollLabel} />
+            ))}
+          </div>
+        ) : (
+          <p>No courses available at this time.</p> // Informative message
+        )}
 
         <div className="course-note">
           <p>
-          All courses are hosted on <a href="https://www.teachable.com/" target="_blank" rel="noopener noreferrer">Teachable</a>.
+            All courses are hosted on <a href="https://www.teachable.com/" target="_blank" rel="noopener noreferrer">Teachable</a>.
           </p>
         </div>
       </div>

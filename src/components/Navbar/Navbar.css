@@ -1,17 +1,18 @@
 /* ======== NAVBAR STYLING ======== */
 
 nav {
-  padding: 2% 6%;
+  padding: 1rem 2rem; /* Adjusted padding */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #2C3E50; /* Deep Navy background */
+  background-color: #1e293b; /* Neutral dark gray */
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 1000;
-  padding: 20px;
+  border: none; /* Ensure no border */
+  box-shadow: none; /* Remove any box shadow */
 }
 
 /* Logo Image */
@@ -29,15 +30,16 @@ nav img {
 .nav-links ul li {
   display: inline-block;
   list-style: none;
-  padding: 8px 12px;
+  padding: 0.5rem 1rem; /* Adjusted padding */
   position: relative;
 }
 
 /* Anchor link styling */
 .nav-links ul li a {
-  color: #fff;
+  color: #f8fafc; /* Light gray for contrast */
   text-decoration: none;
   font-size: 1.1rem;
+  transition: color 0.3s; /* Smooth color transition */
 }
 
 /* Underline animation on hover */
@@ -45,14 +47,19 @@ nav img {
   content: "";
   width: 0%;
   height: 2px;
-  background: #00BFFF;
+  background: #00BFFF; /* Bright blue */
   display: block;
   margin: auto;
-  transition: 0.5s;
+  transition: width 0.5s;
 }
 
 .nav-links ul li:hover::after {
   width: 100%;
+}
+
+/* Change link color on hover */
+.nav-links ul li a:hover {
+  color: #00BFFF; /* Bright blue on hover */
 }
 
 /* Hide menu icons by default */
@@ -77,36 +84,40 @@ body {
 
 /* Individual button styling */
 .auth-button {
-  background-color: #00BFFF;
-  color: white;
+  background-color: #00bfffa2; /* Bright blue */
+  color: #fff; /* White text */
   border: none;
-  padding: 8px 16px;
+  padding: 0.5rem 1rem; /* Adjusted padding */
   font-size: 1rem;
   cursor: pointer;
   border-radius: 4px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s; /* Added transform for hover */
 }
 
 /* Hover effect */
+/* Hover effect */
 .auth-button:hover {
-  background-color: #00FF00;
+  background-color: #005f7f; /* Darker blue for hover */
+  transform: scale(1.05); /* Slightly scale up on hover */
 }
 
 /* Active/click effect */
 .auth-button:active {
-  background-color: #008B8B;
+  background-color: #004d66; /* Even darker blue for active state */
 }
 
 /* ======== RESPONSIVE STYLING (Mobile) ======== */
 
 @media (max-width: 768px) {
   .nav-links ul li {
-    display: block;
+    display: block; /* Stack items vertically */
+    width: 100%; /* Full width for mobile */
+    text-align: left; /* Align text to the left */
   }
 
   .nav-links {
     position: fixed;
-    background: #34495E;
+    background: #34495E; /* Neutral gray for mobile */
     height: 100vh;
     width: 200px;
     top: 0;
@@ -118,7 +129,7 @@ body {
 
   nav .fas {
     display: block;
-    color: #fff;
+    color: #f8fafc; /* Light gray */
     margin: 10px;
     font-size: 22px;
     cursor: pointer;
@@ -129,21 +140,35 @@ body {
   }
 
   .nav-links ul li a:hover {
-    color: #00FF00;
+    color: #00BFFF; /* Bright blue on hover for mobile */
   }
 
   /* Make auth buttons vertical on mobile */
   .auth-buttons-container {
     position: absolute;
-    top: 10px;
-    right: 60px;
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-end;
+    top: 10px; /* Position from the top */
+    right: 60px; /* Position from the right */
+    flex-direction: row; /* Stack buttons Horizontally */
+    gap: 10px; /* Spacing between buttons */
+    align-items: flex-end; /* Align to the right */
+    margin-right: 20px; /* Added space right to the button container */
   }
 
   .auth-button {
-    width: 120px;
-    padding: 10px 0;
+    width: 100%; /* Full width on mobile */
+    padding: 10px 0; /* Adjusted padding */
+    background-color: #00BFFF; /* Bright blue */
+  }
+
+  .auth-button:hover {
+    background-color: #008B8B; /* Dark teal on hover */
+  }
+  .nav-header-content {
+    display: flex; /* Align items horizontally */
+    align-items: center; /* Center vertically */
+    padding: 10px; /* Optional padding */
+  }
+  .nav-links.open {
+    display: flex; /* Change to flex to show */
   }
 }

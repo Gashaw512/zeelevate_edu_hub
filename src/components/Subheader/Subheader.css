@@ -1,21 +1,23 @@
 .sub-header {
-  height: 50vh;
+  height: 30vh; /* Adjust height as needed */
   width: 100%;
-  background-image: linear-gradient(rgba(4, 9, 30, 0.7), rgba(4, 9, 30, 0.7)),
-    url(/images/background.jpg);
-  background-position: center;
-  background-size: cover;
+  background-color: #00BFFF; /* Use bright blue as the background */
   text-align: center;
-  color: #fff;
+  color: #fff; /* White text color */
+  display: flex; /* Use flexbox for centering */
+  flex-direction: column; /* Align items in a column */
+  justify-content: center; /* Center items vertically */
+  padding: 20px; /* Add padding for spacing */
+  
 }
 
 .sub-header h1 {
-  margin-top: 50px;
-  font-size: 2rem;
+  margin: 0; /* Remove default margin */
+  font-size: 2rem; /* Adjust font size */
 }
 
 @media (max-width: 768px) {
   .sub-header h1 {
-    font-size: 1rem;
+    font-size: 1.5rem; /* Adjust for smaller screens */
   }
 }

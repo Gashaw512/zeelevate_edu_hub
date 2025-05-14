@@ -14,17 +14,20 @@ const Navbar = () => {
   const navLinkRef = useRef();
   const { user } = useAuth();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const showMenu = () => {
     if (navLinkRef.current) {
-      navLinkRef.current.style.right = "0";
+      navLinkRef.current.style.left = "0"; // Show menu
     }
+    setIsMenuOpen(true); // Update state to show header content
   };
-
+  
   const hideMenu = () => {
     if (navLinkRef.current) {
-      navLinkRef.current.style.right = "-200px";
+      navLinkRef.current.style.left = "-200px"; // Hide menu
     }
+    setIsMenuOpen(false); // Update state to hide header content
   };
 
   const toggleNotification = () => {
@@ -43,23 +46,36 @@ const Navbar = () => {
       </Link>
 
       <div className="nav-links" ref={navLinkRef}>
-        <FontAwesomeIcon icon={faTimes} className="fas close-icon" onClick={hideMenu} />
-
+        <div
+          className="nav-header-content"
+          style={{ display: isMenuOpen ? "flex" : "none" }}
+        >
+          <Link to="/" className="img">
+            <img src={""} alt="Zeelevate Logo" />
+          </Link>
+          <FontAwesomeIcon
+            icon={faTimes}
+            className="fas close-icon"
+            onClick={hideMenu}
+          />
+        </div>
         <ul>
-        <NavLink
-              to={user ? '/student-page' : '/'} // Initial conditional link (can be refined with onClick)
-              onClick={handleHomeClick}
-              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-            >
-              <span className="nav-icon">{/* Home Icon */}</span>
-              Home
-            </NavLink>
+          <NavLink
+            to={user ? "/student-page" : "/"} // Initial conditional link (can be refined with onClick)
+            onClick={handleHomeClick}
+            className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+          >
+            <span className="nav-icon">{/* Home Icon */}</span>
+            {/* Home */}
+          </NavLink>
           {navbarLinks.map((link) => (
             <li key={link.name}>
               <NavLink
                 to={link.path}
                 onClick={hideMenu}
-                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                className={({ isActive }) =>
+                  `nav-link ${isActive ? "active" : ""}`
+                }
               >
                 <span className="nav-icon">{link.icon}</span>
                 {link.name}
@@ -69,7 +85,7 @@ const Navbar = () => {
         </ul>
       </div>
 
-      {/* Auth buttons and Notification container (to the right) */}
+      {/* Auth buttons and Notification container (to the left) */}
       <div className="auth-buttons-container">
         {!user ? (
           <>
@@ -88,16 +104,22 @@ const Navbar = () => {
           <div className="flex items-center ml-4">
             {/* <button onClick={toggleNotification} className="relative mr-4">
               <FontAwesomeIcon icon={faBell} size="lg" /> */}
-              {/* Optional: Add a notification badge */}
-              {/* <span className="absolute top-0 right-[-8px] bg-red-500 text-white rounded-full text-xs px-1">3</span> */}
+            {/* Optional: Add a notification badge */}
+            {/* <span className="absolute top-0 left-[-8px] bg-red-500 text-white rounded-full text-xs px-1">3</span> */}
             {/* </button>
             {isNotificationOpen && <NotificationCenter onClose={toggleNotification} />} */}
-            <ProfileDropdown avatarUrl={user.photoURL || "/default-profile.png"} />
+            <ProfileDropdown
+              avatarUrl={user.photoURL || "/default-profile.png"}
+            />
           </div>
         )}
       </div>
 
-      <FontAwesomeIcon icon={faBars} className="fas menu-icon" onClick={showMenu} />
+      <FontAwesomeIcon
+        icon={faBars}
+        className="fas menu-icon"
+        onClick={showMenu}
+      />
     </nav>
   );
 };

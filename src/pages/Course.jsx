@@ -4,6 +4,7 @@ import Courses from "../components/Courses/Courses";
 import Facilities from "../components/Facilities/Facilities";
 import Footer from "../components/Footer/Footer";
 import { useLocation } from "react-router-dom"; // To get query parameters
+import { audienceTitles } from "../data/courseConstants";
 
 const Course = () => {
   const location = useLocation();
@@ -11,13 +12,9 @@ const Course = () => {
   const [title, setTitle] = useState("Our Courses");
   const [subtitle, setSubtitle] = useState("Explore our range of empowering courses.");
 
-  // Simulate fetching courses based on audience (replace with actual API call)
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const audience = params.get("audience");
-
     // Replace this dummy data with your actual course data fetching logic
     const allCourses = [
+      
       {
         id: 101,
         icon: <i className="fas fa-code" />,
@@ -125,21 +122,29 @@ const Course = () => {
       }
     ];
 
+  // Function to filter courses based on audience
+  const filterCoursesByAudience = (audience) => {
     if (audience === "teen") {
       const teenCourses = allCourses.filter(course => course.title.includes("Teens"));
       setFilteredCourses(teenCourses);
-      setTitle("Courses for Teens");
-      setSubtitle("Empowering the next generation with essential skills.");
+      setTitle(audienceTitles.teen.title);
+      setSubtitle(audienceTitles.teen.subtitle);
     } else if (audience === "adult") {
       const adultCourses = allCourses.filter(course => course.title.includes("Adults"));
       setFilteredCourses(adultCourses);
-      setTitle("Programs for Adults");
-      setSubtitle("Enhance your digital and financial capabilities.");
+      setTitle(audienceTitles.adult.title);
+      setSubtitle(audienceTitles.adult.subtitle);
     } else {
       setFilteredCourses(allCourses);
-      setTitle("Our Courses");
-      setSubtitle("Explore our range of empowering courses for all ages.");
+      setTitle(audienceTitles.default.title);
+      setSubtitle(audienceTitles.default.subtitle);
     }
+  };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const audience = params.get("audience");
+    filterCoursesByAudience(audience); // Call the filtering function
   }, [location.search]);
 
   return (
