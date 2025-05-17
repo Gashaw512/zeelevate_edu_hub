@@ -1,48 +1,44 @@
 import "./Navbar.css";
 import { useState, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { auth } from "../../firebase/auth";
-import ProfileDropdown from "../auth/profileDropdown/ProfileDropDown";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom"; // Import Link
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faBars, faBell } from "@fortawesome/free-solid-svg-icons"; // Import faBell
+import { faTimes, faBars } from "@fortawesome/free-solid-svg-icons";
 import { navbarLinks } from "../../data/navbarLinks";
-import logo from "/images/zel.jpg";
-// import NotificationCenter from "../dashboard/NotificationCenter";
+import ProfileDropdown from "./ProfileDropdown";
+import { useScrollToSection } from "../../utils/scrollUtils"; // Import the custom hook
+import logo from "/images/logo.png";
 
 const Navbar = () => {
   const navLinkRef = useRef();
   const { user } = useAuth();
-  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { handleNavLinkClick } = useScrollToSection(); 
 
   const showMenu = () => {
     if (navLinkRef.current) {
-      navLinkRef.current.style.left = "0"; // Show menu
+      navLinkRef.current.style.left = "0";
     }
-    setIsMenuOpen(true); // Update state to show header content
+    setIsMenuOpen(true);
   };
-  
+
   const hideMenu = () => {
     if (navLinkRef.current) {
-      navLinkRef.current.style.left = "-200px"; // Hide menu
+      navLinkRef.current.style.left = "-200px";
     }
-    setIsMenuOpen(false); // Update state to hide header content
-  };
+    setIsMenuOpen(false);
+  }
 
-  const toggleNotification = () => {
-    setIsNotificationOpen(!isNotificationOpen);
-  };
 
-  const handleHomeClick = () => {
+  const handleHomeClick = (event) => {
     event.preventDefault();
-    hideMenu(); // Optionally hide the mobile menu after navigation
+    handleNavLinkClick("home", event, hideMenu);
   };
 
   return (
     <nav className="navbar">
-      <Link to="/" className="img">
-        <img src={""} alt="Zeelevate Logo" />
+      <Link to="/" className="logo-img" onClick={handleHomeClick}>
+        <img src={logo} alt="Zeelevate Logo" />
       </Link>
 
       <div className="nav-links" ref={navLinkRef}>
@@ -50,8 +46,8 @@ const Navbar = () => {
           className="nav-header-content"
           style={{ display: isMenuOpen ? "flex" : "none" }}
         >
-          <Link to="/" className="img">
-            <img src={""} alt="Zeelevate Logo" />
+          <Link to="/" className="logo-img" onClick={handleHomeClick}>
+            <img src={logo} alt="Zeelevate Logo" />
           </Link>
           <FontAwesomeIcon
             icon={faTimes}
@@ -60,32 +56,22 @@ const Navbar = () => {
           />
         </div>
         <ul>
-          <NavLink
-            to={user ? "/student-page" : "/"} // Initial conditional link (can be refined with onClick)
-            onClick={handleHomeClick}
-            className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
-          >
-            <span className="nav-icon">{/* Home Icon */}</span>
-            {/* Home */}
-          </NavLink>
           {navbarLinks.map((link) => (
             <li key={link.name}>
-              <NavLink
-                to={link.path}
-                onClick={hideMenu}
-                className={({ isActive }) =>
-                  `nav-link ${isActive ? "active" : ""}`
-                }
+              <Link
+                to="/"
+                onClick={(e) => handleNavLinkClick(link.path, e, hideMenu)}
+                className="nav-link"
               >
                 <span className="nav-icon">{link.icon}</span>
                 {link.name}
-              </NavLink>
+              </Link>
             </li>
           ))}
         </ul>
       </div>
 
-      {/* Auth buttons and Notification container (to the left) */}
+      {/* Auth buttons */}
       <div className="auth-buttons-container">
         {!user ? (
           <>
@@ -102,12 +88,6 @@ const Navbar = () => {
           </>
         ) : (
           <div className="flex items-center ml-4">
-            {/* <button onClick={toggleNotification} className="relative mr-4">
-              <FontAwesomeIcon icon={faBell} size="lg" /> */}
-            {/* Optional: Add a notification badge */}
-            {/* <span className="absolute top-0 left-[-8px] bg-red-500 text-white rounded-full text-xs px-1">3</span> */}
-            {/* </button>
-            {isNotificationOpen && <NotificationCenter onClose={toggleNotification} />} */}
             <ProfileDropdown
               avatarUrl={user.photoURL || "/default-profile.png"}
             />
