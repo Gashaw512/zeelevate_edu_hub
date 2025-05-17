@@ -1,0 +1,176 @@
+/* General Container */
+.sign-in-container {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
+}
+
+/* Logo */
+.logo img {
+  width: 90px;
+  height: auto;
+  /* margin-bottom: 1rem;
+  border-radius: 12px; */
+}
+
+/* Text Headings */
+.welcome-text {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.25rem;
+}
+
+.login-instruction {
+  font-size: 0.95rem;
+  color: #444;
+  margin-bottom: 1.5rem;
+}
+
+/* Form Styling */
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.input {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+}
+
+.button {
+  padding: 0.75rem 1rem;
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+/* Redirect Text */
+.sign-up {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.link {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* Divider */
+.divider {
+  /* margin: 1.5rem 0; */
+  position: relative;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #666;
+
+  margin: 32px -30px; /* Compensate for container padding */
+  width: calc(100% + 60px); /* Expand beyond container padding */
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  position: absolute;
+  height: 1px;
+  background-color: #ccc;
+  top: 50%;
+  width: 40%;
+
+  flex: 1;
+
+  margin: 0 1rem;
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+/* Social Buttons */
+.social-auth-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.social-auth-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #fff;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.social-auth-button:hover {
+  background-color: #f7f7f7;
+}
+
+.google-button {
+  border-color: #e0e0e0;
+}
+
+.linkedin-button {
+  border-color: #0077b5;
+  color: #0077b5;
+}
+
+.linkedin-button:hover {
+  background-color: #e8f4fd;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .sign-in-container {
+    margin: 20px;
+    padding: 1.5rem;
+  }
+
+  .welcome-text {
+    font-size: 1.5rem;
+  }
+
+  .input,
+  .button,
+  .social-auth-button {
+    font-size: 0.95rem;
+  }
+}
