@@ -1,10 +1,13 @@
 // src/hooks/useAuth.js
-import { useEffect, useState } from "react";
+import { useEffect, useState, createContext, useContext } from "react"; // Import createContext and useContext
 import { auth } from "../firebase/auth";
 
-export const useAuth = () => {
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState(""); // State for authentication errors
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -15,5 +18,24 @@ export const useAuth = () => {
     return () => unsubscribe();
   }, []);
 
-  return { user, loading };
+  const setError = (message) => {
+    setAuthError(message);
+  };
+
+  const value = {
+    user,
+    loading,
+    authError,
+    setError, // Provide the setError function
+  };
+
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  return useContext(AuthContext);
 };
