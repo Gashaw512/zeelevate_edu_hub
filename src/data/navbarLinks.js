@@ -4,28 +4,28 @@ import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 export const navbarLinks = [
 
     {
-      name: "Home",
-      path: "/",
+    name: "Home",
+    path: "home"
       // icon: "🏡"
     },
     {
-      name: "About",
-      path: "/about",
+    name: "About",
+    path: "about",
       // icon: "ℹ️"
     },
     {
       name: "Courses",
-      path: "/course",
+    path: "course",
       // icon: "📚"
     },
     {
-      name: "Blog",
-      path: "/blog",
+       name: "Blog",
+    path: "blog",
       // icon: "📝"
     },
     {
       name: "Contact",
-      path: "/contact",
+    path: "contact",
       // icon: "📞"
     }
   ];
