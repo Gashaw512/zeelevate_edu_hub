@@ -152,7 +152,7 @@ const Course = () => {
       <Subheader header={title} />
       <Courses courses={filteredCourses} />
       <Facilities /> {/* Consider the purpose of this component */}
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

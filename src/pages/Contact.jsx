@@ -9,7 +9,7 @@ const Contact = () => {
       <Subheader header="Contact Us" />
       <Location />
       <ContactComponent />
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };
