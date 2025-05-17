@@ -1,231 +1,213 @@
 /* TextBox.css */
+
 .text-box {
-  width: 90%;
-  color: #fff;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; /* Adjust vertical spacing between sections */
+  padding: 2rem;
+  border-radius: 8px;
+  background-color: var(--color-light-gray); /* Light background for the container */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: sans-serif; /* Professional and readable font */
+}
+
+/* Top Call to Action Section */
+.top-call-to-action {
   text-align: center;
   padding: 1.5rem;
-  border-radius: 0.5rem;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+  background-color: var(--color-lighter-gray); /* Accent background */
+  border-radius: 6px;
+  border: 1px solid var(--color-lighter-gray); /* Subtle border */
+}
+
+.top-cta-title {
+  color: var(--color-primary); /* Primary heading color */
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.top-cta-message {
+  color: var(--color-dark-gray); /* Dark gray text */
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.top-cta-button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--button-primary-bg); /* Primary button color */
+  color: var(--button-primary-text);
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.top-cta-button:hover {
+  background-color: var(--button-primary-hover-bg); /* Darker primary on hover */
+}
+
+/* Hero Section */
+.hero {
+  text-align: center;
 }
 
 .hero-title {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  line-height: 1.2;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  color: var(--heading-color); /* Primary heading color */
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .hero-subtitle {
+  color: var(--color-muted-text); /* Muted gray text */
   font-size: 1.1rem;
-  margin-bottom: 1.5rem;
-  color: #eee;
-  line-height: 1.5;
+  line-height: 1.7;
 }
 
 .highlight {
-  color: #00bfff;
+  color: var(--color-primary); /* Primary highlight color */
   font-weight: bold;
 }
 
-.mission-statement {
-  background-color: rgba(0, 0, 0, 0.3);
+/* Mission Statement Section */
+.mission {
+  background-color: var(--color-white); /* White background */
   padding: 1.5rem;
-  border-radius: 0.5rem;
-  margin-bottom: 2rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-lighter-gray); /* Subtle border */
+}
+
+.mission-statement {
+  color: var(--color-dark-gray); /* Dark gray text */
+  line-height: 1.6;
 }
 
 .mission-icon {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   margin-right: 0.5rem;
-  color: #00bfff;
+  color: var(--color-primary-dark); /* Darker primary icon color */
 }
 
-.course-highlights h2 {
-  font-size: 1.75rem;
+/* Course Highlights Section */
+.courses {
+  padding: 1.5rem;
+}
+
+.courses h2 {
+  color: var(--heading-color); /* Primary heading color */
+  font-size: 1.5rem;
   margin-bottom: 1rem;
-  color: #fff;
 }
 
 .program-list {
   list-style: none;
-  padding: 0;
-  margin: 1.5rem 0;
-  text-align: left;
-  display: inline-block;
+  padding-left: 0;
+  margin-bottom: 1rem;
 }
 
 .program-list li {
-  font-size: 1.25rem;
-  color: #fff;
-  margin: 0.6rem 0;
-  padding-left: 0;
-  position: relative;
-  line-height: 1.6;
   display: flex;
   align-items: center;
+  margin-bottom: 0.75rem;
+  color: var(--color-dark-gray); /* Dark gray list item text */
 }
 
 .list-icon {
-  color: #00bfff;
-  font-size: 1.5rem;
+  font-size: 1rem;
   margin-right: 0.75rem;
+  color: var(--color-primary); /* Primary icon color */
 }
 
 .list-text {
-  display: inline-block;
+  flex-grow: 1;
 }
 
 .teachable-note {
   font-size: 0.9rem;
-  color: #ccc;
-  margin-top: 1rem;
+  color: var(--color-muted-text); /* Muted gray note text */
 }
 
 .teachable-note a {
-  color: #00bfff;
+  color: var(--content-link); /* Primary link color */
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.teachable-note a:hover {
+  color: var(--content-link-hover); /* Darker primary on hover */
   text-decoration: underline;
 }
 
-.cta-buttons {
-  margin-top: 2rem;
+/* Call to Action Buttons Section */
+.call-to-actions {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
   gap: 1rem;
+  justify-content: center;
 }
 
 .cta-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
+  padding: 0.75rem 1.25rem;
+  border-radius: 4px;
   text-decoration: none;
-  color: #fff;
-  border: 2px solid #00bfff;
-  padding: 0.8rem 2rem;
-  font-size: 1rem;
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border-radius: 0.5rem;
-  min-width: 150px;
+  color: var(--button-primary-text);
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  text-align: center;
 }
 
-.cta-btn:hover {
-  background: #00bfff;
-  transform: translateY(-0.125rem);
-  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.2);
+.teen-btn {
+  background-color: var(--color-primary); /* Primary color for teen courses */
 }
 
-.cta-btn.teen-btn {}
-
-.cta-btn.adult-btn {}
-
-.cta-btn.learn-more-btn {
-  color: #00bfff;
-  border-color: #00bfff;
-  background: transparent;
+.teen-btn:hover {
+  background-color: var(--color-primary-dark);
 }
 
-.cta-btn.learn-more-btn:hover {
-  background: #00bfff;
-  color: #fff;
+.adult-btn {
+  background-color: var(--color-primary); /* Primary color for adult programs */
 }
 
+.adult-btn:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.learn-more-btn {
+  background-color: var(--button-secondary-bg); /* Secondary button color */
+  color: var(--button-secondary-text);
+}
+
+.learn-more-btn:hover {
+  background-color: var(--button-secondary-hover-bg);
+  color: var(--button-secondary-hover-text);
+}
+
+/* Responsive Design (Optional - Adjust breakpoints as needed) */
 @media (max-width: 768px) {
-  .text-box {
-    position: relative;
-    top: auto;
-    left: auto;
-    transform: none;
-    width: 95%;
-    margin: 2rem auto;
-    padding: 1rem;
-  }
-
-  .hero-title {
-    font-size: 2.25rem;
-  }
-
-  .hero-subtitle {
-    font-size: 0.9rem;
-  }
-
-  .mission-statement {
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .course-highlights h2 {
-    font-size: 1.5rem;
-  }
-
-  .program-list li {
-    font-size: 1rem;
-  }
-
-  .cta-btn {
-    font-size: 0.9rem;
-    padding: 0.75rem 1.5rem;
-    min-width: 140px;
-  }
-
-  .cta-buttons {
-    gap: 0.75rem;
-  }
-
-  .teachable-note {
-    font-size: 0.8rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .text-box {
-    width: 100%;
-    left: 0;
-    transform: none;
-    padding: 1rem;
-    border-radius: 0;
-    margin: 1.5rem auto;
-  }
-
   .hero-title {
     font-size: 2rem;
   }
 
-  .hero-subtitle {
-    font-size: 0.85rem;
-  }
-
-  .mission-statement {
-    padding: 0.8rem;
-    margin-bottom: 1rem;
-  }
-
-  .course-highlights h2 {
-    font-size: 1.3rem;
-  }
-
-  .program-list li {
-    font-size: 0.95rem;
-  }
-
-  .cta-buttons {
+  .call-to-actions {
     flex-direction: column;
     align-items: stretch;
-    gap: 0.75rem;
-  }
-  .cta-btn {
-    min-width: auto;
-    width: 100%;
   }
 
-  .teachable-note {
-    font-size: 0.75rem;
+  .cta-btn {
+    width: 100%;
   }
+}
+
+.course-card {
+  background-color: var(--color-white);
+  padding: 1.5rem;
+  border: 1px solid var(--color-lighter-gray);
+  border-radius: 6px;
+  margin-bottom: 2rem;
+}
+
+.course-title {
+  color: var(--heading-color);
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
 }
