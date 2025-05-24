@@ -1,0 +1,84 @@
+/* === Feature Section Styles === */
+
+.feature-section {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+  background-color: #f9fafb; /* Light gray (Tailwind's gray-50) */
+}
+
+.feature-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  text-align: center;
+}
+
+.feature-heading {
+  font-size: 2rem;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #111827; /* Tailwind's gray-900 */
+  margin-bottom: 3rem;
+}
+
+@media (min-width: 640px) {
+  .feature-heading {
+    font-size: 2.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .feature-heading {
+    font-size: 2.5rem;
+  }
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  justify-items: center;
+}
+
+@media (min-width: 640px) {
+  .feature-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .feature-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.feature-card--about {
+  background-color: #f0f4ff;
+  border: 1px solid #d3dfff;
+  text-align: center;
+}
+
+.feature-card--about .icon {
+  color: #00d9ff;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card--about .description {
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.feature-card--about .feature-card__cta {
+  display: inline-block;
+  color: #0077cc;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.feature-card--about .feature-card__cta:hover {
+  color: #00d9ff;
+  text-decoration: underline;
+}

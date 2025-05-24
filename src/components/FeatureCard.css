@@ -1,0 +1,33 @@
+/* FeatureCard.css */
+
+.feature-card {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.feature-card .icon {
+  font-size: 2.5rem;
+  color: #3b82f6; /* Tailwind blue-500 */
+  margin-bottom: 1rem;
+}
+
+.feature-card .title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #111827; /* gray-900 */
+}
+
+.feature-card .description {
+  font-size: 0.95rem;
+  color: #4b5563; /* gray-600 */
+}
