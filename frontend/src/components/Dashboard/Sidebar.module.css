@@ -17,15 +17,15 @@
   z-index: 1000;
 }
 
-/* Open on mobile */
+/* Show sidebar on small screens when open */
 .sidebarOpen {
   transform: translateX(0);
 }
 
-/* Always show sidebar on large screens */
+/* Show sidebar always on large screens */
 @media (min-width: 1024px) {
   .sidebar {
-    transform: none !important; /* Always visible */
+    transform: none !important;
     position: sticky;
     top: 0;
     height: 100vh;
@@ -33,15 +33,15 @@
   }
 
   .overlay {
-    display: none; /* No overlay on large screens */
+    display: none;
   }
 
   .closeButton {
-    display: none; /* Hide close button on large screens */
+    display: none;
   }
 }
 
-/* Sidebar for large screens when toggled */
+/* For large screen override */
 .sidebarLargeToggle {
   transform: translateX(0);
 }
@@ -62,7 +62,6 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2.5rem;
-  z-index: 1;
 }
 
 .sidebarTitle {
@@ -84,6 +83,7 @@
   color: #ffffff;
 }
 
+/* Navigation */
 .sidebarNav {
   flex: 1;
   overflow-y: auto;
