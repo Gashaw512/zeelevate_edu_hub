@@ -1,214 +1,296 @@
-/* ======== NAVBAR STYLING ======== */
+/* src/components/Navbar/Navbar.css */
 
-nav.navbar {
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: var(--navbar-bg); /* Bright Blue */
+/* --- CSS Variables for Easy Color Management --- */
+:root {
+  --primary-blue: #3A48C4;
+  --accent-cyan: #00D9FF; /* Bright cyan for highlights */
+  --text-light: #FFFFFF;
+  --text-light-alt: #F0F0F0; /* Slightly off-white for softer text */
+  --dark-background-alt: #2c3e50; /* Used for dropdowns */
+  --grey-background: #e0e0e0; /* For avatar fallback */
+  --text-color-dark-grey: #666; /* For avatar fallback icon */
+}
+
+/* --- General Resets/Base Styles (optional, often in a global stylesheet) --- */
+/* If you have a global reset/base.css, you might not need these here. */
+/* * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+} */
+
+
+/* --- Navbar Container Styles --- */
+nav {
+  width: 100%;
+  color: var(--text-light); /* Use variable for text color */
+  padding: 4px 0;
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  z-index: 1000;
-  border: none;
-  box-shadow: none;
-  height: 80px;
-  flex-wrap: nowrap;
-  gap: 1rem;
-}
-
-/* Logo Image */
-.logo-img {
-  width: 150px;
-  max-width: 200px;
-  height: auto;
-  object-fit: contain;
-  flex-shrink: 0;
-  margin-top: 5px;
-  margin-bottom: 3px;
-  margin-left: 2px;
-  margin-right: 2px;
-}
-
-/* Navbar links container */
-nav.navbar .nav-links {
-  flex: 1;
-  text-align: center;
-}
-
-nav.navbar .nav-links ul {
   display: flex;
-  flex-wrap: nowrap;
   align-items: center;
-  justify-content: center; 
-  overflow-x: auto; 
+  justify-content: space-between;
+  transition: background-color 0.3s ease;
+  z-index: 10;
 }
 
-
-/* List item container */
-nav.navbar .nav-links ul li {
-  display: inline-flex;
-  list-style: none;
-  padding: 0.5rem 1rem;
-  position: relative;
- 
-}
-
-/* Anchor link styling */
-nav.navbar .nav-links ul li a.nav-link {
-  color: var(--navbar-link); /* White */
-  text-decoration: none;
-  font-size: 1.1rem;
-  transition: color 0.3s;
-}
-
-/* Underline animation on hover */
-nav.navbar .nav-links ul li::after {
-  content: "";
-  width: 0%;
-  height: 2px;
-  background: var(--navbar-link-hover); /* Light Gray */
-  display: block;
-  margin: auto;
-  transition: width 0.5s;
-}
-
-nav.navbar .nav-links ul li:hover::after {
+.nav-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
 }
 
-/* Change link color on hover */
-nav.navbar .nav-links ul li a.nav-link:hover {
-  color: var(--navbar-link-hover);
+/* --- Logo Styles --- */
+.navbar-logo img {
+  height: 45px;
+  transition: transform 0.2s ease;
 }
 
-/* Hide menu icons by default */
-nav.navbar .fas {
-  display: none;
-}
-
-/* Prevent content from hiding behind navbar */
-body {
-  margin-top: 80px;
-}
-
-/* ======== AUTH BUTTONS STYLING ======== */
-
-nav.navbar .auth-buttons-container {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  justify-content: flex-end;
-  flex-shrink: 0;
-}
-
-nav.navbar .auth-buttons-container .auth-button {
-  background-color: var(--button-primary-bg); /* Bright Blue */
-  color: var(--button-primary-text); /* White */
-  border: none;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.3s ease, transform 0.2s;
-}
-
-nav.navbar .auth-buttons-container .auth-button:hover {
-  background-color: var(--button-primary-hover-bg); /* Dark Blue */
+.navbar-logo img:hover {
   transform: scale(1.05);
 }
 
-nav.navbar .auth-buttons-container .auth-button:active {
-  background-color: #004d66; /* You can optionally define this in :root if needed */
+
+/* --- Nav List (ul) Styles --- */
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-/* ======== RESPONSIVE STYLING (Mobile) ======== */
-@media (max-width: 768px) {
+/* --- Nav List Item (li) Styles --- */
+nav ul li {
+  display: inline-block;
+  margin: 5px 15px;
+  font-size: 16px;
+}
 
-  .logo-img {
-    width: 150px;
-    max-width: 200px;
-    height: auto;
-    object-fit: contain;
+
+/* --- Main Nav Link (from NavItem) Styles --- */
+.main-nav-link {
+  text-decoration: none;
+  color: var(--text-light); /* Use variable */
+  position: relative;
+  transition: color 0.3s ease;
+  display: inline-block;
+  padding: 5px 0;
+}
+
+/* Pseudo-element for the underline effect on main navigation links */
+.main-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent-cyan); /* Use variable */
+  transition: width 0.3s ease;
+}
+
+/* Hover and Focus states for main navigation links */
+.main-nav-link:hover,
+.main-nav-link:focus {
+  color: var(--accent-cyan); /* Use variable */
+  outline: none;
+}
+
+/* Expand the underline on hover/focus for main navigation links */
+.main-nav-link:hover::after,
+.main-nav-link:focus::after {
+  width: 100%;
+}
+
+
+/* --- Auth Navigation Link ("Sign In" Button) Styles --- */
+.auth-link {
+  text-decoration: none; /* Remove default underline */
+  color: var(--text-light); /* White text */
+  background-color: transparent; /* No background by default */
+  border: 1px solid var(--text-light); /* White border */
+  padding: 8px 18px; /* Good button padding */
+  border-radius: 25px; /* More rounded shape */
+  font-size: 16px;
+  font-weight: 500; /* Slightly bolder text */
+  transition: all 0.3s ease; /* Smooth transitions for all properties */
+  cursor: pointer;
+  display: inline-block; /* Essential for padding/border */
+  text-align: center;
+}
+
+.auth-link:hover,
+.auth-link:focus {
+  color: var(--primary-blue); /* Text color changes to navbar blue */
+  background-color: var(--accent-cyan); /* Button fills with accent color */
+  border-color: var(--accent-cyan); /* Border matches accent color */
+  transform: translateY(-2px); /* Subtle lift effect */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  outline: none; /* Remove default focus outline */
+}
+
+/* Ensure Auth links don't have the ::after underline effect */
+.auth-link::after {
+  content: none;
+}
+
+
+/* --- Navbar Background Colors --- */
+.transparent-nav {
+  background-color: transparent;
+}
+
+.dark-nav {
+  background-color: var(--primary-blue); /* Use variable for the main blue */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Add a subtle shadow for depth */
+}
+
+
+/* --- Mobile Menu Icon --- */
+.menu-icon {
+  display: none;
+}
+
+
+/* --- Profile Dropdown Styles --- */
+.profile-dropdown {
+  position: relative;
+  cursor: pointer;
+  margin-left: 15px;
+}
+
+.profile-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.profile-avatar:hover,
+.profile-avatar:focus {
+  border-color: var(--accent-cyan); /* Match accent color */
+}
+
+.profile-avatar-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--grey-background);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  color: var(--text-color-dark-grey);
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.profile-avatar-icon .svg-inline--fa {
+  font-size: inherit;
+}
+
+.profile-avatar-icon:hover,
+.profile-avatar-icon:focus {
+  border-color: var(--accent-cyan); /* Match accent color */
+}
+
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 45px;
+  background-color: var(--dark-background-alt); /* Use variable */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  min-width: 160px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  z-index: 1000;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dropdown-menu li {
+  padding: 12px 16px;
+  color: var(--text-light-alt); /* Slightly softer white for dropdown items */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.dropdown-menu li:hover {
+  background-color: var(--primary-blue); /* Hover with the primary blue */
+  color: var(--text-light); /* Ensure text is white on hover */
+}
+
+
+/* --- Media Queries (Responsive Design) --- */
+
+@media (max-width: 1000px) {
+  .navbar-logo img {
+    height: 40px;
   }
 
-  nav.navbar .nav-links ul li {
-    display: block;
-    width: 100%;
-    text-align: left;
+  nav ul li {
+    margin: 5px 10px;
+  }
+}
+
+@media (max-width: 840px) {
+  nav {
+    padding: 15px 0;
   }
 
-  nav.navbar .nav-links {
+  nav ul {
     position: fixed;
-    background: var(--navbar-bg); /* Keep navbar consistent in mobile */
-    height: 100vh;
-    width: 200px;
     top: 0;
-    right: -200px;
-    text-align: left;
-    z-index: 2;
-    transition: 0.3s;
-  
-  }
-
-  nav.navbar .nav-links ul {
+    right: 0;
+    bottom: 0;
+    background: var(--primary-blue); /* Use variable for mobile menu background */
+    z-index: -1;
+    width: 200px;
+    padding-top: 70px;
+    transition: 0.5s;
     flex-direction: column;
     align-items: flex-start;
-    padding: 1rem;
-    height: auto;
+    padding-left: 20px;
   }
 
-  nav.navbar .nav-links ul li {
+  nav ul li {
+    display: block;
+    margin: 15px 0;
     width: 100%;
   }
 
-  nav.navbar .fas {
+  /* Adjustments for the specific link class in mobile */
+  .main-nav-link, .auth-link {
     display: block;
-    color: var(--navbar-link);
-    margin: 10px;
-    font-size: 22px;
+    padding: 10px 0;
+  }
+  .main-nav-link::after {
+    left: 20px;
+  }
+
+  .menu-icon {
+    display: block;
+    width: 30px;
     cursor: pointer;
+    z-index: 11;
   }
 
-  nav.navbar .nav-links ul {
-    padding: 30px;
+  .hide-mobile-menu {
+    right: -200px;
   }
 
-  nav.navbar .nav-links ul li a.nav-link:hover {
-    color: var(--navbar-link-hover);
-  }
-
-  nav.navbar .auth-buttons-container {
-    position: absolute;
-    top: 10px;
-    right: 60px;
-    flex-direction: row;
-    gap: 10px;
-    align-items: flex-end;
-    margin-right: 20px;
-    margin-top: 5px;
-    margin-bottom: 3px;
-   
-  }
-
-  nav.navbar .auth-buttons-container .auth-button {
-    width: auto;
-    padding: 10px 15px;
-    background-color: var(--button-primary-bg);
-  }
-
-  nav.navbar .auth-buttons-container .auth-button:hover {
-    background-color: var(--button-primary-hover-bg);
-  }
-
-  nav.navbar .nav-header-content {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-  }
-
-  nav.navbar .nav-links.open {
-    display: flex;
+  .show-mobile-menu {
+    right: 0;
+    z-index: 9;
   }
 }

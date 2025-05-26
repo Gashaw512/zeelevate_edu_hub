@@ -1,5 +1,25 @@
 // src/firebase/auth.js
-import { getAuth } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  signInWithPopup,
+  GoogleAuthProvider,
+  OAuthProvider,
+  signInWithCredential,
+} from "firebase/auth";
+
 import app from "./config";
 
-export const auth = getAuth(app);
+const auth = getAuth(app);
+
+// Re-export both the auth instance and the functions
+export {
+  auth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  signInWithPopup,
+  GoogleAuthProvider,
+  OAuthProvider,
+  signInWithCredential,
+};

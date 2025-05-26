@@ -1,13 +1,13 @@
-import "./Header.css";
+ import "./Header.css";
 
 import Navbar from "../Navbar/Navbar";
-// import TextBox from "../TextBox/TextBox";
+import TextBox from "../TextBox/TextBox";
 
 const Header = () => {
   return (
-    <section className="header-section">
+    <section >
       <Navbar />
-      {/* <TextBox /> */}
+      <TextBox /> 
     </section>
   );
 };

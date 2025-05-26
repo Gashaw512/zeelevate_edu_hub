@@ -1,5 +1,7 @@
 import { useState, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+
+// IMPORT FIREBASE SDK FUNCTIONS DIRECTLY FROM THE FIREBASE/AUTH PACKAGE
 import {
   createUserWithEmailAndPassword,
   updateProfile,
@@ -8,11 +10,13 @@ import {
   OAuthProvider,
   signInWithCredential,
 } from "firebase/auth";
-import { auth } from "../firebase/auth";
-import { db } from "../firebase/firestore";
+
+// IMPORT YOUR CUSTOM FIREBASE AUTH INSTANCE
+import { auth } from "../firebase/auth"; // This should export `auth` like: `export const auth = getAuth(app);`
+import { db } from "../firebase/firestore"; // Ensure this path is correct for your Firestore instance
 import { doc, setDoc } from "firebase/firestore";
-import { useAuth } from "../context/AuthContext";
-import { getProviderConfig } from "../data/externalAuthProviderConfig";
+import { useAuth } from "../context/AuthContext"; // Ensure this path is correct
+import { getProviderConfig } from "../data/externalAuthProviderConfig"; // Ensure this path is correct
 
 const googleProvider = new GoogleAuthProvider();
 

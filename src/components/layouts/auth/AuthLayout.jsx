@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import logo from '/images/zel.jpg';
+import logo from '/images/logo.png';
 import './AuthLayout.css';
 
 const AuthLayout = ({ title, instruction, children }) => {

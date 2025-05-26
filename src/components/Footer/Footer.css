@@ -1,9 +1,10 @@
 /* ======== FOOTER STYLING (THEMED) ======== */
 
 .zeelevate-footer {
-  background-color: var(--footer-bg);
+  /* background-color: var(--footer-bg); */
+   background: linear-gradient(135deg, rgba(73, 46, 250, 0.95) 30%, rgba(14,26,89,0.95) 100%);
   color: var(--color-white);
-  padding: 3rem 2rem 2rem;
+  padding: 1.5rem 1em 1rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   position: relative;
   margin-top: 2rem;
@@ -32,7 +33,7 @@
 
 .footer-brand {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5em;
 }
 
 .footer-logo-title {
@@ -52,20 +53,22 @@
   font-size: 1.8rem;
   font-weight: bold;
   color: var(--color-white); /* or use var(--heading-color) if preferred */
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.15rem;
 }
 
 .footer-tagline {
-  font-size: 1rem;
-  color: var(--color-muted-text);
+  font-size: 1.2rem;
+  color: #0984e3;
+  margin: 0.5rem 0;
+  font-weight: 500;
 }
 
 .footer-sections {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 2rem;
-  margin-bottom: 2rem;
+  gap: 1.55rem;
+  margin-bottom: 1.5rem;
   justify-content: center;
 }
 
@@ -81,7 +84,7 @@
 
 .footer-section-title {
   font-size: 1.1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   color: var(--color-white);
   border-bottom: 2px solid var(--color-primary);
   padding-bottom: 0.5rem;
@@ -108,10 +111,6 @@
   transition: color 0.3s ease;
 }
 
-
-
-
-
 .social-icons {
   display: flex;
   gap: 1rem;
@@ -121,17 +120,24 @@
 
 .footer-links a:hover,
 .footer-links a:focus {
-  color: var(--color-hover); 
+  /* color: var(--color-hover);  */
   border-bottom: 2px solid var(--color-primary); 
   transform: translateX(4px);
   outline: none;
+
+    color: #0984e3;
+  transform: translateX(5px);
 }
 
 .social-icons a:focus,
 .social-icons a:hover {
-  color: var(--color-hover); 
-  transform: scale(1.2);
+  /* color: var(--color-hover);  */
+  /* transform: scale(1.2); */
   outline: none;
+    /* background: #0984e3; */
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(9,132,227,0.2);
 }
 
 
@@ -142,7 +148,7 @@
   align-items: center;
   flex-wrap: wrap;
   border-top: 2px solid var(--color-primary);
-  padding-top: 1rem;
+  padding-top: 0.75rem;
   gap: 1rem; /* Add some gap between meta and scroll-top on smaller screens */
 }
 
@@ -156,6 +162,16 @@
 .footer-meta p {
   margin-bottom: 0.5rem;
 }
+.footer-meta a {
+  color: #0984e3;
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+}
+
+.footer-meta a:hover {
+  opacity: 0.8;
+}
+
 
 .made-with {
   display: flex;
@@ -172,25 +188,26 @@
 
 
 .scroll-top {
-  cursor: pointer;
-  font-size: 1.5rem; /* Adjust icon size as needed */
-  color: var(--color-dark-gray); /* Black arrow color from domain */
-  transition: transform 0.2s ease-in-out, border-color 0.2s ease-in-out; /* Add border-color transition */
-  background-color: transparent; 
-  padding: 0.6rem; 
-  border: 2px solid var(--color-primary);
+  width: 45px;
+  height: 45px;
+  background: #0984e3;
   border-radius: 50%;
   display: flex;
-  justify-content: center;
   align-items: center;
-  opacity: 0.8;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 1rem auto;
+  box-shadow: 0 4px 15px rgba(9,132,227,0.2);
 }
 
 .scroll-top:hover {
-  transform: translateY(-0.2rem); 
+  /* transform: translateY(-0.2rem); 
   opacity: 1;
-  border-color: var(--color-dark-gray); /* Change border color on hover to primary blue */
-  color: var(--color-primary); /* Change icon color on hover to primary blue */
+  border-color: var(--color-dark-gray);
+  color: var(--color-primary);  */
+    background: #0873c4;
+  transform: translateY(-3px);
 }
 
 .scroll-top svg { /* Target the SVG icon */

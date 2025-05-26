@@ -1,107 +1,117 @@
-import "./Navbar.css";
-import { useState, useRef } from "react";
-import { useAuth } from "../../context/AuthContext";
-import { Link } from "react-router-dom"; // Import Link
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faBars } from "@fortawesome/free-solid-svg-icons";
-import { navbarLinks } from "../../data/navbarLinks";
-import ProfileDropdown from "./ProfileDropdown";
-import { useScrollToSection } from "../../utils/scrollUtils"; // Import the custom hook
-import logo from "/images/logo.png";
+// src/components/Navbar/Navbar.jsx
+import React, { useEffect, useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
+import './Navbar.css';
+import logo from '/images/logo.png';
+import menu_icon from '/images/menu-icon.png';
+import { navLinks } from '../../data/navbarLinks';
+import { useScrollToSection } from '../../utils/scrollUtils';
 
+// New, more modular imports
+import NavItem from './NavItem';
+import AuthNavigation from './AuthNavigation';
+
+
+/**
+ * Navbar Component
+ *
+ * This component orchestrates the primary navigation experience,
+ * including sticky behavior, mobile menu toggling, and conditional
+ * rendering of navigation links and authentication-related UI.
+ *
+ * @returns {JSX.Element} The Navbar component.
+ */
 const Navbar = () => {
-  const navLinkRef = useRef();
-  const { user } = useAuth();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { handleNavLinkClick } = useScrollToSection(); 
+  const [isSticky, setIsSticky] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const showMenu = () => {
-    if (navLinkRef.current) {
-      navLinkRef.current.style.left = "0";
+  const { handleNavLinkClick } = useScrollToSection();
+
+  /**
+   * Toggles the visibility of the mobile navigation menu.
+   * @type {function(): void}
+   */
+  const toggleMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen((prev) => !prev);
+  }, []);
+
+  /**
+   * Closes the mobile navigation menu.
+   * This function is passed down to NavItem and AuthNavigation components
+   * to ensure the menu closes when a link or action is performed.
+   * @type {function(): void}
+   */
+  const closeMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen(false);
+  }, []);
+
+  // Handler for NavItem's onClick. It conditionally calls handleNavLinkClick
+  // for scroll links or simply closes the menu for router links.
+  const handleNavItemClick = useCallback((id, e) => {
+    if (id) {
+      handleNavLinkClick(id, e, closeMobileMenu); // Pass e for scroll behavior
+    } else {
+      closeMobileMenu(); // Just close for router links
     }
-    setIsMenuOpen(true);
-  };
-
-  const hideMenu = () => {
-    if (navLinkRef.current) {
-      navLinkRef.current.style.left = "-200px";
-    }
-    setIsMenuOpen(false);
-  }
+  }, [handleNavLinkClick, closeMobileMenu]);
 
 
-  const handleHomeClick = (event) => {
-    event.preventDefault();
-    handleNavLinkClick("home", event, hideMenu);
-  };
+  // Effect hook to manage the sticky navbar behavior
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsSticky(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initialize state on mount
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <nav className="navbar">
-      <Link to="/" className="logo-img" onClick={handleHomeClick}>
-        <img src={logo} alt="Zeelevate Logo" />
-      </Link>
-
-      <div className="nav-links" ref={navLinkRef}>
-        <div
-          className="nav-header-content"
-          style={{ display: isMenuOpen ? "flex" : "none" }}
-        >
-          <Link to="/" className="logo-img" onClick={handleHomeClick}>
-            <img src={logo} alt="Zeelevate Logo" />
-          </Link>
-          <FontAwesomeIcon
-            icon={faTimes}
-            className="fas close-icon"
-            onClick={hideMenu}
-          />
-        </div>
-        <ul>
-          {navbarLinks.map((link) => (
-            <li key={link.name}>
-              <Link
-                to="/"
-                onClick={(e) => handleNavLinkClick(link.path, e, hideMenu)}
-                className="nav-link"
-              >
-                <span className="nav-icon">{link.icon}</span>
-                {link.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
+    <nav className={`container ${isSticky ? 'dark-nav' : ''}`}>
+      <div className="navbar-logo">
+        <img src={logo} alt="Zeelevate Company Logo" />
       </div>
 
-      {/* Auth buttons */}
-      <div className="auth-buttons-container">
-        {!user ? (
-          <>
-            <Link to="/signin">
-              <button className="auth-button" onClick={hideMenu}>
-                SIGN IN
-              </button>
-            </Link>
-            <Link to="/signup">
-              <button className="auth-button" onClick={hideMenu}>
-                SIGN UP
-              </button>
-            </Link>
-          </>
-        ) : (
-          <div className="flex items-center ml-4">
-            <ProfileDropdown
-              avatarUrl={user.photoURL || "/default-profile.png"}
+      <ul className={isMobileMenuOpen ? 'show-mobile-menu' : 'hide-mobile-menu'}>
+        {/* Render static navigation links using the new NavItem component */}
+        {navLinks.map((link) => (
+          <li key={link.label}>
+            <NavItem
+              label={link.label}
+              id={link.id} // Will be undefined for router links, handled by NavItem
+              to={link.to} // Will be undefined for scroll links, handled by NavItem
+              linkProps={link.linkProps}
+              onClickHandler={handleNavItemClick}
             />
-          </div>
-        )}
-      </div>
+          </li>
+        ))}
 
-      <FontAwesomeIcon
-        icon={faBars}
-        className="fas menu-icon"
-        onClick={showMenu}
+        {/* Render authentication-related UI using the dedicated AuthNavigation component */}
+        <AuthNavigation onLinkClick={closeMobileMenu} />
+      </ul>
+
+      <img
+        src={menu_icon}
+        alt="Toggle mobile menu"
+        className="menu-icon"
+        onClick={toggleMobileMenu}
+        role="button"
+        aria-label="Toggle mobile navigation menu"
+        tabIndex="0"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleMobileMenu();
+          }
+        }}
       />
     </nav>
   );
+};
+
+Navbar.propTypes = {
+  // No direct props for Navbar in this current setup, but good practice to keep.
 };
 
 export default Navbar;

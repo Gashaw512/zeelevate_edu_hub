@@ -1,68 +1,140 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
+// src/components/Navbar/ProfileDropdown.jsx
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRightFromBracket, faUser } from "@fortawesome/free-solid-svg-icons"; // <-- Ensure faUser is imported here!
+import { defaultProfileDropdownOptions } from "../../data/navbarLinks";
+import { useAuth } from "../../context/AuthContext";
 
-const ProfileDropdown = () => {
-  const [isOpen, setIsOpen] = useState(false)
-  const { logout } = useAuth()
+/**
+ * ProfileDropdown Component
+ * Displays a user's avatar (image or default icon) and, when clicked,
+ * reveals a dropdown menu with profile-related options and a logout action.
+ *
+ * @param {object} props - The component's props.
+ * @param {string} [props.avatarUrl] - The URL of the user's avatar image. If null/undefined, a default icon will be used.
+ * @param {function} props.onLinkClick - Function to call when a dropdown item is clicked (e.g., to close mobile menu).
+ * @returns {JSX.Element} The ProfileDropdown component.
+ */
+const ProfileDropdown = React.memo(({ avatarUrl, onLinkClick }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
-  const profileOptions = [
-    {
-      name: "My Profile",
-      path: "/dashboard/my-profile",
-      icon: "👤"
-    },
-    {
-      name: "Sign Out",
-      action: logout,
-      icon: "🚪"
+  const { logout } = useAuth();
+
+  const toggleDropdown = useCallback(() => {
+    setIsOpen((prev) => !prev);
+  }, []);
+
+  const handleClickOutside = useCallback((event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsOpen(false);
     }
-  ]
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, handleClickOutside]);
+
+  const handleItemClick = useCallback(() => {
+    setIsOpen(false); // Close dropdown on item click
+    onLinkClick();    // Also signal to close parent mobile menu if applicable
+  }, [onLinkClick]);
 
   return (
-    <div className="relative">
-      <button 
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 hover:bg-richblack-700 p-2 rounded-full transition-colors"
-      >
-        <img 
-          src="/default-profile.png" 
-          alt="Profile" 
-          className="w-8 h-8 rounded-full object-cover"
+    <div className="profile-dropdown" ref={dropdownRef}>
+      {avatarUrl ? ( // If avatarUrl is provided (truthy)
+        <img
+          src={avatarUrl}
+          alt="User Profile Avatar"
+          className="profile-avatar"
+          onClick={toggleDropdown}
+          role="button"
+          aria-haspopup="true"
+          aria-expanded={isOpen}
+          tabIndex="0"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              toggleDropdown();
+            }
+          }}
         />
-      </button>
-
-      {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-richblack-800 border border-richblack-700 rounded-lg shadow-lg py-2 z-50">
-          {profileOptions.map((option) => (
-            option.path ? (
-              <Link
-                key={option.name}
-                to={option.path}
-                onClick={() => setIsOpen(false)}
-                className="flex items-center gap-3 px-4 py-2 text-richblack-100 hover:bg-richblack-700 text-sm"
-              >
-                <span>{option.icon}</span>
-                {option.name}
-              </Link>
-            ) : (
-              <button
-                key={option.name}
-                onClick={() => {
-                  option.action()
-                  setIsOpen(false)
-                }}
-                className="w-full text-left flex items-center gap-3 px-4 py-2 text-richblack-100 hover:bg-richblack-700 text-sm"
-              >
-                <span>{option.icon}</span>
-                {option.name}
-              </button>
-            )
-          ))}
+      ) : ( // If avatarUrl is null/undefined, render the FontAwesome user icon
+        <div
+          className="profile-avatar profile-avatar-icon" // Add a class for styling the icon div
+          onClick={toggleDropdown}
+          role="button"
+          aria-haspopup="true"
+          aria-expanded={isOpen}
+          tabIndex="0"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              toggleDropdown();
+            }
+          }}
+        >
+          <FontAwesomeIcon icon={faUser} /> {/* Render the FontAwesome user icon */}
         </div>
       )}
-    </div>
-  )
-}
 
-export default ProfileDropdown
+      {isOpen && (
+        <ul className="dropdown-menu" role="menu">
+          {defaultProfileDropdownOptions.map((option) => (
+            <li key={option.name} role="none">
+              {option.action === "logout" ? (
+                <button
+                  onClick={() => {
+                    logout();
+                    handleItemClick();
+                  }}
+                  className="dropdown-item-button"
+                  role="menuitem"
+                >
+                  {typeof option.icon === "object" ? (
+                    <FontAwesomeIcon icon={option.icon} />
+                  ) : (
+                    option.icon && <span className="icon-text">{option.icon}</span>
+                  )}{" "}
+                  {option.name}
+                </button>
+              ) : (
+                <Link
+                  to={`/${option.path}`}
+                  onClick={handleItemClick}
+                  className="dropdown-item-link"
+                  role="menuitem"
+                >
+                  {typeof option.icon === "object" ? (
+                    <FontAwesomeIcon icon={option.icon} />
+                  ) : (
+                    option.icon && <span className="icon-text">{option.icon}</span>
+                  )}{" "}
+                  {option.name}
+                </Link>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+});
+
+ProfileDropdown.propTypes = {
+  avatarUrl: PropTypes.string, // <-- Changed to NOT be required
+  onLinkClick: PropTypes.func.isRequired,
+};
+
+ProfileDropdown.displayName = 'ProfileDropdown';
+
+export default ProfileDropdown;

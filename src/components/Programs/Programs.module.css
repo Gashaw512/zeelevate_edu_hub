@@ -1,0 +1,217 @@
+/* components/Programs/Programs.module.css */
+.programsSection {
+  padding: 6rem 1.5rem;
+  background: linear-gradient(135deg, #f8f9ff 0%, #f1f4ff 100%);
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.sectionHeader h2 {
+  font-size: 2.5rem;
+  color: #1a1d24;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.sectionSubtitle {
+  color: #4a5568;
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.programsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.programCard {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  position: relative;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 
+              0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.programCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
+              0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.programBadge {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  background: linear-gradient(45deg, #0984e3, #00cec9);
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(9, 132, 227, 0.2);
+}
+
+.cardHeader {
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.cardHeader h3 {
+  color: #1a1d24;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.pricing {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.priceMain {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.currency {
+  font-size: 1.25rem;
+  color: #0984e3;
+  font-weight: 600;
+}
+
+.amount {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1d24;
+}
+
+.duration {
+  color: #718096;
+  font-size: 1rem;
+}
+
+.fullCourse {
+  color: #718096;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.courseList h4,
+.programFeatures h4 {
+  color: #2d3748;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.courseList ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 2rem;
+}
+
+.courseList li {
+  padding: 0.5rem 0;
+  color: #4a5568;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.listMarker {
+  color: #0984e3;
+  font-weight: 700;
+}
+
+.programFeatures {
+  margin-top: 1.5rem;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+}
+
+.featureIcon {
+  width: 24px;
+  height: 24px;
+  background: #0984e3;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.enrollButton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 1.25rem 2rem;
+  background: linear-gradient(45deg, #0984e3, #0066cc);
+  color: white;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.enrollButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(9, 132, 227, 0.3);
+}
+
+.buttonPrice {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .programsSection {
+    padding: 4rem 1rem;
+  }
+  
+  .sectionHeader h2 {
+    font-size: 2rem;
+  }
+  
+  .featuresGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .enrollButton {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  
+  .buttonPrice {
+    margin-top: 0.25rem;
+  }
+}

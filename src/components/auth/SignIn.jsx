@@ -1,4 +1,5 @@
-import  {  useEffect } from "react";
+// src/components/auth/SignIn.jsx
+import { useEffect } from "react";
 import { getAllProviders } from "../../data/externalAuthProviderConfig";
 import { signInWithPopup } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +10,7 @@ import { auth } from "../../firebase/auth";
 import { useAuth } from "../../context/AuthContext";
 import AuthLayout from "../layouts/auth/AuthLayout";
 import "./SignIn.css";
-import logo from "/images/zel.jpg";
+
 const SignIn = () => {
   const navigate = useNavigate();
   const { user, setError } = useAuth();
@@ -24,7 +25,6 @@ const SignIn = () => {
   }, [user, navigate]);
 
   const handleExternalSignIn = (providerName) => {
-    // Dynamically handle sign-in based on the provider name
     const providerConfig = externalProviders.find(
       (p) => p.name.toLowerCase() === providerName.toLowerCase()
     );
@@ -34,45 +34,65 @@ const SignIn = () => {
     }
 
     if (providerConfig.signInMethod === "signInWithPopup") {
-      // Handle Google and other providers using popup
       signInWithPopup(auth, providerConfig.provider)
         .then(() => {
-          // On success, the AuthContext should handle the state update and the useEffect will trigger navigation :AuthContext handles navigation
+          // AuthContext handles the state update and navigation
         })
         .catch((err) => {
           setError(err.message || `Failed to sign in with ${providerName}.`);
         });
     } else if (providerConfig.signInMethod === "initiateLinkedInLogin") {
-      // Handle LinkedIn login by redirecting to the LinkedIn authorization URL
-      console.log("Call this function :  initiateLinkedInLogin() ");
+      console.log("Call this function: initiateLinkedInLogin()");
       // initiateLinkedInLogin();
     } else {
       setError(`Unsupported sign-in method for ${providerName}.`);
     }
   };
 
+  const fieldsConfig = [
+    {
+      name: "email",
+      label: "Email",
+      type: "email",
+      placeholder: "Email",
+      required: true,
+    },
+    {
+      name: "password",
+      label: "Password",
+      type: "password",
+      placeholder: "Password",
+      required: true,
+    },
+  ];
+
   return (
-<AuthLayout
+    <AuthLayout
       title="Welcome"
       instruction="Login to Zeelevate Academy to continue your learning journey"
     >
-      <AuthForm
-        formData={formData}
-        onSubmit={handleSubmit}
-        onChange={handleChange}
-        submitButtonText="Login"
-        disabled={isSubmitting}
-      />
+      {/* Move form wrapper here to avoid nested form error */}
+      <form onSubmit={handleSubmit}>
+        <AuthForm
+          formData={formData}
+          onChange={handleChange}
+          submitButtonText="Login"
+          disabled={isSubmitting}
+          fieldsConfig={fieldsConfig}
+        />
+      </form>
 
       {error && <p className="error-message">{error}</p>}
 
       <div className="forgot-password">
-        <a href="/reset-password" className="link">Forgot Password?</a>
+        <a href="/reset-password" className="link">
+          Forgot Password?
+        </a>
       </div>
 
       <div className="sign-up">
         <p>
-          Do not have an account?{' '}
+          Do not have an account?{" "}
           <a href="/signup" className="link primary-link">
             Sign Up
           </a>
@@ -83,7 +103,10 @@ const SignIn = () => {
         <span className="divider-text">OR</span>
       </div>
 
-      <SocialAuthButtons providers={externalProviders} onSignIn={handleExternalSignIn} />
+      <SocialAuthButtons
+        providers={externalProviders}
+        onSignIn={handleExternalSignIn}
+      />
     </AuthLayout>
   );
 };

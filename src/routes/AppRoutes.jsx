@@ -1,39 +1,53 @@
+// src/AppRoutes.jsx
 import { Routes, Route } from "react-router-dom";
-import Home from "../pages/Home";
-import About from "../pages/About";
-import Blog from "../pages/Blog";
-import Contact from "../pages/Contact";
-import Course from "../pages/Course";
+
+// Public Pages
 import SignInPage from "../pages/SignInPage";
 import SignUpPage from "../pages/SignUpPage";
+import LandingPage from "../pages/LandingPage";
+
+// Payment & Success Pages
+import CheckoutPage from "../pages/CheckoutPage";         // Add this page
+import PaymentSuccessPage from "../pages/PaymentSuccessPage";  // Add this page
+
+// Dashboard Related
 import PrivateRoute from "../components/auth/PrivateRoute";
-import StudentDashboardPage from "../pages/StudentDashboardPage"; // Import if you need this on a separate route
-import StudentDashboard from "../components/dashboard/StudentDashboard"; // Import the layout component
-import { StudentDashboardRoutes } from "../components/dashboard/StudentDashboard";
-import HomePageWithScroll from "../pages/HomePageWithScroll";
-// import LinkedInCallback from "../components/auth/LinkedInCallback";
+import StudentDashboardPage from "../pages/StudentDashboardPage";
+import StudentDashboard from "../components/layouts/StudentDashboard";
+// import { StudentDashboardRoutes } from "../components/dashboard/StudentDashboard";
+import StudentDashboardRoutes from "../components/Dashboard/StudentDashboardRoutes";
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<HomePageWithScroll />} />
+      {/* Public Routes */}
+      <Route path="/" element={<LandingPage />} />
       <Route path="/signin" element={<SignInPage />} />
       <Route path="/signup" element={<SignUpPage />} />
-      {/* <Route path="/auth/linkedin/callback" element={<LinkedInCallback />} /> */}
 
-      {/* Student Dashboard Route */}
-      <Route path="/student/dashboard/*" element={
-        <PrivateRoute role="student">
-          <StudentDashboard /> {/* Render the layout component */}
-        </PrivateRoute>
-      }>
-        {/* Define child routes here */}
-        {/* The * wildcard allows for nested routes */}
-        <Route path="*" element={<StudentDashboardRoutes />} /> {/* Render all dashboard routes as children within the Outlet */}
+      {/* New Routes for Payment Flow */}
+      <Route path="/checkout" element={<CheckoutPage />} />
+      <Route path="/payment/success" element={<PaymentSuccessPage />} />
+
+      {/* Student Dashboard Route (Protected) */}
+  {/* Student Dashboard Route (Protected) */}
+      <Route
+        path="/student/dashboard/*" // Use /* for nested routes
+        element={
+          <PrivateRoute role="student">
+            <StudentDashboard /> {/* Layout component with nav/sidebar */}
+          </PrivateRoute>
+        }
+      >
+        {/* All nested dashboard routes come here via Outlet from StudentDashboard */}
+        <Route path="*" element={<StudentDashboardRoutes />} />
       </Route>
 
-      {/* If you need StudentDashboardPage on a different route */}
-      <Route path="/student-page" element={<StudentDashboardPage />} /> 
+      {/* Optional: If you still use a standalone dashboard page */}
+      {/* <Route path="/student-page" element={<StudentDashboardPage />} /> */}
+
+      {/* Fallback or catch-all route */}
+      {/* <Route path="*" element={<NotFoundPage />} /> */}
     </Routes>
   );
 };
