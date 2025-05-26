@@ -36,17 +36,22 @@ const Sidebar = ({ isOpen, toggleSidebar, user, logout }) => {
       {/* Main Sidebar Container */}
       <div
         className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ''}`}
-        // The sidebar's visibility on large screens is now purely controlled by CSS
+      // The sidebar's visibility on large screens is now purely controlled by CSS
       >
         {/* Sidebar Header with Title and Close Button */}
         <div className={styles.sidebarHeader}>
           <h2 className={styles.sidebarTitle}>ZEELEVATE</h2>
-          {/* Close button only visible on small screens */}
-          {!isLargeScreen && (
-            <button className={styles.closeButton} onClick={toggleSidebar} aria-label="Close sidebar">
-              <X size={24} />
-            </button>
-          )}
+          {/* Close button now visible on all screen sizes */}
+          <button
+            className={styles.closeButton}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleSidebar();
+            }}
+            aria-label="Close sidebar"
+          >
+            <X size={24} />
+          </button>
         </div>
 
         {/* Navigation Section */}
@@ -57,9 +62,8 @@ const Sidebar = ({ isOpen, toggleSidebar, user, logout }) => {
                 <Link
                   to={item.path}
                   onClick={handleNavLinkClick} // Use the new handler
-                  className={`${styles.navLink} ${
-                    location.pathname === item.path ? styles.navLinkActive : ''
-                  }`}
+                  className={`${styles.navLink} ${location.pathname === item.path ? styles.navLinkActive : ''
+                    }`}
                 >
                   <item.icon size={20} />
                   <span>{item.name}</span> {/* Wrap text in span for consistent styling */}
