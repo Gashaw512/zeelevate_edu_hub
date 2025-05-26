@@ -1,0 +1,149 @@
+/* Header.module.css or inline <style> */
+
+.header-container {
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 0 0 1rem 1rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.menu-button {
+  margin-right: 1rem;
+  color: #4b5563;
+}
+
+.menu-button:hover {
+  color: #111827;
+}
+
+.greeting {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.notifications-button {
+  position: relative;
+  padding: 0.5rem;
+  border-radius: 9999px;
+  transition: background-color 0.2s ease;
+}
+
+.notifications-button:hover {
+  background-color: #f3f4f6;
+}
+
+.notifications-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5); /* indigo-500 focus ring */
+}
+
+.bell-icon {
+  color: #4b5563;
+}
+
+.unread-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  background-color: #dc2626; /* red-600 */
+  border-radius: 9999px;
+}
+
+.notifications-dropdown {
+  position: absolute;
+  right: 0;
+  margin-top: 0.5rem;
+  width: 20rem;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  z-index: 50;
+}
+
+.dropdown-header {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dropdown-title {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.notification-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.notification-item {
+  padding: 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.2s ease;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-read {
+  background-color: #f9fafb;
+  color: #9ca3af;
+}
+
+.notification-unread {
+  background-color: #ffffff;
+  color: #1f2937;
+}
+
+.notification-unread:hover {
+  background-color: #f3f4f6;
+}
+
+.notification-message {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.mark-read-btn {
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  color: #4f46e5;
+}
+
+.mark-read-btn:hover {
+  color: #3730a3;
+}
+
+.clear-all-btn {
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+  border-top: 1px solid #e5e7eb;
+}
+
+.no-notifications {
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #9ca3af;
+}

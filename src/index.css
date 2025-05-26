@@ -1,22 +1,95 @@
 /* Import Google font 'Poppins' */
-/* @import "tailwindcss"; */
-@import url(https://fonts.googleapis.com/css?family=Poppins:100,100italic,200,200italic,300,300italic,regular,italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic);
+ /* @import "tailwindcss";  */
 
-* {
-  margin: 0;
-  padding: 0;
-  font-family: "Poppins", sans-serif;
-  box-sizing: border-box;
-}
+ @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
-html, body {
+
+ * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Outfit", sans-serif;
+ }
+
+ body {
+    background: #F5F5F5;
+ }
+
+ a {
+    text-decoration: none;
+    color: inherit;
+    line-height: 1;
+    cursor: pointer;
+ }
+
+
+ .container {
+    padding-left: 10%;
+    padding-right: 10%;
+    max-width: 100%;
+ }
+ /* .container {
+   width: 100%;
+ } */
+
+ .btn {
+    background: #FFF;
+    color: #212121;
+    padding: 14px 25px;
+    font-size: 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    border: 0;
+    outline: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+ }
+ .btn:hover{
+   background: #d8d8d8;
+   color: black;
+ }
+ 
+
+ .btn img {
+    width: 20px;
+    margin-left: 10px;
+ }
+
+ .btn.dark-btn {
+    background:  #3a48c4;
+    color: white;
+ }
+ .btn.dark-btn:hover{
+   background:#28349f;
+   color: white;
+ }
+
+ /*======== media querry =========*/
+ @media (max-width: 1200px) {
+    .container {
+       padding-left: 5%;
+       padding-right: 5%;
+    }
+
+    .btn {
+       padding: 14px 22px;
+    }
+ }
+
+
+ .hero-wrapper {
+  background: linear-gradient(rgba(8, 0, 58, 0.7), rgba(8, 0, 58, 0.7)),
+              url('/images/pp3.png');
+  background-size: cover;
+  background-position: center;
   width: 100%;
-  overflow-x: hidden; /* Only here! */
-  scroll-behavior: smooth;
+  min-height: 100vh;
 }
 
-/* Basic Reset Example */
-body, h1, h2, h3, h4, h5, h6, p, ul, li {
-  margin: 0;
-  padding: 0;
+ /* In layout.css or global */
+@media (min-width: 1024px) {
+  .main-content {
+    margin-left: 260px; /* match sidebar width */
+  }
 }

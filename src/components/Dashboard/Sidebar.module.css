@@ -1,0 +1,176 @@
+/* Sidebar.module.css */
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100vh;
+  background-color: #1f2937;
+  color: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+}
+
+/* Open on mobile */
+.sidebarOpen {
+  transform: translateX(0);
+}
+
+/* Always show sidebar on large screens */
+@media (min-width: 1024px) {
+  .sidebar {
+    transform: none !important; /* Always visible */
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    z-index: auto;
+  }
+
+  .overlay {
+    display: none; /* No overlay on large screens */
+  }
+
+  .closeButton {
+    display: none; /* Hide close button on large screens */
+  }
+}
+
+/* Sidebar for large screens when toggled */
+.sidebarLargeToggle {
+  transform: translateX(0);
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+}
+
+/* Header */
+.sidebarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  z-index: 1;
+}
+
+.sidebarTitle {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+}
+
+.closeButton:hover {
+  color: #ffffff;
+}
+
+.sidebarNav {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 3.5rem;
+}
+
+.navItem {
+  width: 100%;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: #d1d5db;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.7rem 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.navLink:hover {
+  background-color: #374151;
+  color: #ffffff;
+}
+
+.navLinkActive {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+/* Footer */
+.sidebarFooter {
+  border-top: 1px solid #374151;
+  padding-top: 1rem;
+  margin-top: auto;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.userAvatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.userName {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.userRole {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+.logoutButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background-color: #ef4444;
+  color: #ffffff;
+  border: none;
+  padding: 0.65rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.logoutButton:hover {
+  background-color: #dc2626;
+}
