@@ -1,0 +1,51 @@
+LandingPage.module.css
+.backgroundWrapper {
+    /* background: linear-gradient(152deg, rgba(8, 0, 58, 0.65) 30%, rgba(14, 26, 89, 0.6) 100%),
+                url('/images/bg2.jpeg'); */
+    background-size: 120% 120%;
+    background-position: center;
+    min-height: 100vh;
+    animation: subtlePan 40s infinite alternate linear;
+    position: relative;
+    overflow: hidden;
+}
+
+@keyframes subtlePan {
+    0% { background-position: 50% 50%; }
+    25% { background-position: 60% 55%; }
+    50% { background-position: 45% 60%; }
+    75% { background-position: 55% 45%; }
+    100% { background-position: 50% 50%; }
+}
+
+/* Add this to create smooth content transition */
+.container {
+    position: relative;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 -20px 30px rgba(0, 0, 0, 0.1);
+    padding: 4rem 1rem; /* Adjusted padding for smaller screens */
+    z-index: 2;
+}
+
+/* Media Queries for Responsiveness */
+
+@media (max-width: 768px) {
+    .backgroundWrapper {
+        background-size: cover; /* Ensures the image covers the area */
+        animation: subtlePan 30s infinite alternate linear; /* Faster animation for smaller screens */
+    }
+
+    .container {
+        padding: 3rem 1rem; /* Adjust padding for mobile */
+    }
+}
+
+@media (max-width: 480px) {
+    .backgroundWrapper {
+        animation: subtlePan 20s infinite alternate linear; /* Even faster for very small screens */
+    }
+
+    .container {
+        padding: 2rem 0.5rem; /* Adjust padding further for very small screens */
+    }
+}
