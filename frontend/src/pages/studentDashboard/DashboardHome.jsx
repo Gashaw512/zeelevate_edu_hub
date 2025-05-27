@@ -9,6 +9,8 @@ import styles from './DashboardHome.module.css';
 const DashboardHome = () => {
   // const { user } = useAuth(); // Get 'user' from your AuthContext
 
+
+  // Remove these when the data come from firebase ....
   const user = {
     progress: {
       totalCourses: 10,

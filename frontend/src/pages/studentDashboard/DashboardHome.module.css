@@ -1,7 +1,6 @@
-/* --- src/pages/DashboardHome.module.css --- */
-
-.container {
+  .container {
     padding: 2rem;
+    background-color: var(--background-light);
   }
   
   .statGrid {
@@ -12,16 +11,21 @@
   }
   
   .card {
-    background-color: white;
+    background-color: var(--background-light);
     padding: 1.5rem;
     border-radius: 1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 12px rgba(34, 34, 34, 0.08); /* subtle shadow, rgba kept for transparency */
+  }
+
+  .card:hover {
+    box-shadow: 0 6px 16px rgba(34, 34, 34, 0.12);
+    transition: box-shadow 0.3s ease;
   }
   
   .cardTitle {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #2d3748;
+    color: var(--text-dark);
     margin-bottom: 1rem;
   }
   
@@ -36,22 +40,27 @@
     align-items: flex-start;
     margin-bottom: 1rem;
     padding: 0.75rem;
-    background-color: #f9fafb;
+    background-color: var(--background-muted);
     border-radius: 0.5rem;
   }
+
+  .activityItem:last-child {
+    margin-bottom: 0;
+  }
+  
   
   .iconWrapper {
     margin-right: 0.75rem;
     flex-shrink: 0;
+    color: var(--primary-blue); /* Icons will be primary blue */
   }
   
   .activityText {
-    color: #4a5568;
-    margin: 0;
+    color: var(--text-muted);
+    font-weight: 500; /* slightly bolder for better legibility */
   }
   
   .activityDate {
     font-size: 0.75rem;
-    color: #a0aec0;
+    color: var(--cool-gray); /* Now using the --cool-gray variable */
   }
-  

@@ -1,99 +1,161 @@
-/* CourseCard.module.css or inline <style> */
+:root {
+  --primary-blue: #3686FF;
+  --text-light: #FFFFFF;
+  --text-light-alt: #F0F0F0;
+  --background-light: #FFFFFF;
+  --background-muted: #F7F9FC;
+  --text-dark: #222222;
+  --text-muted: #666666;
+  --border-light: #D1D5DB;
+  --hover-blue: #2c73e8;
+  --active-blue: #265ec1;
+}
 
+/* Card container */
 .course-card {
-  background-color: #fff;
-  border-radius: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  background-color: var(--background-light);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(54, 134, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  max-width: 320px;
   overflow: hidden;
-  transition: transform 0.3s ease;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-.course-card:hover {
-  transform: scale(1.05);
+.course-card:hover,
+.course-card:focus-within {
+  box-shadow: 0 6px 15px rgba(54, 134, 255, 0.3);
+  border-color: var(--primary-blue);
 }
 
+/* Course image */
 .course-image {
   width: 100%;
-  height: 10rem;
+  height: 180px;
   object-fit: cover;
+  background-color: var(--background-muted);
+  border-bottom: 1px solid var(--border-light);
 }
 
+/* Content */
 .card-content {
-  padding: 1rem;
+  padding: 1rem 1.25rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
+/* Title */
 .card-title {
   font-size: 1.25rem;
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 0.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+  line-height: 1.2;
 }
 
+/* Instructor */
 .card-instructor {
   font-size: 0.875rem;
-  color: #6b7280;
-  margin-bottom: 0.5rem;
+  color: var(--text-muted);
+  margin: 0;
+  font-style: italic;
 }
 
+/* Progress bar container */
 .progress-bar {
+  background-color: var(--border-light);
+  border-radius: 9999px;
+  height: 10px;
   width: 100%;
-  background-color: #e5e7eb;
-  border-radius: 9999px;
-  height: 0.625rem;
-  margin-bottom: 0.5rem;
-}
-
-.progress-fill {
-  background-color: #4f46e5;
-  height: 0.625rem;
-  border-radius: 9999px;
-}
-
-.progress-text {
-  font-size: 0.875rem;
-  color: #374151;
-}
-
-.status-badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  border-radius: 9999px;
+  overflow: hidden;
   margin-top: 0.75rem;
 }
 
+/* Progress fill */
+.progress-fill {
+  background-color: var(--primary-blue);
+  height: 100%;
+  width: 0; /* controlled inline */
+  border-radius: 9999px;
+  transition: width 0.4s ease;
+}
+
+/* Progress text */
+.progress-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+  text-align: right;
+  user-select: none;
+}
+
+/* Status badge base */
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-top: 0.75rem;
+  user-select: none;
+  border: 1px solid var(--primary-blue);
+  color: var(--primary-blue);
+  background-color: transparent;
+}
+
+/* Status variations using only shades of primary blue */
 .status-completed {
-  background-color: #dcfce7;
-  color: #166534;
+  background-color: rgba(54, 134, 255, 0.15);
+  color: var(--primary-blue);
+  border-color: var(--primary-blue);
 }
 
 .status-in-progress {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: rgba(54, 134, 255, 0.1);
+  color: var(--primary-blue);
+  border-color: var(--primary-blue);
 }
 
 .status-default {
-  background-color: #f3f4f6;
-  color: #4b5563;
+  background-color: transparent;
+  color: var(--text-muted);
+  border-color: var(--border-light);
 }
 
+/* Footer */
 .card-footer {
-  padding: 1rem;
-  border-top: 1px solid #f3f4f6;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--border-light);
   display: flex;
   justify-content: flex-end;
+  background-color: var(--background-light);
 }
 
+/* View course button */
 .view-course-btn {
+  background-color: var(--primary-blue);
+  border: none;
+  color: var(--text-light);
   padding: 0.5rem 1rem;
-  background-color: #4f46e5;
-  color: #fff;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  transition: background-color 0.2s ease;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  user-select: none;
+  font-size: 0.9rem;
 }
 
-.view-course-btn:hover {
-  background-color: #3730a3;
+.view-course-btn:hover,
+.view-course-btn:focus {
+  background-color: var(--hover-blue);
+  outline: none;
+}
+
+.view-course-btn:active {
+  background-color: var(--active-blue);
 }

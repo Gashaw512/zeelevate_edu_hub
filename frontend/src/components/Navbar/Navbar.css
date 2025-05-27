@@ -2,14 +2,32 @@
 
 /* --- CSS Variables for Easy Color Management --- */
 :root {
-  --primary-blue: #3A48C4;
-  --accent-cyan: #00D9FF; /* Bright cyan for highlights */
-  --text-light: #FFFFFF;
-  --text-light-alt: #F0F0F0; /* Slightly off-white for softer text */
-  --dark-background-alt: #2c3e50; /* Used for dropdowns */
-  --grey-background: #e0e0e0; /* For avatar fallback */
-  --text-color-dark-grey: #666; /* For avatar fallback icon */
+  /* Primary brand color */
+  --primary-blue: #3686FF;
+
+  /* Accent colors */
+  --accent-cyan: #00D9FF; /* Bright cyan for highlights & interactive elements */
+
+  /* Backgrounds */
+  --background-dark: #1E293B; /* Dark slate blue-gray for navbar background */
+  --background-dark-alt: #2c3e50; /* Slightly lighter for dropdowns or overlays */
+  --background-light: #F9FAFB; /* Very light off-white for content areas */
+
+  /* Text colors */
+  --text-light: #FFFFFF; /* White text on dark backgrounds */
+  --text-light-alt: #F0F0F0; /* Softer white for less prominent text */
+  --text-dark: #1F2937; /* Dark slate for text on light backgrounds */
+  --text-color-dark-grey: #666666; /* Medium grey for subtle text */
+
+  /* Borders and UI elements */
+  --border-light: #D1D5DB; /* Light gray border */
+  --grey-background: #E0E0E0; /* Neutral gray for avatar fallback */
+
+  /* Hover and active states */
+  --hover-bg: #2D6BED; /* Darker blue hover for buttons/links */
+  --active-bg: #2759CC; /* Even deeper blue for active states */
 }
+
 
 /* --- General Resets/Base Styles (optional, often in a global stylesheet) --- */
 /* If you have a global reset/base.css, you might not need these here. */

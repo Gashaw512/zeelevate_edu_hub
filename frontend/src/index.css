@@ -107,3 +107,43 @@
     margin-left: 260px; /* match sidebar width */
   }
 }
+ :root {
+   /* Primary Brand Colors */
+   --primary-blue: #3686FF;
+   --primary-blue-dark: #265EC1; /* Darker shade of primary blue, good for hover/active states */
+   --primary-blue-light: #7CAEFF; /* Lighter shade of primary blue */
+ 
+   /* Interaction Colors */
+   --hover-blue: #2c73e8;   /* Specific hover state for blue elements */
+   --active-blue: #265ec1;  /* Specific active state for blue elements */
+ 
+   /* Background Colors */
+   --background-light: #FFFFFF; /* Main background for light sections/cards */
+   --background-muted: #F7F9FC; /* Slightly off-white/light gray background for muted areas */
+ 
+   /* Text Colors */
+   --text-dark: #222222;    /* Main dark text color */
+   --text-muted: #666666;   /* Muted/secondary text color */
+   --text-light: #FFFFFF;   /* White text, typically for dark backgrounds */
+   --text-light-alt: #F0F0F0; /* Slightly off-white for softer light text */
+ 
+   /* Border Colors */
+   --border-light: #D1D5DB; /* Light border color */
+ 
+   /* Supporting Accent Colors */
+   --soft-indigo: #4F46E5;  /* A complementary indigo shade */
+   --indigo-light: #E0E7FF; /* A very light indigo, often for backgrounds or subtle highlights */
+ 
+   /* Grays */
+   --cool-gray: #A0AEC0;   /* A cooler shade of gray, often for borders, muted text */
+   --warm-gray: #9CA3AF;   /* A slightly warmer shade of gray, also for borders, muted text */
+ 
+   /*
+    * I might consider adding:
+    * --success-green: #28a745;
+    * --warning-orange: #ffc107;
+    * --danger-red: #dc3545;
+    * If  there is alert/status messages.
+    */
+ }
+ 

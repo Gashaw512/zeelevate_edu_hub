@@ -1,5 +1,3 @@
-import React from 'react';
-
 // Import Components
 import Navbar from '../components/Navbar/Navbar';
 import TextBox from '../components/TextBox/TextBox';

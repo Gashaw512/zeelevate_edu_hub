@@ -1,16 +1,34 @@
 // Dashboard 'My Courses' page.
-import { mockCourses } from '../../data/index'; // Import mockCourses from data.js
-import CourseCard from '../../components/Dashboard/CourseCard'; // Import CourseCard
+import { memo } from 'react';
+import PropTypes from 'prop-types';
+import styles from './Courses.module.css';
+import { mockCourses } from '../../data/index';
+import CourseCard from '../../components/Dashboard/CourseCard';
+
+// Memoized Course List for performance optimization
+const CourseList = memo(({ courses }) => {
+  if (!courses || courses.length === 0) {
+    return <p>No enrolled courses found.</p>;
+  }
+
+  return (
+    <div className={styles.grid}>
+      {courses.map(course => (
+        <CourseCard key={course.id} course={course} />
+      ))}
+    </div>
+  );
+});
+
+CourseList.propTypes = {
+  courses: PropTypes.array.isRequired,
+};
 
 const Courses = () => {
   return (
-    <div className="p-6">
-      <h2 className="text-3xl font-bold text-gray-800 mb-6">My Enrolled Courses</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {mockCourses.map(course => (
-          <CourseCard key={course.id} course={course} />
-        ))}
-      </div>
+    <div className={styles.container}>
+      <h2 className={styles.heading}>My Enrolled Courses</h2>
+      <CourseList courses={mockCourses} />
     </div>
   );
 };

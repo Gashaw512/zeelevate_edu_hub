@@ -1,0 +1,19 @@
+/* --- src/pages/Courses.module.css --- */
+
+.container {
+    padding: 1.5rem;
+  }
+  
+  .heading {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 1.5rem;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  

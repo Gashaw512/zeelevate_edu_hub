@@ -1,0 +1,71 @@
+/* --- src/pages/Settings.module.css --- */
+
+.container {
+    padding: 1.5rem;
+  }
+  
+  .heading {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 1.5rem;
+  }
+  
+  .card {
+    background: var(--background-light);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(34, 34, 34, 0.08);
+    max-width: 40rem;
+    margin: 0 auto;
+  }
+  
+  .sectionTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .flexRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  
+  .label {
+    color: var(--text-secondary); /* replacing gray-700 */
+    font-size: 1rem;
+  }
+  
+  .checkbox {
+    height: 1.25rem;
+    width: 1.25rem;
+    border-radius: 0.25rem;
+    border: 1px solid var(--border-light);
+    accent-color: var(--primary-blue);
+    cursor: pointer;
+  }
+  
+  .buttonContainer {
+    margin-top: 2rem;
+    text-align: center;
+  }
+  
+  .button {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--primary-blue);
+    color: var(--text-light);
+    border-radius: 0.5rem;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .button:hover {
+    background-color: var(--hover-blue);
+  }
+  
