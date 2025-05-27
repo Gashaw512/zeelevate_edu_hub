@@ -1,6 +1,4 @@
-// --- src/pages/Courses.jsx ---
 // Dashboard 'My Courses' page.
-import React from 'react'; // Ensure React is imported
 import { mockCourses } from '../../data/index'; // Import mockCourses from data.js
 import CourseCard from '../../components/Dashboard/CourseCard'; // Import CourseCard
 

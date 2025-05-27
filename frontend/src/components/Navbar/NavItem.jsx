@@ -19,7 +19,7 @@ const NavItem = React.memo(({ label, id, to, linkProps, onClickHandler }) => {
       <RouterLink
         to={to}
         onClick={handleClick}
-        className="main-nav-link" // <-- ADDED CLASS HERE
+        className="main-nav-link" 
         {...linkProps}
       >
         {label}

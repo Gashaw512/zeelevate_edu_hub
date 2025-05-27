@@ -2,7 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // ğŸ
 import AppRoutes from "./routes/AppRoutes";
 import { AuthProvider } from "./context/AuthContext";
 import "./index.css"; 
-import "./styles/global.css"; 
+// import "./styles/global.css"; 
+
 const App = () => {
   return (
     <AuthProvider>

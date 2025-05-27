@@ -1,0 +1,32 @@
+/* Ensure this file is loaded AFTER your Navbar.css in your build */
+
+/* Override generic 'nav ul' and 'nav ul li' rules from Navbar.css */
+.sidebar-nav-list {
+    list-style: none !important; /* Force remove any list-style */
+    padding: 0 !important;       /* Force remove any padding */
+    margin: 0 !important;         /* Force remove any margin */
+    display: flex !important;     /* Force flex display for list items */
+    flex-direction: column !important; /* Stack items vertically */
+    /* Add any other properties that might be inherited from Navbar.css and causing issues */
+  }
+  
+  .sidebar-nav-list li {
+    display: block !important;    /* Ensure list items are block level */
+    margin: 0 !important;         /* Reset margin */
+    padding: 0 !important;        /* Reset padding */
+    width: 100% !important;       /* Ensure they take full width */
+    /* You can add more specific overrides here if needed */
+  }
+  
+  /* Specific override for the Link within the sidebar list */
+  .sidebar-nav-link {
+    text-decoration: none !important;
+    color: inherit !important; /* Inherit color from parent (Tailwind classes) */
+    /* Potentially reset any ::after pseudo-elements if Navbar.css applies them broadly */
+    /* For example, if .main-nav-link::after is somehow targeting .sidebar-nav-link */
+    /*
+    &::after {
+      content: none !important;
+    }
+    */
+  }

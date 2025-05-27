@@ -21,7 +21,7 @@
 
 
 /* --- Navbar Container Styles --- */
-nav {
+.navbar {
   width: 100%;
   color: var(--text-light); /* Use variable for text color */
   padding: 4px 0;
@@ -35,7 +35,7 @@ nav {
   z-index: 10;
 }
 
-.nav-content {
+.navbar .nav-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -43,25 +43,25 @@ nav {
 }
 
 /* --- Logo Styles --- */
-.navbar-logo img {
+.navbar .navbar-logo img {
   height: 45px;
   transition: transform 0.2s ease;
 }
 
-.navbar-logo img:hover {
+.navbar .navbar-logo img:hover {
   transform: scale(1.05);
 }
 
 
 /* --- Nav List (ul) Styles --- */
-nav ul {
+.navbar ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
 /* --- Nav List Item (li) Styles --- */
-nav ul li {
+.navbar ul li {
   display: inline-block;
   margin: 5px 15px;
   font-size: 16px;
@@ -69,7 +69,7 @@ nav ul li {
 
 
 /* --- Main Nav Link (from NavItem) Styles --- */
-.main-nav-link {
+.navbar .main-nav-link {
   text-decoration: none;
   color: var(--text-light); /* Use variable */
   position: relative;
@@ -79,7 +79,7 @@ nav ul li {
 }
 
 /* Pseudo-element for the underline effect on main navigation links */
-.main-nav-link::after {
+.navbar .main-nav-link::after {
   content: '';
   position: absolute;
   bottom: -4px;
@@ -91,15 +91,15 @@ nav ul li {
 }
 
 /* Hover and Focus states for main navigation links */
-.main-nav-link:hover,
-.main-nav-link:focus {
+.navbar .main-nav-link:hover,
+.navbar .main-nav-link:focus {
   color: var(--accent-cyan); /* Use variable */
   outline: none;
 }
 
 /* Expand the underline on hover/focus for main navigation links */
-.main-nav-link:hover::after,
-.main-nav-link:focus::after {
+.navbar .main-nav-link:hover::after,
+.navbar .main-nav-link:focus::after {
   width: 100%;
 }
 
@@ -234,21 +234,21 @@ nav ul li {
 /* --- Media Queries (Responsive Design) --- */
 
 @media (max-width: 1000px) {
-  .navbar-logo img {
+  .navbar .navbar-logo img {
     height: 40px;
   }
 
-  nav ul li {
+  .navbar  ul li {
     margin: 5px 10px;
   }
 }
 
 @media (max-width: 840px) {
-  nav {
+  .navbar  {
     padding: 15px 0;
   }
 
-  nav ul {
+  .navbar ul {
     position: fixed;
     top: 0;
     right: 0;
@@ -263,7 +263,7 @@ nav ul li {
     padding-left: 20px;
   }
 
-  nav ul li {
+  .navbar ul li {
     display: block;
     margin: 15px 0;
     width: 100%;

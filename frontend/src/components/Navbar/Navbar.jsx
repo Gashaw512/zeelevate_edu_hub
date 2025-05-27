@@ -1,16 +1,14 @@
 // src/components/Navbar/Navbar.jsx
-import React, { useEffect, useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import './Navbar.css';
-import logo from '/images/logo.png';
-import menu_icon from '/images/menu-icon.png';
-import { navLinks } from '../../data/navbarLinks';
-import { useScrollToSection } from '../../utils/scrollUtils';
+import { useEffect, useState, useCallback } from "react";
+// import './Navbar.css';
+import logo from "/images/logo.png";
+import menu_icon from "/images/menu-icon.png";
+import { navLinks } from "../../data/navbarLinks";
+import { useScrollToSection } from "../../utils/scrollUtils";
 
 // New, more modular imports
-import NavItem from './NavItem';
-import AuthNavigation from './AuthNavigation';
-
+import NavItem from "./NavItem";
+import AuthNavigation from "./AuthNavigation";
 
 /**
  * Navbar Component
@@ -47,14 +45,16 @@ const Navbar = () => {
 
   // Handler for NavItem's onClick. It conditionally calls handleNavLinkClick
   // for scroll links or simply closes the menu for router links.
-  const handleNavItemClick = useCallback((id, e) => {
-    if (id) {
-      handleNavLinkClick(id, e, closeMobileMenu); // Pass e for scroll behavior
-    } else {
-      closeMobileMenu(); // Just close for router links
-    }
-  }, [handleNavLinkClick, closeMobileMenu]);
-
+  const handleNavItemClick = useCallback(
+    (id, e) => {
+      if (id) {
+        handleNavLinkClick(id, e, closeMobileMenu); // Pass e for scroll behavior
+      } else {
+        closeMobileMenu(); // Just close for router links
+      }
+    },
+    [handleNavLinkClick, closeMobileMenu]
+  );
 
   // Effect hook to manage the sticky navbar behavior
   useEffect(() => {
@@ -62,18 +62,20 @@ const Navbar = () => {
       setIsSticky(window.scrollY > 50);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
     handleScroll(); // Initialize state on mount
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <nav className={`container ${isSticky ? 'dark-nav' : ''}`}>
+    <nav className={`navbar ${isSticky ? "dark-nav" : "transparent-nav"}`}>
       <div className="navbar-logo">
         <img src={logo} alt="Zeelevate Company Logo" />
       </div>
 
-      <ul className={isMobileMenuOpen ? 'show-mobile-menu' : 'hide-mobile-menu'}>
+      <ul
+        className={isMobileMenuOpen ? "show-mobile-menu" : "hide-mobile-menu"}
+      >
         {/* Render static navigation links using the new NavItem component */}
         {navLinks.map((link) => (
           <li key={link.label}>
@@ -100,7 +102,7 @@ const Navbar = () => {
         aria-label="Toggle mobile navigation menu"
         tabIndex="0"
         onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
+          if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             toggleMobileMenu();
           }

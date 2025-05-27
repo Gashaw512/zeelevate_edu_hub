@@ -2,14 +2,28 @@
  /* @import "tailwindcss";  */
 
  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import './components/Navbar/Navbar.css';
 
+/* === NEW: Import sidebar-overrides.css AFTER Navbar.css === */
+@import './styles/sidebar-overrides.css';
 
+/* ... any other styles that should come last */
  * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: "Outfit", sans-serif;
  }
+
+ html, body {
+   margin: 0;
+   padding: 0;
+   overflow-x: hidden;
+ }
+ 
 
  body {
     background: #F5F5F5;
