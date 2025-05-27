@@ -1,14 +1,18 @@
 // src/components/Navbar/Navbar.jsx
 import { useEffect, useState, useCallback } from "react";
-// import './Navbar.css';
+// import './Navbar.css'; // Make sure this import is correct
 import logo from "/images/logo.png";
-import menu_icon from "/images/menu-icon.png";
+// IMPORTANT: Use an actual menu icon for a hamburger, not menu-icon.png if it's a fixed image.
+// If menu-icon.png is your hamburger, that's fine. Otherwise, consider an SVG or FontAwesome icon.
+import menu_icon_img from "/images/menu-icon.png"; // Renamed to avoid conflict
 import { navLinks } from "../../data/navbarLinks";
 import { useScrollToSection } from "../../utils/scrollUtils";
 
 // New, more modular imports
 import NavItem from "./NavItem";
 import AuthNavigation from "./AuthNavigation";
+import { FaBars, FaTimes } from 'react-icons/fa'; // Import icons for menu toggle
+
 
 /**
  * Navbar Component
@@ -67,6 +71,19 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Effect to prevent body scrolling when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset'; // Clean up on unmount
+    };
+  }, [isMobileMenuOpen]);
+
+
   return (
     <nav className={`navbar ${isSticky ? "dark-nav" : "transparent-nav"}`}>
       <div className="navbar-logo">
@@ -74,15 +91,16 @@ const Navbar = () => {
       </div>
 
       <ul
-        className={isMobileMenuOpen ? "show-mobile-menu" : "hide-mobile-menu"}
+        // THIS IS THE CRUCIAL CHANGE: Conditional class for mobile menu display
+        className={`navbar-links ${isMobileMenuOpen ? "show-mobile-menu" : "hide-mobile-menu"}`}
       >
         {/* Render static navigation links using the new NavItem component */}
         {navLinks.map((link) => (
           <li key={link.label}>
             <NavItem
               label={link.label}
-              id={link.id} // Will be undefined for router links, handled by NavItem
-              to={link.to} // Will be undefined for scroll links, handled by NavItem
+              id={link.id}
+              to={link.to}
               linkProps={link.linkProps}
               onClickHandler={handleNavItemClick}
             />
@@ -93,9 +111,8 @@ const Navbar = () => {
         <AuthNavigation onLinkClick={closeMobileMenu} />
       </ul>
 
-      <img
-        src={menu_icon}
-        alt="Toggle mobile menu"
+      {/* Use FontAwesome icons for a more professional and flexible menu icon */}
+      <div
         className="menu-icon"
         onClick={toggleMobileMenu}
         role="button"
@@ -107,7 +124,9 @@ const Navbar = () => {
             toggleMobileMenu();
           }
         }}
-      />
+      >
+        {isMobileMenuOpen ? <FaTimes /> : <FaBars />} {/* Show X icon when open, Bars when closed */}
+      </div>
     </nav>
   );
 };

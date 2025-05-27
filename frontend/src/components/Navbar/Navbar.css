@@ -1,68 +1,61 @@
 /* src/components/Navbar/Navbar.css */
 
-/* --- CSS Variables for Easy Color Management --- */
+/* --- CSS Variables (Already provided, ensure they are accessible) --- */
 :root {
-  /* Primary brand color */
+  /* Primary Brand Colors */
   --primary-blue: #3686FF;
+  --primary-blue-dark: #265EC1;
+  --primary-blue-light: #7CAEFF;
+
+  /* Interaction Colors */
+  --hover-blue: #2c73e8;
+  --active-blue: #265ec1;
 
   /* Accent colors */
   --accent-cyan: #00D9FF; /* Bright cyan for highlights & interactive elements */
 
-  /* Backgrounds */
+  /* Background Colors */
+  --background-light: #FFFFFF;
+  --background-muted: #F7F9FC;
   --background-dark: #1E293B; /* Dark slate blue-gray for navbar background */
   --background-dark-alt: #2c3e50; /* Slightly lighter for dropdowns or overlays */
-  --background-light: #F9FAFB; /* Very light off-white for content areas */
 
-  /* Text colors */
-  --text-light: #FFFFFF; /* White text on dark backgrounds */
-  --text-light-alt: #F0F0F0; /* Softer white for less prominent text */
-  --text-dark: #1F2937; /* Dark slate for text on light backgrounds */
-  --text-color-dark-grey: #666666; /* Medium grey for subtle text */
+  /* Text Colors */
+  --text-dark: #222222;
+  --text-muted: #666666;
+  --text-light: #FFFFFF;
+  --text-light-alt: #F0F0F0;
 
-  /* Borders and UI elements */
-  --border-light: #D1D5DB; /* Light gray border */
-  --grey-background: #E0E0E0; /* Neutral gray for avatar fallback */
+  /* Border Colors */
+  --border-light: #D1D5DB;
 
-  /* Hover and active states */
-  --hover-bg: #2D6BED; /* Darker blue hover for buttons/links */
-  --active-bg: #2759CC; /* Even deeper blue for active states */
+  /* Supporting Accent Colors */
+  --soft-indigo: #4F46E5;
+  --indigo-light: #E0E7FF;
+
+  /* Grays */
+  --cool-gray: #A0AEC0;
+  --warm-gray: #9CA3AF;
 }
-
-
-/* --- General Resets/Base Styles (optional, often in a global stylesheet) --- */
-/* If you have a global reset/base.css, you might not need these here. */
-/* * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-} */
-
 
 /* --- Navbar Container Styles --- */
 .navbar {
   width: 100%;
-  color: var(--text-light); /* Use variable for text color */
-  padding: 4px 0;
+  color: var(--text-light);
+  padding: 0.8rem 1.5rem; /* Adjusted padding for better spacing */
   position: fixed;
   top: 0;
   left: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  transition: background-color 0.3s ease;
-  z-index: 10;
-}
-
-.navbar .nav-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for shadow too */
+  z-index: 100; /* High z-index to ensure it's always on top */
 }
 
 /* --- Logo Styles --- */
 .navbar .navbar-logo img {
-  height: 45px;
+  height: 40px; /* Consistent size for all desktop/tablet */
   transition: transform 0.2s ease;
 }
 
@@ -70,48 +63,48 @@
   transform: scale(1.05);
 }
 
-
 /* --- Nav List (ul) Styles --- */
 .navbar ul {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex; /* Default to flex for desktop */
+  align-items: center;
 }
 
 /* --- Nav List Item (li) Styles --- */
 .navbar ul li {
-  display: inline-block;
-  margin: 5px 15px;
-  font-size: 16px;
+  margin: 0 18px; /* Adjusted margin for better spacing between items */
+  font-size: 1rem; /* Consistent font size */
+  font-weight: 500; /* Slightly bolder for navigation */
 }
-
 
 /* --- Main Nav Link (from NavItem) Styles --- */
 .navbar .main-nav-link {
   text-decoration: none;
-  color: var(--text-light); /* Use variable */
+  color: var(--text-light);
   position: relative;
   transition: color 0.3s ease;
-  display: inline-block;
-  padding: 5px 0;
+  padding: 5px 0; /* More vertical padding for easier clicking */
+  display: block; /* Ensures padding and pseudo-elements work correctly */
 }
 
 /* Pseudo-element for the underline effect on main navigation links */
 .navbar .main-nav-link::after {
   content: '';
   position: absolute;
-  bottom: -4px;
+  bottom: 0; /* Align with bottom of padding */
   left: 0;
   width: 0;
   height: 2px;
-  background: var(--accent-cyan); /* Use variable */
+  background: var(--accent-cyan);
   transition: width 0.3s ease;
 }
 
 /* Hover and Focus states for main navigation links */
 .navbar .main-nav-link:hover,
 .navbar .main-nav-link:focus {
-  color: var(--accent-cyan); /* Use variable */
+  color: var(--accent-cyan);
   outline: none;
 }
 
@@ -121,31 +114,31 @@
   width: 100%;
 }
 
-
 /* --- Auth Navigation Link ("Sign In" Button) Styles --- */
 .auth-link {
-  text-decoration: none; /* Remove default underline */
-  color: var(--text-light); /* White text */
-  background-color: transparent; /* No background by default */
-  border: 1px solid var(--text-light); /* White border */
-  padding: 8px 18px; /* Good button padding */
-  border-radius: 25px; /* More rounded shape */
-  font-size: 16px;
-  font-weight: 500; /* Slightly bolder text */
-  transition: all 0.3s ease; /* Smooth transitions for all properties */
+  text-decoration: none;
+  color: var(--text-light);
+  background-color: transparent;
+  border: 1px solid var(--text-light);
+  padding: 10px 22px; /* Slightly larger button */
+  border-radius: 28px; /* More rounded */
+  font-size: 1rem;
+  font-weight: 600; /* Bolder text */
+  transition: all 0.3s ease;
   cursor: pointer;
-  display: inline-block; /* Essential for padding/border */
+  display: inline-block;
   text-align: center;
+  margin-left: 18px; /* Space from last nav item */
 }
 
 .auth-link:hover,
 .auth-link:focus {
-  color: var(--primary-blue); /* Text color changes to navbar blue */
-  background-color: var(--accent-cyan); /* Button fills with accent color */
-  border-color: var(--accent-cyan); /* Border matches accent color */
-  transform: translateY(-2px); /* Subtle lift effect */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-  outline: none; /* Remove default focus outline */
+  color: var(--background-dark); /* Text color changes for contrast */
+  background-color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+  transform: translateY(-3px); /* More noticeable lift */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Stronger shadow */
+  outline: none;
 }
 
 /* Ensure Auth links don't have the ::after underline effect */
@@ -153,21 +146,28 @@
   content: none;
 }
 
-
 /* --- Navbar Background Colors --- */
 .transparent-nav {
   background-color: transparent;
 }
 
 .dark-nav {
-  background-color: var(--primary-blue); /* Use variable for the main blue */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Add a subtle shadow for depth */
+  background-color: var(--primary-blue); /* Use primary-blue for dark nav */
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4); /* Enhanced shadow */
 }
 
-
-/* --- Mobile Menu Icon --- */
+/* --- Mobile Menu Icon (Desktop state) --- */
 .menu-icon {
-  display: none;
+  display: none; /* Hidden by default on desktop */
+  font-size: 2rem;
+  color: var(--text-light);
+  cursor: pointer;
+  z-index: 101; /* Ensure icon is above the menu */
+  transition: color 0.3s ease;
+}
+
+.menu-icon:hover {
+  color: var(--accent-cyan);
 }
 
 
@@ -175,12 +175,12 @@
 .profile-dropdown {
   position: relative;
   cursor: pointer;
-  margin-left: 15px;
+  margin-left: 20px; /* Adjusted margin */
 }
 
 .profile-avatar {
-  width: 40px;
-  height: 40px;
+  width: 45px; /* Slightly larger avatar */
+  height: 45px;
   border-radius: 50%;
   object-fit: cover;
   cursor: pointer;
@@ -190,19 +190,19 @@
 
 .profile-avatar:hover,
 .profile-avatar:focus {
-  border-color: var(--accent-cyan); /* Match accent color */
+  border-color: var(--accent-cyan);
 }
 
 .profile-avatar-icon {
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
-  background-color: var(--grey-background);
+  background-color: var(--background-muted); /* Using a more theme-consistent grey */
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 20px;
-  color: var(--text-color-dark-grey);
+  font-size: 24px; /* Larger icon inside avatar */
+  color: var(--text-dark); /* Dark text on light background */
   cursor: pointer;
   border: 2px solid transparent;
   transition: border-color 0.2s ease;
@@ -214,38 +214,39 @@
 
 .profile-avatar-icon:hover,
 .profile-avatar-icon:focus {
-  border-color: var(--accent-cyan); /* Match accent color */
+  border-color: var(--accent-cyan);
 }
 
 .dropdown-menu {
   position: absolute;
   right: 0;
-  top: 45px;
-  background-color: var(--dark-background-alt); /* Use variable */
+  top: 55px; /* Adjust dropdown position */
+  background-color: var(--background-dark-alt); /* Using background-dark-alt */
   list-style: none;
   padding: 0;
   margin: 0;
-  min-width: 160px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  min-width: 180px; /* Wider dropdown */
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3); /* Stronger shadow */
   z-index: 1000;
-  border-radius: 4px;
+  border-radius: 6px; /* Slightly more rounded */
   overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
 }
 
 .dropdown-menu li {
-  padding: 12px 16px;
-  color: var(--text-light-alt); /* Slightly softer white for dropdown items */
+  padding: 14px 20px; /* More padding for items */
+  color: var(--text-light-alt);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px; /* More space for icon/text */
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
   white-space: nowrap;
 }
 
 .dropdown-menu li:hover {
-  background-color: var(--primary-blue); /* Hover with the primary blue */
-  color: var(--text-light); /* Ensure text is white on hover */
+  background-color: var(--primary-blue);
+  color: var(--text-light);
 }
 
 
@@ -253,62 +254,159 @@
 
 @media (max-width: 1000px) {
   .navbar .navbar-logo img {
-    height: 40px;
+    height: 35px; /* Smaller logo for tablets */
   }
 
-  .navbar  ul li {
-    margin: 5px 10px;
+  .navbar ul li {
+    margin: 0 5px; /* Slightly reduced margin */
+  }
+
+  .auth-link {
+    padding: 8px 18px;
+    font-size: 0.95rem;
+    margin-left: 10px;
   }
 }
 
-@media (max-width: 840px) {
-  .navbar  {
-    padding: 15px 0;
+@media (max-width: 840px) { /* This is where mobile menu becomes active */
+  .navbar {
+    padding: 0.8rem 1.5rem; /* Maintain padding to keep logo/icon aligned with content */
+    justify-content: space-between; /* Keep logo and icon on ends */
+  }
+
+  /*
+   * Crucial for the mobile menu icon:
+   * It is *only* displayed and fixed within this mobile breakpoint.
+   * When the menu is closed, this is the hamburger icon.
+   * When the menu is open, it becomes the 'X' button.
+   */
+  .menu-icon {
+    display: block; /* Show menu icon on small screens */
+    position: fixed; /* Make it fixed relative to the viewport */
+    top: 0.8rem; /* Aligned with navbar's vertical padding */
+    right: 1.5rem; /* Aligned with navbar's horizontal padding */
+    z-index: 102; /* Ensure it's above everything, especially the sliding menu */
+    color: var(--text-light); /* Ensure it's white on the primary blue background */
+    font-size: 1.8rem; /* Slightly smaller for tighter layout */
   }
 
   .navbar ul {
-    position: fixed;
-    top: 0;
+    position: fixed; /* Crucial: make the menu itself fixed */
+    top: 0; /* Align menu to the very top of the viewport */
     right: 0;
     bottom: 0;
-    background: var(--primary-blue); /* Use variable for mobile menu background */
-    z-index: -1;
-    width: 200px;
-    padding-top: 70px;
-    transition: 0.5s;
+    width: 200px; /* Standard width for mobile menu */
+    background: var(--primary-blue);
     flex-direction: column;
+    justify-content: flex-start; /* Start content from the top */
     align-items: flex-start;
-    padding-left: 20px;
+    padding-top: 1.5rem; /* Sufficient padding to clear the fixed menu icon */
+    padding-left: 1.5rem; /* Consistent padding inside the menu */
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.4);
+    transition: transform 0.4s ease-in-out;
+    z-index: 99;
+    overflow-y: auto; /* Allow scrolling if menu content overflows */
   }
 
   .navbar ul li {
     display: block;
-    margin: 15px 0;
+    margin: 0.5rem 0; /* Space between stacked items */
     width: 100%;
   }
 
-  /* Adjustments for the specific link class in mobile */
-  .main-nav-link, .auth-link {
-    display: block;
-    padding: 10px 0;
-  }
-  .main-nav-link::after {
-    left: 20px;
+  .navbar .main-nav-link {
+    color: var(--text-light-alt);
+    padding: 0.6rem 0; /* Consistent padding */
   }
 
-  .menu-icon {
+  .navbar .main-nav-link::after {
+    background: var(--accent-cyan);
+  }
+
+  .auth-link {
+    margin-left: 0;
+    margin-top: 1.5rem; /* Space above button */
     display: block;
-    width: 30px;
-    cursor: pointer;
-    z-index: 11;
+    width: fit-content;
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+  }
+
+  .auth-link:hover,
+  .auth-link:focus {
+    color: var(--text-light);
+    background-color: var(--accent-cyan);
   }
 
   .hide-mobile-menu {
-    right: -200px;
+    transform: translateX(100%);
   }
 
   .show-mobile-menu {
-    right: 0;
-    z-index: 9;
+    transform: translateX(0);
+  }
+
+  .profile-dropdown {
+    margin-left: 0;
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 580px) { /* Smaller phones */
+  .navbar {
+    padding: 0.6rem 1rem; /* Slightly less padding */
+  }
+
+  .navbar .navbar-logo img {
+    height: 35px; /* Adjusted logo size */
+  }
+
+  .navbar ul {
+    width: 200px; /* Slightly narrower mobile menu */
+    padding-top: 0.75rem; /* Adjusted padding to match menu icon position */
+    padding-left: 1.2rem;
+  }
+
+  .navbar .main-nav-link {
+    font-size: 0.9rem; /* Smaller font size */
+    padding: 0.5rem 0;
+  }
+
+  .auth-link {
+    padding: 0.6rem 1rem; /* Smaller button */
+    font-size: 0.85rem;
+  }
+
+  .menu-icon {
+    font-size: 1.6rem; /* Smaller icon */
+    top: 0.6rem; /* Adjust position to match navbar height */
+    right: 1rem; /* Adjust position */
+  }
+}
+
+@media (max-width: 360px) { /* Extra small devices */
+  .navbar .navbar-logo img {
+    height: 30px;
+  }
+
+  .navbar ul {
+    width: 180px; /* Minimum width for menu */
+    padding-top: 0.5rem; /* Reduced padding for very small screens */
+    padding-left: 0.8rem;
+  }
+
+  .navbar .main-nav-link {
+    font-size: 0.85rem;
+  }
+
+  .auth-link {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.8rem;
+  }
+
+  .menu-icon {
+    font-size: 1.4rem; /* Even smaller icon */
+    top: 0.5rem;
+    right: 0.8rem;
   }
 }

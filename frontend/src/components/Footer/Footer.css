@@ -1,13 +1,13 @@
 /* ======== FOOTER STYLING (THEMED) ======== */
 
 .zeelevate-footer {
-  /* background-color: var(--footer-bg); */
-   background: linear-gradient(135deg, rgba(73, 46, 250, 0.95) 30%, rgba(14,26,89,0.95) 100%);
-  color: var(--color-white);
-  padding: 1.5rem 1em 1rem;
+  background: linear-gradient(135deg, var(--primary-blue-dark) 30%, #0741d4 100%); /* Adjusted gradient for professionalism */
+  color: var(--text-light);
+  padding: 2rem 1.5em 1.5rem; /* Increased padding for more breathing room */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   position: relative;
-  margin-top: 2rem;
+  margin-top: 3rem; /* Increased margin for better separation from content */
+  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
 
 .zeelevate-footer::before {
@@ -17,168 +17,191 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.05); /* Very subtle dark overlay */
-  pointer-events: none; /* Don't interfere with clicks */
+  background-color: rgba(0, 0, 0, 0.08); /* Slightly more prominent overlay for richness */
+  pointer-events: none;
 }
 
 .footer-container {
   max-width: 1200px;
   margin: 0 auto;
-  position: relative; /* Ensure content stays on top of the overlay */
+  position: relative;
   z-index: 1;
-
   display: flex;
   flex-direction: column;
 }
 
 .footer-brand {
   text-align: center;
-  margin-bottom: 1.5em;
+  margin-bottom: 2em; /* Increased margin for better visual separation */
 }
 
 .footer-logo-title {
   display: flex;
   align-items: center;
-  gap: 0.75rem; 
-  justify-content: center; 
+  gap: 0.75rem;
+  justify-content: center;
 }
 
 .footer-logo {
-  width: 250px;  
+  width: 200px; /* Slightly reduced logo size for better balance */
   height: auto;
   object-fit: contain;
 }
 
 .footer-title {
-  font-size: 1.8rem;
+  font-size: 2rem; /* Slightly larger for prominence */
   font-weight: bold;
-  color: var(--color-white); /* or use var(--heading-color) if preferred */
-  margin-bottom: 0.15rem;
+  color: var(--text-light);
+  margin-bottom: 0.25rem;
 }
 
 .footer-tagline {
-  font-size: 1.2rem;
-  color: #0984e3;
-  margin: 0.5rem 0;
+  font-size: 1.1rem; /* Adjusted for better hierarchy */
+  color: var(--primary-blue-light); /* Using a lighter primary blue for distinction */
+  margin: 0.75rem 0;
   font-weight: 500;
 }
 
 .footer-sections {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 1.55rem;
-  margin-bottom: 1.5rem;
-  justify-content: center;
+  justify-content: space-around; /* Changed to space-around for more even distribution */
+  gap: 2rem; /* Increased gap between sections */
+  margin-bottom: 2.5rem; /* More space before bottom section */
 }
 
 .footer-about,
 .footer-links-section,
 .footer-contact {
   flex: 1;
-  min-width: 220px;
-  text-align: center;
-
+  min-width: 250px; /* Increased min-width for better content display */
+  text-align: left; /* Aligned text left for better readability in sections */
+  padding: 0 1rem; /* Added horizontal padding */
 }
 
-
 .footer-section-title {
-  font-size: 1.1rem;
-  margin-bottom: 0.75rem;
-  color: var(--color-white);
-  border-bottom: 2px solid var(--color-primary);
-  padding-bottom: 0.5rem;
- 
+  font-size: 1.25rem; /* Larger title for better visibility */
+  margin-bottom: 1rem; /* More space below title */
+  color: var(--text-light);
+  border-bottom: 2px solid var(--primary-blue); /* Using primary blue for the border */
+  padding-bottom: 0.75rem;
+  font-weight: 600; /* Bolder title */
 }
 
 .footer-description {
-  color: var(--color-muted-text-on-dark); /* Use white-ish for contrast */
+  color: var(--text-light-alt); /* Using light-alt for softer white text */
   font-size: 0.95rem;
-  line-height: 1.6;
-  
+  line-height: 1.7;
 }
 
 .footer-links {
+  list-style: none; /* Removed default list style */
+  padding: 0; /* Removed default padding */
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  
+  gap: 0.6rem; /* Slightly increased gap for better clickability */
 }
 
 .footer-links a {
-  color: var(--footer-link);
+  color: var(--text-light-alt); /* Link color from light-alt */
   text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.social-icons {
-  display: flex;
-  gap: 1rem;
-  font-size: 1.3rem;
-  justify-content: center;
+  transition: all 0.3s ease; /* Smoother transition for all properties */
+  display: inline-block; /* Allows transform to work properly */
+  position: relative; /* For the underline effect */
+  padding-left: 0.5rem; /* Slight indent for links */
 }
 
 .footer-links a:hover,
 .footer-links a:focus {
-  /* color: var(--color-hover);  */
-  border-bottom: 2px solid var(--color-primary); 
-  transform: translateX(4px);
-  outline: none;
-
-    color: #0984e3;
+  color: var(--primary-blue-light); /* Hover color from light primary blue */
   transform: translateX(5px);
+  outline: none;
+}
+
+/* Subtle underline effect on hover */
+.footer-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--primary-blue);
+    transition: width 0.3s ease-in-out;
+}
+
+.footer-links a:hover::after {
+    width: 100%;
+}
+
+
+.social-icons {
+  display: flex;
+  gap: 1.5rem; /* Increased gap between icons */
+  font-size: 1.6rem; /* Larger icons */
+  justify-content: flex-start; /* Aligned left with section text */
+  margin-top: 1rem; /* Space above icons */
+}
+
+.social-icons a {
+  color: var(--text-light); /* Icons color from text-light */
+  transition: all 0.3s ease;
+  padding: 0.3rem; /* Add padding for better hover area */
+  border-radius: 50%; /* Make them slightly rounded */
 }
 
 .social-icons a:focus,
 .social-icons a:hover {
-  /* color: var(--color-hover);  */
-  /* transform: scale(1.2); */
+  color: var(--primary-blue); /* Hover color from primary blue */
+  transform: translateY(-4px) scale(1.1); /* More pronounced hover effect */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+  background-color: rgba(255, 255, 255, 0.1); /* Subtle background on hover */
   outline: none;
-    /* background: #0984e3; */
-  color: #fff;
-  transform: translateY(-3px);
-  box-shadow: 0 4px 15px rgba(9,132,227,0.2);
 }
-
-
 
 .footer-bottom {
   display: flex;
-  justify-content: space-between; /* Keep space between meta and scroll-top */
+  justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  border-top: 2px solid var(--color-primary);
-  padding-top: 0.75rem;
-  gap: 1rem; /* Add some gap between meta and scroll-top on smaller screens */
+  border-top: 1px solid var(--primary-blue); /* Lighter border for subtle division */
+  padding-top: 1.25rem; /* Increased padding top */
+  gap: 1.5rem; /* Increased gap */
 }
 
 .footer-meta {
   font-size: 0.9rem;
-  color: var(--color-muted-text-on-dark);
-  text-align: center; /* Center the text within the footer-meta div */
-  flex-grow: 1; /* Allow meta to take up available space */
+  color: var(--text-light-alt); /* Meta text from light-alt */
+  text-align: left; /* Aligned left by default */
+  flex-grow: 1;
 }
 
 .footer-meta p {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
 }
+
 .footer-meta a {
-  color: #0984e3;
+  color: var(--primary-blue-light); /* Link color from primary-blue-light */
   text-decoration: none;
-  transition: opacity 0.3s ease;
+  transition: color 0.3s ease;
 }
 
 .footer-meta a:hover {
-  opacity: 0.8;
+  color: var(--primary-blue); /* Hover color from primary blue */
+  text-decoration: underline;
 }
-
 
 .made-with {
   display: flex;
   align-items: center;
-  justify-content: center; /* Center the "made-with" text and icon */
-  gap: 0.3rem;
+  justify-content: flex-start; /* Align left */
+  gap: 0.4rem;
   font-size: 0.9rem;
+  color: var(--text-light-alt);
+}
+
+.made-with svg {
+  color: var(--danger-red, #dc3545); /* Assuming a danger-red for the heart icon */
 }
 
 @keyframes pulse {
@@ -186,275 +209,168 @@
   50% { transform: scale(1.25); }
 }
 
-
 .scroll-top {
-  width: 45px;
-  height: 45px;
-  background: #0984e3;
+  width: 50px; /* Slightly larger button */
+  height: 50px;
+  background: var(--primary-blue); /* Background from primary blue */
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin: 1rem auto;
-  box-shadow: 0 4px 15px rgba(9,132,227,0.2);
+  margin: 0; /* Remove auto margin for better control in flexbox */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow */
+  flex-shrink: 0; /* Prevent it from shrinking */
 }
 
 .scroll-top:hover {
-  /* transform: translateY(-0.2rem); 
-  opacity: 1;
-  border-color: var(--color-dark-gray);
-  color: var(--color-primary);  */
-    background: #0873c4;
-  transform: translateY(-3px);
+  background: var(--primary-blue-dark); /* Darker blue on hover */
+  transform: translateY(-5px); /* More significant lift */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
 }
 
-.scroll-top svg { /* Target the SVG icon */
+.scroll-top svg {
   display: block;
+  font-size: 1.5rem; /* Larger icon */
 }
 
 .scroll-top svg path {
-  fill: var(--color-dark-gray); /* Ensure SVG icon is black from domain */
+  fill: var(--text-light); /* Icon fill from text-light */
 }
 
 .scroll-top:hover svg path {
-  fill: var(--color-primary); /* Change SVG icon color on hover */
+  fill: var(--text-light); /* Keep color consistent on hover */
 }
 
 /* ======== RESPONSIVE FOOTER ======== */
-@media (max-width: 768px) {
-  .footer-bottom {
-    flex-direction: column; /* Stack items vertically */
-    align-items: center; /* Center items horizontally when stacked */
-    gap: 1rem;
-    text-align: center; /* Center text within the container */
-  }
-
-  .footer-meta {
-    width: 100%; /* Take full width when stacked */
-    margin-bottom: 1rem; /* Add spacing below meta */
-  }
-
-  .scroll-top {
-    margin-top: 1rem; /* Add spacing above scroll-top */
-  }
-}
-
-
-
-
-/* .zeelevate-footer {
-  background-color: var(--color-primary-dark); 
-  color: var(--color-white);
-  padding: 4rem 2rem 3rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  position: relative;
-  margin-top: 3rem;
-  box-shadow: inset 0 8px 15px -8px rgba(0, 0, 0, 0.7);
-  border-top: 4px solid var(--color-primary);
-  transition: background-color 0.3s ease;
-}
-
-.footer-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-}
-
-.footer-brand {
-  text-align: center;
-  margin-bottom: 2.5rem;
-}
-
-.footer-logo-title {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem; 
-  justify-content: center; 
-}
-
-.footer-logo {
-  width: 400px;  
-  height: auto;
-  object-fit: contain;
-}
-
-.footer-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--color-white);
-  margin-bottom: 0.5rem;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  text-shadow: 0 0 8px rgba(0, 123, 255, 0.8);
-}
-
-.footer-tagline {
-  font-size: 1.1rem;
-  color: var(--color-muted-text-on-dark);
-  font-style: italic;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.footer-sections {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 3rem;
-  margin: 3rem 0 2rem;
-}
-
-.footer-about,
-.footer-links-section,
-.footer-contact {
-  flex: 1 1 250px;
-  min-width: 220px;
-}
-
-.footer-section-title {
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
-  color: var(--color-primary);
-  border-bottom: 2px solid var(--color-primary);
-  padding-bottom: 0.5rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.footer-description {
-  color: var(--color-muted-text-on-dark);
-  font-size: 1rem;
-  line-height: 1.7;
-  margin-bottom: 1rem;
-}
-
-.footer-links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-}
-
-.footer-links a {
-  color: var(--color-white);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease, transform 0.25s ease;
-  border-bottom: 1px solid transparent;
-  padding-bottom: 2px;
-}
-
-.footer-links a:hover,
-.footer-links a:focus {
-  color: var(--color-primary-light, #66B2FF);
-  border-bottom-color: var(--color-primary-light, #66B2FF);
-  transform: translateX(4px);
-  outline: none;
-}
-
-.social-icons {
-  display: flex;
-  gap: 1.2rem;
-  font-size: 1.6rem;
-  margin-top: 1rem;
-}
-
-.social-icons a {
-  color: var(--color-white);
-  transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.social-icons a:hover,
-.social-icons a:focus {
-  color: var(--color-primary-light, #66B2FF);
-  transform: scale(1.2);
-  outline: none;
-}
-
-.footer-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  border-top: 1px solid var(--color-primary);
-  padding-top: 1.5rem;
-  font-size: 0.9rem;
-  color: var(--color-muted-text-on-dark);
-  letter-spacing: 0.05em;
-}
-
-.footer-meta {
-  flex: 1 1 50%;
-}
-
-.made-with {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  color: var(--color-primary-light, #66B2FF);
-}
-
-.heart {
-  color: #ff4757;
-  animation: pulse 1.5s infinite ease-in-out;
-  font-size: 1.1rem;
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.25); }
-}
-
-.scroll-top {
-  cursor: pointer;
-  font-size: 1.4rem;
-  color: var(--color-white);
-  background: rgba(255, 255, 255, 0.15);
-  padding: 0.6rem;
-  border-radius: 50%;
-  transition: transform 0.3s ease, color 0.3s ease, background-color 0.3s ease;
-  user-select: none;
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
-}
-
-.scroll-top:hover,
-.scroll-top:focus {
-  transform: translateY(-6px);
-  color: var(--color-primary-light, #66B2FF);
-  background-color: rgba(255, 255, 255, 0.35);
-  outline: none;
-}
-
-
-@media (max-width: 768px) {
+@media (max-width: 992px) { /* Adjust breakpoint for larger tablets */
   .footer-sections {
     flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 2rem;
+    align-items: center; /* Center sections when stacked */
+    gap: 3rem; /* More space between stacked sections */
   }
 
   .footer-about,
   .footer-links-section,
   .footer-contact {
-    min-width: auto;
+    min-width: 100%; /* Take full width */
+    text-align: center; /* Center text for stacked sections */
+    padding: 0; /* Remove horizontal padding when stacked */
+  }
+
+  .social-icons {
+    justify-content: center; /* Center social icons */
+  }
+
+  .footer-links {
+    align-items: center; /* Center links when stacked */
+  }
+}
+
+@media (max-width: 768px) {
+  .zeelevate-footer {
+    padding: 1.5rem 1em 1rem; /* Reduced padding for smaller screens */
+  }
+
+  .footer-brand {
+    margin-bottom: 1.5em;
+  }
+
+  .footer-logo {
+    width: 180px; /* Smaller logo for mobile */
+  }
+
+  .footer-title {
+    font-size: 1.6rem;
+  }
+
+  .footer-tagline {
+    font-size: 1rem;
+  }
+
+  .footer-sections {
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .footer-section-title {
+    font-size: 1.1rem;
+    padding-bottom: 0.4rem;
+  }
+
+  .footer-description {
+    font-size: 0.9rem;
+  }
+
+  .social-icons {
+    font-size: 1.4rem;
+    gap: 1.2rem;
   }
 
   .footer-bottom {
     flex-direction: column;
+    align-items: center;
     gap: 1rem;
-    text-align: center;
+    padding-top: 1rem;
   }
 
   .footer-meta {
-    flex: none;
+    width: 100%;
+    text-align: center; /* Ensure meta text is centered */
+    margin-bottom: 0.5rem;
+  }
+
+  .made-with {
+    justify-content: center; /* Center made-with text */
   }
 
   .scroll-top {
-    margin-top: 1.5rem;
+    width: 45px;
+    height: 45px;
+    margin-top: 1rem;
   }
-} */
+}
 
+@media (max-width: 480px) { /* Even smaller screens */
+  .zeelevate-footer {
+    padding: 1.2rem 0.8em 0.8rem;
+  }
+
+  .footer-logo {
+    width: 150px;
+  }
+
+  .footer-title {
+    font-size: 1.4rem;
+  }
+
+  .footer-tagline {
+    font-size: 0.9rem;
+  }
+
+  .footer-sections {
+    gap: 1.5rem;
+  }
+
+  .footer-section-title {
+    font-size: 1rem;
+  }
+
+  .footer-description {
+    font-size: 0.85rem;
+  }
+
+  .social-icons {
+    font-size: 1.2rem;
+    gap: 1rem;
+  }
+
+  .footer-meta {
+    font-size: 0.8rem;
+  }
+
+  .made-with {
+    font-size: 0.8rem;
+  }
+}

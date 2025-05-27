@@ -6,7 +6,6 @@ import Contact from '../components/ContactComponent/ContactComponent';
 import About from '../components/AboutUsBox/AboutUsBox';
 import Team from '../components/Team/Team';
 import Cta from '../components/Cta/Cta';
-// import Testimonials from '../components/Testimonials/Testimonials';
 import Programs from '../components/Programs/Programs';
 import Feature from '../components/Features/Fearure';
 
@@ -85,7 +84,7 @@ const LandingPage = () => {
       </section>
 
       {/* Footer */}
-      {/* <Footer /> */}
+      <Footer />
     </>
   );
 };
