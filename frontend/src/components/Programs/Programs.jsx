@@ -48,8 +48,8 @@ const Programs = () => {
   return (
     <section className={styles.programsSection}>
       <div className={styles.sectionHeader}>
-        <h2>Transform Your Digital Future</h2>
-        <p className={styles.sectionSubtitle}>Choose your learning path</p>
+        <h2 className={styles.mainHeading}>Transform Your Digital Future</h2> {/* Added mainHeading class */}
+        <p className={styles.sectionSubtitle}>Choose the learning path that's right for you at Zeelevate Academy.</p> {/* Enhanced subtitle */}
       </div>
 
       <div className={styles.programsGrid}>
@@ -62,7 +62,7 @@ const Programs = () => {
             )}
             
             <div className={styles.cardHeader}>
-              <h3>{program.title}</h3>
+              <h3 className={styles.cardTitle}>{program.title}</h3> {/* Added cardTitle class */}
               <div className={styles.pricing}>
                 <div className={styles.priceMain}>
                   <span className={styles.currency}>$</span>
@@ -70,18 +70,18 @@ const Programs = () => {
                   <span className={styles.duration}>/month</span>
                 </div>
                 <p className={styles.fullCourse}>
-                  or ${program.fullPrice} full course
+                  or ${program.fullPrice} for the full course
                 </p>
               </div>
             </div>
 
             <div className={styles.cardBody}>
               <div className={styles.courseList}>
-                <h4>Included Courses:</h4>
+                <h4 className={styles.listHeading}>Included Courses:</h4> {/* Added listHeading class */}
                 <ul>
                   {program.courses.map((course, index) => (
                     <li key={index}>
-                      <span className={styles.listMarker}>▹</span>
+                      <span className={styles.listMarker}>🔷</span> {/* Changed marker to diamond for consistency */}
                       {course}
                     </li>
                   ))}
@@ -89,7 +89,7 @@ const Programs = () => {
               </div>
 
               <div className={styles.programFeatures}>
-                <h4>Program Features:</h4>
+                <h4 className={styles.listHeading}>Program Features:</h4> {/* Added listHeading class */}
                 <div className={styles.featuresGrid}>
                   {program.features.map((feature, index) => (
                     <div key={index} className={styles.featureItem}>

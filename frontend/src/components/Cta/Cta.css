@@ -1,93 +1,173 @@
-/* CTA (Call to Action) Section Styles */
-.cta {
-  margin: 100px auto;
-  width: 80%;
-  /* Using a more subtle background with the primary blue */
-  background-image: linear-gradient(rgba(0, 123, 255, 0.7), rgba(0, 123, 255, 0.7)), /* Adjusted blue RGB */
-    url(/images/banner2.jpg); /* Ensure you have this image */
+/* src/components/Cta/Cta.css */
+
+/* --- Import CSS Variables for Easy Color Management (assuming Navbar.css variables are accessible) --- */
+/* If these are in a separate shared file, ensure it's imported globally or here. */
+/* For demonstration, I'm assuming the :root variables from Navbar.css are available. */
+
+/* --- CTA Section Styles --- */
+.cta-section {
+  margin: 6rem auto; /* Adjusted margin for better spacing */
+  max-width: 90%; /* Use max-width for better responsiveness */
+  /* Using the primary blue for the background with a subtle gradient and a darker overlay */
+  background-image:
+    linear-gradient(rgba(54, 134, 255, 0.85), rgba(54, 134, 255, 0.85)), /* Primary blue with higher opacity overlay */
+    url('/images/banner2.jpg'); /* Ensure this image path is correct and the image is compelling */
   background-position: center;
   background-size: cover;
-  border-radius: 10px;
+  background-attachment: fixed; /* Creates a parallax-like scrolling effect */
+  border-radius: 12px; /* Slightly more rounded corners */
   text-align: center;
-  padding: 100px 0;
-  /* Using a light gray background instead */
-  background-color: #f8fafc; /* Light gray from Facilities */
+  padding: 5rem 2rem; /* Generous padding for content, with horizontal padding */
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25); /* More pronounced shadow for depth */
+  overflow: hidden; /* Ensures content stays within rounded corners */
 }
 
-.cta h1 {
-  color: #fff; /* White for contrast on the blue overlay */
-  font-size: 2.2rem;
-  margin-bottom: 20px;
-  padding: 0;
+.cta-content {
+  max-width: 800px; /* Constrain content width for readability */
+  margin: 0 auto; /* Center the content */
+  position: relative; /* For potential future animations */
+  z-index: 1; /* Ensure content is above the background overlay */
 }
 
-.cta p {
-  color: #f0f0f0; /* Lighter shade of gray for better readability on the overlay */
-  font-size: 1.1rem;
-  margin-bottom: 30px;
+.cta-heading {
+  color: var(--text-light); /* White text for contrast */
+  font-size: 2.8rem; /* Larger, more impactful heading */
+  font-weight: 700; /* Bolder for prominence */
+  line-height: 1.2; /* Better line spacing */
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Subtle text shadow for depth */
+}
+
+.cta-description {
+  color: var(--text-light-alt); /* Softer white for descriptive text */
+  font-size: 1.25rem; /* Larger font for readability */
+  line-height: 1.6;
+  margin-bottom: 2.5rem; /* More space before buttons */
+  max-width: 700px; /* Limit line length for readability */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .cta-buttons {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 1.5rem; /* Increased gap between buttons */
+  flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
 }
 
-.hero-btn {
-  display: inline-block;
-  padding: 12px 30px;
-  color: #fff;
-  /* Using the accent blue for the primary button */
-  background-color: #00BFFF; /* Accent blue from Testimonials */
-  border: none;
-  border-radius: 5px;
-  font-size: 1.1rem;
-  cursor: pointer;
+/* --- Common CTA Button Styles --- */
+.cta-button {
+  display: inline-flex; /* Use flex for potential icon alignment */
+  align-items: center; /* Vertically center icon and text */
+  justify-content: center; /* Horizontally center content */
+  padding: 0.9rem 2.2rem; /* Slightly more vertical padding, generous horizontal */
+  border-radius: 30px; /* Pills shape for a modern look */
+  font-size: 1.05rem; /* Slightly larger font */
+  font-weight: 600; /* Bolder text */
   text-decoration: none;
-  transition: background-color 0.3s ease;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out, transform 0.2s ease-out; /* Smooth transitions for all properties */
+  border: 2px solid transparent; /* Placeholder for hover border */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Subtle initial shadow */
 }
 
-.hero-btn:hover {
-  background-color: #0099cc; /* A slightly darker shade of the accent blue */
+.cta-button .button-icon {
+  margin-right: 0.5rem; /* Space between icon and text */
+  font-size: 1.1em; /* Adjust icon size relative to text */
 }
 
-.enroll-btn {
-  /* Inheriting from hero-btn */
+/* --- Primary CTA Button (Enroll Now / Explore Courses) --- */
+.primary-cta-button {
+  background-color: var(--accent-cyan); /* Bright accent for primary action */
+  color: var(--background-dark); /* Dark text on bright button for contrast */
+  border-color: var(--accent-cyan); /* Border matches background */
 }
 
-.enroll-btn:hover {
-  /* Inheriting from hero-btn:hover */
+.primary-cta-button:hover {
+  background-color: var(--primary-blue-light); /* Lighter primary blue on hover */
+  border-color: var(--primary-blue-light);
+  transform: translateY(-3px); /* Subtle lift effect */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); /* Enhanced shadow on hover */
+  color: var(--text-light); /* White text on hover */
 }
 
-.learn-more-btn {
-  /* Using a neutral gray for secondary action */
-  background-color: #64748b; /* Gray from Facilities paragraph */
+/* --- Secondary CTA Button (Learn More / About Us) --- */
+.secondary-cta-button {
+  background-color: transparent; /* Transparent background */
+  color: var(--text-light); /* White text */
+  border-color: var(--text-light); /* White border */
 }
 
-.learn-more-btn:hover {
-  background-color: #475569; /* Darker gray */
+.secondary-cta-button:hover {
+  background-color: var(--primary-blue-dark); /* Darker primary blue on hover */
+  border-color: var(--primary-blue-dark);
+  transform: translateY(-3px); /* Subtle lift effect */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); /* Enhanced shadow on hover */
+  color: var(--text-light); /* Ensure white text on hover */
 }
 
-/* Responsive styles for smaller screens */
-@media (max-width: 768px) {
-  .cta {
-    padding: 60px 0;
+
+/* --- Responsive styles for smaller screens --- */
+@media (max-width: 1024px) {
+  .cta-section {
+    margin: 5rem auto;
+    padding: 4rem 1.5rem;
   }
-
-  .cta h1 {
-    font-size: 1.8rem;
+  .cta-heading {
+    font-size: 2.4rem;
   }
-
-  .cta p {
+  .cta-description {
+    font-size: 1.15rem;
+  }
+  .cta-button {
+    padding: 0.8rem 2rem;
     font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .cta-section {
+    margin: 4rem auto;
+    padding: 3rem 1rem;
+    border-radius: 10px;
+  }
+
+  .cta-heading {
+    font-size: 2rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .cta-description {
+    font-size: 1rem;
+    margin-bottom: 2rem;
   }
 
   .cta-buttons {
     flex-direction: column;
-    gap: 10px;
+    gap: 0.8rem; /* Slightly reduced gap for mobile */
   }
 
-  .hero-btn {
-    width: 100%;
+  .cta-button {
+    width: 90%; /* Make buttons closer to full width on mobile */
+    max-width: 300px; /* Prevent them from becoming too wide on slightly larger phones */
+    margin: 0 auto; /* Center buttons */
+    padding: 0.7rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cta-section {
+    margin: 3rem auto;
+    padding: 2.5rem 0.8rem;
+  }
+  .cta-heading {
+    font-size: 1.7rem;
+  }
+  .cta-description {
+    font-size: 0.95rem;
+  }
+  .cta-button {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
   }
 }

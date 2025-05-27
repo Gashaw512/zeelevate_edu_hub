@@ -1,78 +1,238 @@
-.contact-us {
-  width: 80%;
-  margin: auto;
-  padding: 60px 0;
+/* src/components/ContactComponent/ContactComponent.css */
+
+/* --- Import CSS Variables (assuming :root variables are accessible globally) --- */
+
+/* --- Contact Section Styles --- */
+.contact-section {
+  padding: 6rem 2rem; /* Consistent padding with other sections */
+  background: var(--background-muted); /* Light gray background */
+  color: var(--text-dark); /* Default text color */
 }
 
-.row {
+.contact-container {
+  max-width: 1200px; /* Max width for content container */
+  margin: 0 auto;
+}
+
+.contact-title {
+  color: var(--primary-blue); /* Primary blue for main title */
+  font-size: 3.2rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.contact-description {
+  color: var(--text-muted); /* Muted text for description */
+  font-size: 1.15rem;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto 4rem; /* More space before contact rows */
+  text-align: center;
+}
+
+.contact-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Allows columns to wrap on smaller screens */
   justify-content: space-between;
-  gap: 20px;
+  gap: 3rem; /* Increased gap between columns */
 }
 
-.contact-col {
-  flex-basis: 48%;
-  margin-bottom: 30px;
+/* --- Contact Information Column --- */
+.contact-info-col {
+  flex: 1; /* Allow column to grow */
+  min-width: 300px; /* Ensure a minimum width before wrapping */
+  background: var(--background-light); /* White background for info box */
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  border: 1px solid var(--border-light);
 }
 
-.contact-col div {
+.info-item {
   display: flex;
   align-items: center;
-  margin-bottom: 40px;
+  margin-bottom: 2.5rem; /* Space between info items */
+  gap: 1.2rem; /* Space between icon and text */
 }
 
-.contact-col div .icon {
-  font-size: 28px;
-  color: #00BFFF; /* Electric Blue */
-  margin: 10px;
-  margin-right: 30px;
+.info-item:last-child {
+  margin-bottom: 0; /* No margin after the last item */
 }
 
-.contact-col div p {
+.contact-icon {
+  font-size: 2.2rem; /* Larger icons */
+  color: var(--accent-cyan); /* Accent blue for icons */
+  min-width: 2.2rem; /* Prevent icon from shrinking */
+  text-align: center;
+}
+
+.info-item h5 {
+  font-size: 1.3rem; /* Larger font for main contact details */
+  margin-bottom: 0.3rem;
+  color: var(--primary-blue-dark); /* Dark primary blue for headings */
+  font-weight: 600;
+}
+
+.info-item p {
   padding: 0;
+  font-size: 1rem;
+  color: var(--text-muted); /* Muted text for descriptions */
 }
 
-.contact-col div h5 {
-  font-size: 20px;
-  margin-bottom: 5px;
-  color: #2C3E50; /* Deep Navy */
-  font-weight: 400;
+/* --- Contact Form Column --- */
+.contact-form-col {
+  flex: 1.5; /* Allow form column to take up more space */
+  min-width: 350px; /* Ensure a minimum width */
+  background: var(--background-light); /* White background for form */
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  border: 1px solid var(--border-light);
 }
 
-.contact-col input,
-.contact-col textarea {
+.contact-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-input,
+.form-textarea {
   width: 100%;
-  padding: 15px;
-  margin-bottom: 17px;
+  padding: 1rem 1.2rem; /* Increased padding for better tap targets and look */
+  margin-bottom: 1.2rem; /* Consistent vertical spacing */
   outline: none;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-light); /* Light border */
   font-size: 1rem;
-  border-radius: 4px;
+  border-radius: 8px; /* Slightly more rounded corners */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  color: var(--text-dark); /* Ensure text is readable */
+  background-color: var(--background-light); /* Explicit white background */
 }
 
-.hero-btn.red-btn {
-  background-color: #00BFFF; /* Electric Blue */
-  color: white;
-  border: none;
-  padding: 12px 25px;
-  font-size: 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: var(--cool-gray); /* Muted placeholder text */
 }
 
-.hero-btn.red-btn:hover {
-  background-color: #008B8B; /* Dark Cyan */
+.form-input:focus,
+.form-textarea:focus {
+  border-color: var(--primary-blue); /* Primary blue border on focus */
+  box-shadow: 0 0 0 3px rgba(54, 134, 255, 0.2); /* Soft blue glow on focus */
 }
 
-/* Responsive for small screens */
-@media (max-width: 768px) {
-  .row {
-    flex-direction: column;
+.form-textarea {
+  resize: vertical; /* Allow vertical resizing only */
+  min-height: 100px; /* Minimum height for textarea */
+}
+
+/* Reusing .cta-button and .primary-cta-button from your Cta.css or shared button.css */
+/* Ensure these styles are globally available or imported */
+.cta-button {
+  width: auto; /* Allow button to size to content */
+  align-self: flex-start; /* Align button to the left if form is wider */
+  margin-top: 1rem; /* Space above button */
+  /* Other styles inherited from cta-button and primary-cta-button */
+}
+
+
+/* --- Responsive Styles --- */
+@media (max-width: 992px) {
+  .contact-title {
+    font-size: 2.8rem;
   }
+  .contact-description {
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+  }
+  .contact-row {
+    gap: 2rem;
+  }
+  .contact-info-col,
+  .contact-form-col {
+    padding: 2rem;
+  }
+  .contact-icon {
+    font-size: 2rem;
+  }
+  .info-item h5 {
+    font-size: 1.2rem;
+  }
+  .info-item p {
+    font-size: 0.95rem;
+  }
+  .form-input,
+  .form-textarea {
+    padding: 0.9rem 1rem;
+  }
+}
 
-  .contact-col {
-    flex-basis: 100%;
+@media (max-width: 768px) {
+  .contact-section {
+    padding: 4rem 1rem;
+  }
+  .contact-title {
+    font-size: 2.4rem;
+    margin-bottom: 1.2rem;
+  }
+  .contact-description {
+    font-size: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  .contact-row {
+    flex-direction: column; /* Stack columns vertically on mobile */
+    gap: 2rem;
+  }
+  .contact-info-col,
+  .contact-form-col {
+    min-width: unset; /* Remove min-width to allow full flexibility */
+    flex: none; /* Remove flex grow */
+    width: 100%; /* Take full width */
+  }
+  .info-item {
+    margin-bottom: 2rem;
+  }
+  .contact-icon {
+    font-size: 1.8rem;
+  }
+  .info-item h5 {
+    font-size: 1.1rem;
+  }
+  .info-item p {
+    font-size: 0.9rem;
+  }
+  .form-input,
+  .form-textarea {
+    font-size: 0.95rem;
+  }
+  .cta-button {
+    width: 100%; /* Full width button on mobile */
+    align-self: center; /* Center the button */
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-title {
+    font-size: 2rem;
+  }
+  .contact-description {
+    font-size: 0.9rem;
+  }
+  .contact-info-col,
+  .contact-form-col {
+    padding: 1.5rem;
+  }
+  .info-item {
+    gap: 1rem;
+  }
+  .contact-icon {
+    font-size: 1.6rem;
+  }
+  .info-item h5 {
+    font-size: 1rem;
+  }
+  .form-input,
+  .form-textarea {
+    padding: 0.8rem;
   }
 }

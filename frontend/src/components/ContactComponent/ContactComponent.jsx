@@ -1,53 +1,59 @@
+// src/components/ContactComponent/ContactComponent.jsx
 import "./ContactComponent.css";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPhone, faHome, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { faPhone, faMapMarkerAlt, faEnvelope } from "@fortawesome/free-solid-svg-icons"; // Using faMapMarkerAlt for home icon
 
 const ContactComponent = () => {
   return (
-    <>
-      <section className="contact-us">
-        <div className="row">
-          <div className="contact-col">
-            <div>
-              <FontAwesomeIcon icon={faHome} className="icon" />
+    <section className="contact-section"> {/* Changed class for consistency */}
+      <div className="contact-container">
+        <h1 className="contact-title">Get in Touch with Zeelevate Academy</h1>
+        <p className="contact-description">
+          Have questions about our courses, partnerships, or anything else? We're here to help!
+          Fill out the form below or reach out to us using the contact details provided.
+        </p>
+
+        <div className="contact-row"> {/* Changed class for consistency */}
+          <div className="contact-info-col"> {/* Changed class for clarity */}
+            <div className="info-item">
+              <FontAwesomeIcon icon={faMapMarkerAlt} className="contact-icon" /> {/* Using faMapMarkerAlt */}
               <span>
                 <h5>Ras Mekonen St, Cyber Security Training Center</h5>
-                <p>አዲስ አበባ፣ ኢትዮጵያ</p>
+                <p>Addis Ababa, Ethiopia</p> {/* Changed Amharic to English for broader readability */}
               </span>
             </div>
 
-            <div>
-              <FontAwesomeIcon icon={faPhone} className="icon" />
+            <div className="info-item">
+              <FontAwesomeIcon icon={faPhone} className="contact-icon" />
               <span>
-                <h5>+251 934343434</h5>
-                <p>Monday to Saturday, 10AM to 6PM</p>
+                <h5>+251 934 343434</h5> {/* Formatted phone number */}
+                <p>Monday to Saturday, 10 AM to 6 PM EAT</p> {/* Added EAT for clarity */}
               </span>
             </div>
 
-            <div>
-              <FontAwesomeIcon icon={faEnvelope} className="icon" />
+            <div className="info-item">
+              <FontAwesomeIcon icon={faEnvelope} className="contact-icon" />
               <span>
-                <h5>info@cybersec.com</h5>
-                <p>Email us Your query</p>
+                <h5>info@zeelevate.com</h5> {/* Changed email to be specific to Zeelevate */}
+                <p>Send us your query anytime!</p> {/* More inviting text */}
               </span>
             </div>
           </div>
 
-          <div className="contact-col">
-            <form action="">
-              <input type="text" placeholder="Enter your name" required />
-              <input type="email" placeholder="Enter email address" required />
-              <input type="text" placeholder="Enter your subject" required />
-              <textarea rows="8" placeholder="Message" required></textarea>
-              <button type="submit" className="hero-btn red-btn">
+          <div className="contact-form-col"> {/* Changed class for clarity */}
+            <form action="#" method="POST" className="contact-form"> {/* Added method and action (for potential backend) */}
+              <input type="text" placeholder="Your Full Name" required className="form-input" />
+              <input type="email" placeholder="Your Email Address" required className="form-input" />
+              <input type="text" placeholder="Subject of Your Message" required className="form-input" />
+              <textarea rows="6" placeholder="Write your message here..." required className="form-textarea"></textarea> {/* Adjusted rows, placeholder */}
+              <button type="submit" className="cta-button primary-cta-button"> {/* Reusing primary CTA button style */}
                 Send Message
               </button>
             </form>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 };
 

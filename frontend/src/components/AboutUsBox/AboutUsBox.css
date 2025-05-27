@@ -1,151 +1,204 @@
-/* General Section Styles */
-.about-us {
-  padding: 4rem 2rem;
-  background: #f8fafc;
+/* src/components/AboutUs/AboutUsBox.css */
+
+/* --- Import CSS Variables (assuming :root variables are accessible globally) --- */
+
+/* --- General Section Styles --- */
+.about-us-section {
+  padding: 6rem 2rem; /* More generous vertical padding */
+  background: var(--background-muted); /* Light gray for the section background */
+  color: var(--text-dark); /* Default dark text for content */
 }
 
 .about-us-container {
-  max-width: 1200px;
+  max-width: 1280px; /* Wider container for more expansive content */
   margin: 0 auto;
 }
 
-/* About Content */
-.about-content {
-  /* Reserved for any future inner layout enhancements */
+/* Section Headings */
+.section-title {
+  color: var(--primary-blue); /* Primary blue for main section titles */
+  font-size: 3.2rem; /* Larger, impactful title */
+  font-weight: 800; /* Extra bold */
+  margin-bottom: 2.5rem; /* More space below title */
+  text-align: center;
+  position: relative;
+  padding-bottom: 0.8rem; /* Space for underline effect */
 }
 
-.about-us-title {
-  color: #2c3e50;
+.section-title::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 80px; /* Short, impactful underline */
+  height: 4px;
+  background-color: var(--accent-cyan); /* Accent color for underline */
+  border-radius: 2px;
+}
+
+.section-subtitle {
+  color: var(--primary-blue); /* Primary blue for subsections */
   font-size: 2.5rem;
-  margin-bottom: 2rem;
+  font-weight: 700;
+  margin-top: 4rem; /* Space above new subsections */
+  margin-bottom: 1.5rem;
   text-align: center;
 }
+
+.section-description {
+  color: var(--text-muted); /* Muted text for descriptive paragraphs */
+  font-size: 1.15rem;
+  line-height: 1.7;
+  max-width: 800px;
+  margin: 0 auto 3rem; /* Center and add space below */
+  text-align: center;
+}
+
 
 /* Founder Profiles */
 .founder-profiles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin-bottom: 3rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Slightly wider min width */
+  gap: 2.5rem; /* Increased gap */
+  margin-bottom: 4rem;
 }
 
 .founder-card {
-  background: white;
-  padding: 2rem;
+  background: var(--background-light); /* White background for cards */
+  padding: 2.5rem 1.5rem; /* Adjusted padding */
   border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); /* Stronger initial shadow */
   text-align: center;
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  border: 1px solid var(--border-light); /* Subtle border */
 }
 
 .founder-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px); /* More pronounced lift */
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
 }
 
 .founder-image {
-  width: 150px;
-  height: 150px;
+  width: 160px; /* Slightly larger image */
+  height: 160px;
   border-radius: 50%;
-  margin: 0 auto 1rem;
+  margin: 0 auto 1.5rem;
   object-fit: cover;
+  border: 4px solid var(--accent-cyan); /* Accent border around image */
+  box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.2); /* Soft glow around border */
 }
 
 .founder-name {
-  color: #333;
-  font-size: 1.2rem;
+  color: var(--text-dark); /* Dark text for names */
+  font-size: 1.5rem; /* Larger font for names */
+  font-weight: 700;
   margin-bottom: 0.5rem;
 }
 
 .founder-role {
-  color: #777;
-  font-size: 1rem;
-  margin-bottom: 0.8rem;
+  color: var(--primary-blue); /* Primary blue for roles */
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
 }
 
 .founder-bio {
-  color: #555;
-  font-size: 1.1rem;
+  color: var(--text-muted); /* Muted text for bios */
+  font-size: 1rem;
   line-height: 1.6;
-  max-width: 500px;
-  margin: 0 auto;
+  text-align: left; /* Align bios to left for better readability */
+  margin-bottom: 1.5rem; /* Space before social links */
 }
 
 /* Social Media Links */
 .social-links {
   display: flex;
-  gap: 1rem;
+  gap: 1.2rem; /* Increased gap */
   justify-content: center;
-  margin-top: 1rem;
+  margin-top: 1rem; /* Adjust if bio has margin-bottom */
 }
 
 .social-links a {
-  color: #00bfff;
-  font-size: 1.5rem;
-  transition: color 0.3s ease;
+  color: var(--primary-blue); /* Primary blue for icons */
+  font-size: 1.8rem; /* Larger icons */
+  transition: color 0.3s ease, transform 0.2s ease;
 }
 
 .social-links a:hover {
-  color: #0099cc;
+  color: var(--accent-cyan); /* Accent color on hover */
+  transform: translateY(-3px); /* Subtle lift */
 }
 
-/* Organization Story */
-.org-story {
-  margin: 3rem auto;
-  padding: 2rem;
-  background: white;
+/* Organization Story (OrgStory component's root class) */
+.org-story-section { /* Renamed from .org-story */
+  margin: 4rem auto; /* Consistent vertical margin */
+  padding: 3rem; /* More generous padding */
+  background: var(--background-light); /* White background */
   border-radius: 12px;
-  max-width: 900px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); /* Consistent shadow */
+  max-width: 1000px; /* Wider max-width for story content */
+  border: 1px solid var(--border-light);
 }
 
 .org-story-title {
-  color: #2c3e50;
-  font-size: 1.8rem;
+  color: var(--primary-blue);
+  font-size: 2.2rem; /* Consistent heading size */
+  font-weight: 700;
   margin-bottom: 1.5rem;
   text-align: center;
 }
 
 .org-story-text {
-  color: #555;
-  font-size: 1.1rem;
-  line-height: 1.6;
-  margin-bottom: 1rem;
-  text-align: center;
+  color: var(--text-dark); /* Darker text for main paragraphs */
+  font-size: 1.15rem; /* Larger for readability */
+  line-height: 1.8; /* Improved line spacing */
+  margin-bottom: 1.5rem;
+  text-align: left; /* Left align for readability */
 }
 
 .specializations {
-  columns: 2;
+  columns: 2; /* Keep columns for desktop */
   list-style: none;
   padding: 0;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
 }
 
 .specializations li {
-  padding: 0.5rem 0;
+  color: var(--text-dark); /* Dark text for list items */
+  padding: 0.6rem 0;
   position: relative;
-  padding-left: 1.5rem;
+  padding-left: 1.8rem; /* More space for bullet */
   transition: color 0.2s ease;
+  font-size: 1.05rem;
 }
 
 .specializations li::before {
-  content: "•";
-  color: #00bfff;
+  content: "🔷"; /* Using a diamond unicode character for a modern bullet */
+  color: var(--accent-cyan);
   position: absolute;
   left: 0;
+  font-size: 0.9em; /* Adjust bullet size */
+  line-height: 1;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .specializations li:hover {
-  color: #0099cc;
+  color: var(--primary-blue-dark); /* Primary blue on hover */
 }
 
-/* Video Section */
-.video-section {
+/* Introductory Video (IntroVideo component's root class) */
+.video-section { /* Renamed from .video-section in your original CSS, assuming this is the root class in IntroVideo */
   position: relative;
-  padding-top: 56.25%;
+  padding-top: 56.25%; /* 16:9 aspect ratio */
   height: 0;
   overflow: hidden;
   border-radius: 12px;
-  margin: 3rem 0;
+  margin: 4rem auto; /* Consistent vertical margin */
+  max-width: 900px; /* Constrain video width */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Shadow for video frame */
+  background-color: var(--background-dark-alt); /* Placeholder background */
 }
 
 .intro-video {
@@ -157,43 +210,233 @@
   border: none;
 }
 
-/* CTA Button */
-.about-us-cta-btn {
-  display: inline-block;
-  padding: 1rem 2rem;
-  background-color: #00bfff;
-  color: white;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+/* In-Section CTA (between video and founders) */
+.about-section-cta {
+  background: var(--primary-blue-light); /* Lighter blue background for this CTA */
+  padding: 3rem 1.5rem;
+  border-radius: 12px;
   text-align: center;
-  margin: 2rem auto 0;
+  margin: 4rem auto; /* Consistent margin */
+  max-width: 900px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
 }
 
-.about-us-cta-btn:hover,
-.about-us-cta-btn:focus {
-  background-color: #0099cc;
-  transform: translateY(-2px);
-  outline: none;
+.cta-heading-small {
+  color: var(--text-light); /* White text on blue background */
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
 }
+
+/* Reusing .cta-button and .primary-cta-button styles from your Cta.css */
+/* Ensure Cta.css or a shared button.css is imported for these styles to apply */
+/* .cta-button { ... } */
+/* .primary-cta-button { ... } */
+
+
+/* Why Choose Us Section */
+.why-choose-us {
+  margin-top: 5rem; /* Good spacing after founders */
+  padding: 3rem;
+  background: var(--background-light);
+  border-radius: 12px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-light);
+}
+
+.why-choose-us .section-subtitle {
+  margin-top: 0; /* Remove extra top margin for this subtitle */
+  margin-bottom: 1.5rem;
+}
+
+.values-list {
+  list-style: none;
+  padding: 0;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.values-list li {
+  background: var(--background-muted); /* Muted background for each list item */
+  padding: 1rem 1.5rem;
+  margin-bottom: 0.8rem;
+  border-radius: 8px;
+  text-align: left;
+  font-size: 1.1rem;
+  color: var(--text-dark);
+  border-left: 5px solid var(--accent-cyan); /* Accent color bar */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.values-list li:hover {
+  transform: translateX(5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.values-list li strong {
+  color: var(--primary-blue); /* Highlight bold text with primary blue */
+}
+
 
 /* Media Queries */
-@media (max-width: 768px) {
-  .specializations {
-    columns: 1;
+@media (max-width: 1200px) {
+  .section-title {
+    font-size: 2.8rem;
   }
+  .section-subtitle {
+    font-size: 2.2rem;
+  }
+  .founder-profiles {
+    gap: 2rem;
+  }
+  .founder-card {
+    padding: 2rem 1rem;
+  }
+}
 
-  .about-us-title {
+@media (max-width: 992px) {
+  .section-title {
+    font-size: 2.4rem;
+    margin-bottom: 2rem;
+  }
+  .section-title::after {
+    width: 60px;
+    height: 3px;
+  }
+  .section-subtitle {
     font-size: 2rem;
+    margin-top: 3rem;
   }
-
-  .org-story-title,
+  .section-description {
+    font-size: 1.05rem;
+  }
+  .founder-profiles {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Smaller min-width for tablets */
+    gap: 1.5rem;
+  }
+  .founder-image {
+    width: 140px;
+    height: 140px;
+  }
+  .founder-name {
+    font-size: 1.3rem;
+  }
+  .founder-role {
+    font-size: 1rem;
+  }
+  .org-story-section {
+    padding: 2.5rem;
+  }
+  .org-story-title {
+    font-size: 1.9rem;
+  }
   .org-story-text {
+    font-size: 1rem;
+  }
+  .specializations {
+    columns: 1; /* Stack specializations on smaller tablets */
+  }
+  .specializations li {
+    font-size: 1rem;
+    padding: 0.5rem 0;
+  }
+  .cta-heading-small {
+    font-size: 1.8rem;
+  }
+  .values-list li {
+    font-size: 1.05rem;
+    padding: 0.9rem 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-us-section {
+    padding: 4rem 1rem; /* Reduced padding for smaller screens */
+  }
+  .section-title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .section-subtitle {
+    font-size: 1.8rem;
+    margin-top: 2.5rem;
+  }
+  .section-description {
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+  }
+  .founder-profiles {
+    grid-template-columns: 1fr; /* Stack founders vertically on phones */
+    gap: 1.5rem;
+  }
+  .founder-card {
+    padding: 1.8rem 1rem;
+  }
+  .founder-image {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 1rem;
+  }
+  .founder-name {
+    font-size: 1.2rem;
+  }
+  .founder-role {
+    font-size: 0.9rem;
+  }
+  .founder-bio {
+    font-size: 0.9rem;
+    text-align: center; /* Center bio text on mobile */
+  }
+  .social-links {
+    margin-top: 0.8rem;
+    font-size: 1.6rem;
+  }
+  .org-story-section {
+    padding: 2rem;
+    margin: 3rem auto;
+  }
+  .org-story-title {
+    font-size: 1.6rem;
+  }
+  .org-story-text {
+    font-size: 0.95rem;
     text-align: left;
   }
-
-  .founder-bio {
+  .specializations li {
+    font-size: 0.95rem;
+  }
+  .video-section {
+    margin: 3rem auto;
+  }
+  .about-section-cta {
+    padding: 2.5rem 1rem;
+    margin: 3rem auto;
+  }
+  .cta-heading-small {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+  }
+  .values-list li {
     font-size: 1rem;
+    padding: 0.8rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.8rem;
+  }
+  .section-subtitle {
+    font-size: 1.6rem;
+  }
+  .founder-name {
+    font-size: 1.1rem;
+  }
+  .org-story-title {
+    font-size: 1.4rem;
+  }
+  .cta-heading-small {
+    font-size: 1.4rem;
   }
 }

@@ -1,25 +1,6 @@
-// import Subheader from "../components/Subheader/Subheader";
-// import StudentDashboard from "../components/dashboard/StudentDashboard";
-// import Facilities from "../components/Facilities/Facilities";
-// import Footer from "../components/Footer/Footer";
 
-// const StudentDashboardPage = () => {
-//   return (
-//     <>
-//       <Subheader header="Our Courses" />
-//       <StudentDashboard />
-//       <Facilities />
-//       <Footer />
-//     </>
-//   );
-// };
-
-// export default StudentDashboardPage;
-
-import React from 'react';
 import { Link } from 'react-router-dom';
 import Subheader from "../components/Subheader/Subheader";
-import Facilities from "../components/Facilities/Facilities";
 import Footer from "../components/Footer/Footer";
 
 const StudentDashboardPage = () => {
@@ -41,7 +22,6 @@ const StudentDashboardPage = () => {
         </Link>
         {/* You can add more general information or introductory content here if needed */}
       </div>
-      <Facilities />
       <Footer />
     </>
   );
