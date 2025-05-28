@@ -1,7 +1,7 @@
 /* src/components/auth/SignIn.module.css */
 
 /* --- CSS Variables (ensure these are globally accessible or imported) --- */
-/* Example:
+
 :root {
   --primary-blue: #3686FF;
   --primary-blue-dark: #265EC1;
@@ -16,7 +16,7 @@
   --success-green: #28a745;
   --warning-yellow: #ffc107;
 }
-*/
+
 
 /* Styles for the main form layout (often provided by AuthLayout)
    However, if AuthLayout doesn't provide these, you might place them here

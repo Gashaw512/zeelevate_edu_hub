@@ -66,12 +66,10 @@ const SignUp = () => {
     if (programIdFromUrl) {
       const programExists = MOCK_PROGRAMS.some(p => p.id === programIdFromUrl);
       if (programExists && !selectedProgramIds.includes(programIdFromUrl)) {
-        // Ensure that if a programId is passed, only that one is selected initially.
-        // If you want to allow multiple, adjust this logic.
         setSelectedProgramIds([programIdFromUrl]);
       }
     }
-  }, [searchParams, selectedProgramIds]); // Depend on selectedProgramIds to prevent re-adding if already present
+  }, [searchParams, selectedProgramIds]);
 
   const calculateTotalPrice = useCallback(() => {
     let total = 0;
@@ -87,15 +85,15 @@ const SignUp = () => {
     setSelectedProgramIds(prev =>
       prev.includes(programId)
         ? prev.filter(id => id !== programId)
-        : [programId] // Allows only single selection if you want, or prev.concat(programId) for multiple
+        : [programId]
     );
-    setError(''); // Clear error on selection change
+    setError('');
   }, []);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    if (error) setError(''); // Clear error when user starts typing
+    if (error) setError('');
   }, [error]);
 
   const handleNextStep = useCallback((e) => {
@@ -112,7 +110,7 @@ const SignUp = () => {
   }, [currentStep, selectedProgramIds]);
 
   const handlePreviousStep = useCallback(() => {
-    setError(''); // Clear any errors when going back
+    setError('');
     setCurrentStep(prev => Math.max(1, prev - 1));
   }, []);
 
@@ -121,7 +119,6 @@ const SignUp = () => {
     setError('');
     setIsSubmitting(true);
 
-    // Basic client-side validation for account details
     if (!formData.name || !formData.email || !formData.phoneNumber || !formData.password || !formData.confirmPassword) {
       setError('Please fill in all required personal details.');
       setIsSubmitting(false);
@@ -132,21 +129,6 @@ const SignUp = () => {
       setError('Passwords do not match.');
       setIsSubmitting(false);
       return;
-    }
-
-    // Email validation (simple regex)
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setError('Please enter a valid email address.');
-      setIsSubmitting(false);
-      return;
-    }
-
-    // Password strength (example: min 8 chars)
-    if (formData.password.length < 8) {
-        setError('Password must be at least 8 characters long.');
-        setIsSubmitting(false);
-        return;
     }
 
     const coursesToEnroll = [];
@@ -161,75 +143,26 @@ const SignUp = () => {
       }
     });
 
-    // Simulate API call for registration/enrollment
-    console.log("Submitting form data:", {
-      formData,
-      selectedPrograms: selectedProgramIds,
-      coursesToEnroll,
-      totalPrice: calculateTotalPrice(),
-    });
-
-    // In a real application, you would make an API call here.
-    // For example:
-    /*
-    try {
-      const response = await api.post('/register-enroll', {
-        name: formData.name,
-        email: formData.email,
-        phoneNumber: formData.phoneNumber,
-        password: formData.password,
-        selectedProgramIds,
+    navigate('/checkout', {
+      state: {
+        formData,
+        selectedPrograms: selectedProgramIds,
         coursesToEnroll,
         totalPrice: calculateTotalPrice(),
-      });
-      if (response.data.success) {
-        navigate('/checkout', {
-          state: {
-            formData,
-            selectedPrograms: selectedProgramIds,
-            coursesToEnroll,
-            totalPrice: calculateTotalPrice(),
-          },
-        });
-      } else {
-        setError(response.data.message || 'Registration failed. Please try again.');
-      }
-    } catch (apiError) {
-      console.error("Registration API error:", apiError);
-      setError(apiError.response?.data?.message || 'An unexpected error occurred during registration.');
-    } finally {
-      setIsSubmitting(false);
-    }
-    */
+      },
+    });
 
-    // For now, directly navigate to checkout on successful client-side validation
-    setTimeout(() => { // Simulate network delay
-        navigate('/checkout', {
-            state: {
-                formData,
-                selectedPrograms: selectedProgramIds,
-                coursesToEnroll,
-                totalPrice: calculateTotalPrice(),
-            },
-        });
-        setIsSubmitting(false);
-    }, 1000);
-
-
+    setIsSubmitting(false);
   }, [formData, selectedProgramIds, calculateTotalPrice, navigate]);
 
   const handleSocialAuthIntent = useCallback((providerName) => {
-    // This is a placeholder. In a payment-first flow, social sign-in
-    // typically needs backend coordination to handle user registration
-    // and then linking to a payment intent without immediate pre-payment registration.
-    console.log(`Attempting social sign-in with: ${providerName}`);
-    setError("For payment-first flow, social sign-in requires specific backend integration to manage pre-payment user association.");
+    setError("For payment-first flow, social sign-in needs backend coordination to avoid pre-payment registration.");
   }, []);
 
   return (
     <AuthLayout
-      title="Enroll in Programs" // Maps to .auth-title in AuthLayout
-      instruction={currentStep === 1 ? "Select your program modules." : "Provide your details to begin your learning journey."} // Maps to .auth-instruction
+      title="Enroll in Programs"
+      instruction={currentStep === 1 ? "Select your program modules." : "Provide your details to begin your learning journey."}
     >
       <form onSubmit={currentStep === 2 ? handleSubmitFinalDetails : handleNextStep} className="enrollment-form">
         {currentStep === 1 && (
@@ -259,9 +192,9 @@ const SignUp = () => {
         />
       </form>
 
-      <p className="sign-up-prompt"> {/* Apply new class name */}
+      <p className="sign-up">
         Already have an account?{" "}
-        <a href="/signin" className="link primary-link"> {/* Apply consistent link classes */}
+        <a href="/signin" className="link">
           Sign In
         </a>
       </p>
