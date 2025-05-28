@@ -1,0 +1,166 @@
+/* src/components/auth/SignIn.module.css */
+
+/* --- CSS Variables (ensure these are globally accessible or imported) --- */
+
+:root {
+  --primary-blue: #3686FF;
+  --primary-blue-dark: #265EC1;
+  --primary-blue-light: #7CAEFF;
+  --accent-cyan: #00D9FF;
+  --background-light: #FFFFFF;
+  --background-muted: #F7F9FC;
+  --text-dark: #222222;
+  --text-muted: #666666;
+  --border-light: #D1D5DB;
+  --error-red: #dc3545;
+  --success-green: #28a745;
+  --warning-yellow: #ffc107;
+}
+
+
+/* Styles for the main form layout (often provided by AuthLayout)
+   However, if AuthLayout doesn't provide these, you might place them here
+   or ensure it's handled by AuthLayout.
+.auth-container {
+  max-width: 450px;
+  margin: 50px auto;
+  padding: 40px 30px;
+  background-color: var(--background-light);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  position: relative;
+}
+*/
+
+/* Specific styles for the SignIn form */
+.signInForm {
+  margin-top: 1.5rem; /* Space above the form */
+}
+
+/* Error Message */
+.errorMessage {
+  color: var(--error-red); /* Consistent error red */
+  margin: 1rem 0; /* Clear spacing */
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 0.75rem 1rem;
+  background-color: rgba(var(--error-red-rgb, 220, 53, 69), 0.1); /* Subtle red background */
+  border-radius: 8px;
+  border: 1px solid var(--error-red);
+}
+
+/* Forgot Password Link */
+.forgotPassword {
+  margin-top: 1.2rem;
+  text-align: right; /* Align to the right for common UX */
+}
+
+/* Links (Shared Styles) */
+.link {
+  font-size: 1rem;
+  text-decoration: none;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
+  font-weight: 500;
+  color: var(--primary-blue-dark); /* Use a darker blue for standard links */
+}
+
+.link:hover {
+  color: var(--accent-cyan); /* Highlight on hover */
+  text-decoration: underline;
+}
+
+/* Primary Link (e.g., Sign Up Now) */
+.primaryLink {
+  color: var(--primary-blue); /* More prominent primary blue */
+  font-weight: 600; /* Bolder */
+}
+
+.primaryLink:hover {
+  color: var(--accent-cyan); /* Consistent hover accent */
+}
+
+/* Divider */
+.divider {
+  position: relative;
+  text-align: center;
+  margin: 2rem 0; /* More vertical space */
+  display: flex; /* Use flexbox for centering text between lines */
+  align-items: center;
+  color: var(--text-muted); /* Muted gray for divider text */
+  font-size: 0.9rem;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1; /* Take up remaining space */
+  height: 1px;
+  background-color: var(--border-light); /* Light border color */
+  margin: 0 1rem; /* Space between line and text */
+}
+
+.dividerText {
+  padding: 0 0.8rem; /* Padding around the text */
+  background-color: var(--background-light); /* Match form background */
+  position: relative; /* Ensure text is above lines */
+  z-index: 1;
+  font-weight: 500;
+}
+
+/* Social Auth Section */
+.socialAuthSection {
+  margin-top: 1.5rem; /* Space below divider */
+}
+
+/* Sign Up Link Section */
+.signUp {
+  margin-top: 1.8rem; /* Space below social buttons */
+  font-size: 1rem;
+  color: var(--text-muted); /* Muted text for the prompt */
+}
+
+
+/* --- Responsive Adjustments (Add these to AuthLayout.module.css if it handles general auth layout) --- */
+@media (max-width: 768px) {
+  /* .auth-container {
+    padding: 30px 20px;
+    margin: 30px auto;
+    max-width: 380px;
+  }
+  .welcome-text {
+    font-size: 1.8rem;
+  }
+  .login-instruction {
+    font-size: 1rem;
+    margin-bottom: 25px;
+  } */
+  .heroImageContainer {
+    /* If you have a specific hero section related to this layout, adjust here */
+  }
+}
+
+@media (max-width: 480px) {
+  /* .auth-container {
+    padding: 25px 15px;
+    margin: 20px auto;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  .welcome-text {
+    font-size: 1.6rem;
+  }
+  .login-instruction {
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+  } */
+  .divider {
+    margin: 24px 0;
+  }
+  .link {
+    font-size: 0.9rem;
+  }
+  .signUp {
+    font-size: 0.95rem;
+  }
+}

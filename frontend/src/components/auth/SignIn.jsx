@@ -1,23 +1,24 @@
 // src/components/auth/SignIn.jsx
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { getAllProviders } from "../../data/externalAuthProviderConfig";
 import { signInWithPopup } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // Import Link
 import AuthForm from "../common/AuthForm";
 import useSignIn from "../../hooks/useSignIn";
 import SocialAuthButtons from "../common/SocialAuthButton";
 import { auth } from "../../firebase/auth";
 import { useAuth } from "../../context/AuthContext";
 import AuthLayout from "../layouts/auth/AuthLayout";
-import "./SignIn.css";
+import styles from "./SignIn.module.css"; // Use CSS Modules
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const { user, setError } = useAuth();
+  const { user, setError: setAuthContextError } = useAuth(); // Renamed to avoid conflict
   const externalProviders = getAllProviders();
-  const { formData, error, isSubmitting, handleChange, handleSubmit } =
-    useSignIn();
+  const { formData, error: signInError, isSubmitting, handleChange, handleSubmit } =
+    useSignIn(); // Renamed error to signInError
 
+  // Redirect if user is already logged in
   useEffect(() => {
     if (user) {
       navigate("/student/dashboard");
@@ -29,7 +30,7 @@ const SignIn = () => {
       (p) => p.name.toLowerCase() === providerName.toLowerCase()
     );
     if (!providerConfig) {
-      setError(`Sign-in with ${providerName} is not configured.`);
+      setAuthContextError(`Sign-in with ${providerName} is not configured.`);
       return;
     }
 
@@ -39,13 +40,14 @@ const SignIn = () => {
           // AuthContext handles the state update and navigation
         })
         .catch((err) => {
-          setError(err.message || `Failed to sign in with ${providerName}.`);
+          // Display a user-friendly error message
+          setAuthContextError(err.message || `Failed to sign in with ${providerName}. Please try again.`);
         });
     } else if (providerConfig.signInMethod === "initiateLinkedInLogin") {
-      console.log("Call this function: initiateLinkedInLogin()");
-      // initiateLinkedInLogin();
+      console.log("LinkedIn login initiated. Implement your LinkedIn specific flow here.");
+      // Example: initiateLinkedInLogin(); // Call your actual LinkedIn function
     } else {
-      setError(`Unsupported sign-in method for ${providerName}.`);
+      setAuthContextError(`Unsupported sign-in method for ${providerName}.`);
     }
   };
 
@@ -54,59 +56,68 @@ const SignIn = () => {
       name: "email",
       label: "Email",
       type: "email",
-      placeholder: "Email",
+      placeholder: "Enter your email", // More descriptive placeholder
       required: true,
     },
     {
       name: "password",
       label: "Password",
       type: "password",
-      placeholder: "Password",
+      placeholder: "Enter your password", // More descriptive placeholder
       required: true,
     },
   ];
 
   return (
     <AuthLayout
-      title="Welcome"
-      instruction="Login to Zeelevate Academy to continue your learning journey"
+      title="Welcome Back!" // Slightly more engaging title
+      instruction="Log in to Zeelevate Academy to continue your learning journey." // More descriptive instruction
     >
-      {/* Move form wrapper here to avoid nested form error */}
-      <form onSubmit={handleSubmit}>
+      {/* Form for email/password sign-in */}
+      <form onSubmit={handleSubmit} className={styles.signInForm}> {/* Apply form style */}
         <AuthForm
           formData={formData}
           onChange={handleChange}
-          submitButtonText="Login"
+          submitButtonText="Login to My Account" // Clearer button text
           disabled={isSubmitting}
           fieldsConfig={fieldsConfig}
         />
       </form>
 
-      {error && <p className="error-message">{error}</p>}
+      {/* Display errors if any */}
+      {(signInError || user?.error) && ( // Show error from useSignIn or AuthContext
+        <p className={styles.errorMessage}>{signInError || user?.error}</p>
+      )}
 
-      <div className="forgot-password">
-        <a href="/reset-password" className="link">
+      {/* Forgot Password Link */}
+      <div className={styles.forgotPassword}>
+        <Link to="/reset-password" className={styles.link}>
           Forgot Password?
-        </a>
+        </Link>
       </div>
 
-      <div className="sign-up">
+      {/* Divider */}
+      <div className={styles.divider}>
+        <span className={styles.dividerText}>OR</span>
+      </div>
+
+      {/* Social Sign-in Buttons */}
+      <div className={styles.socialAuthSection}> {/* New container for clarity */}
+        <SocialAuthButtons
+          providers={externalProviders}
+          onSignIn={handleExternalSignIn}
+        />
+      </div>
+
+      {/* Sign Up Link */}
+      <div className={styles.signUp}>
         <p>
-          Do not have an account?{" "}
-          <a href="/signup" className="link primary-link">
-            Sign Up
-          </a>
+          Don't have an account?{" "}
+          <Link to="/signup" className={`${styles.link} ${styles.primaryLink}`}>
+            Sign Up Now
+          </Link>
         </p>
       </div>
-
-      <div className="divider">
-        <span className="divider-text">OR</span>
-      </div>
-
-      <SocialAuthButtons
-        providers={externalProviders}
-        onSignIn={handleExternalSignIn}
-      />
     </AuthLayout>
   );
 };

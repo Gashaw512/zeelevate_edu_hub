@@ -1,5 +1,5 @@
 // frontend/src/pages/PaymentSuccessPage.jsx
-import React, { useEffect } from "react";
+import  { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { createUserWithEmailAndPassword, auth } from "../firebase/auth";
 

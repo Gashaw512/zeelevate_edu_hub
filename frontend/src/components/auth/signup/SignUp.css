@@ -1,16 +1,31 @@
 /* src/pages/EnrollmentFlow.css */
 
-/* --- General Layout and AuthForm-related styles (from your provided CSS) --- */
+/* --- General Layout and AuthForm-related styles --- */
+:root {
+  --primary-blue: #3686FF;
+  --primary-blue-dark: #265EC1;
+  --primary-blue-light: #7CAEFF;
+  --accent-cyan: #00D9FF;
+  --background-light: #FFFFFF;
+  --background-muted: #F7F9FC;
+  --text-dark: #222222;
+  --text-muted: #666666;
+  --border-light: #D1D5DB;
+  --error-red: #dc3545;
+  --success-green: #28a745;
+  --warning-yellow: #ffc107;
+}
+
 .sign-in-container {
   max-width: 450px;
   margin: 50px auto;
   padding: 40px 30px;
-  background-color: #fff;
+  background-color: var(--background-light); /* #fff */
   border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 25px rgba(var(--text-dark-rgb), 0.1); /* Using rgba with text-dark for shadow */
   text-align: center;
   position: relative;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Segoe UI', sans-serif; /* Keep specific font if desired */
 }
 
 .logo {
@@ -27,14 +42,14 @@
 .welcome-text {
   font-size: 2.2rem;
   margin-bottom: 12px;
-  color: #1e293b;
+  color: var(--text-dark); /* #1e293b -> --text-dark */
   font-weight: 600;
 }
 
 .login-instruction {
   font-size: 1.1rem;
   margin-bottom: 35px;
-  color: #64748b;
+  color: var(--text-muted); /* #64748b -> --text-muted */
   line-height: 1.5;
 }
 
@@ -54,7 +69,7 @@
   width: 100%;
   padding: 14px 16px;
   font-size: 1rem;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--border-light); /* #e2e8f0 -> --border-light */
   border-radius: 8px;
   outline: none;
   box-sizing: border-box;
@@ -62,69 +77,70 @@
 }
 
 .input:focus {
-  border-color: #00BFFF;
-  box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.1);
+  border-color: var(--primary-blue); /* #00BFFF -> --primary-blue */
+  box-shadow: 0 0 0 3px rgba(var(--primary-blue-rgb), 0.1); /* Adjusted for primary blue */
 }
 
 .input::placeholder {
-  color: #94a3b8;
+  color: var(--cool-gray); /* #94a3b8 -> --cool-gray */
 }
 
 /* --- Common Button Styles --- */
 .button {
   width: 100%;
-  padding: 14px;
+  padding: 8px;
   font-size: 1.1rem;
   font-weight: 500;
   cursor: pointer;
   border-radius: 8px;
   transition: all 0.3s ease;
-  margin-top: 10px; /* Adjust as needed for specific buttons */
+  margin-top: 10px;
   border: none;
 }
 
 .primary-button {
-  background-color: #00BFFF;
-  color: white;
+  background-color: var(--primary-blue); /* #00BFFF -> --primary-blue */
+  color: var(--text-light); /* white */
 }
 
 .primary-button:hover {
-  background-color: #009ACD;
+  background-color: var(--hover-blue); /* #009ACD -> --hover-blue */
   transform: translateY(-1px);
 }
 
 .primary-button:active {
+  background-color: var(--active-blue); /* Closer to --active-blue for consistent feel */
   transform: translateY(0);
 }
 
-.secondary-button { /* NEW: Style for the "Back" button */
-  background-color: #e2e8f0;
-  color: #334155;
-  border: 1px solid #cbd5e1;
+.secondary-button {
+  background-color: var(--background-muted); /* #e2e8f0 -> --background-muted */
+  color: var(--text-dark); /* #334155 -> --text-dark */
+  border: 1px solid var(--border-light); /* #cbd5e1 -> --border-light */
 }
 
 .secondary-button:hover {
-  background-color: #cbd5e1;
+  background-color: var(--border-light); /* #cbd5e1 -> --border-light for hover */
   transform: translateY(-1px);
 }
 
 .secondary-button:active {
+  background-color: var(--cool-gray); /* Slightly darker secondary button active state */
   transform: translateY(0);
 }
 
-
 .error-message {
-  color: #ef4444;
+  color: var(--error-red); /* Using a conceptual danger-red. If not defined, consider --primary-blue-dark for temporary */
   margin-top: 12px;
   font-size: 0.95rem;
   text-align: center;
 }
 
 /* --- Footer and Social Auth Styles --- */
-.sign-up {
+.sign-up-prompt { /* Renamed for clarity, was .sign-up */
   margin-top: 18px;
   font-size: 0.95rem;
-  color: #333;
+  color: var(--text-dark); /* #333 -> --text-dark */
 }
 
 .link {
@@ -132,19 +148,19 @@
   text-decoration: none;
   transition: color 0.2s ease;
   font-weight: 500;
-  color: #00BFFF;
+  color: var(--primary-blue); /* #00BFFF -> --primary-blue */
 }
 
 .link:hover {
   text-decoration: underline;
-  color: #009ACD;
+  color: var(--hover-blue); /* #009ACD -> --hover-blue */
 }
 
 .divider {
   position: relative;
   text-align: center;
   font-size: 0.85rem;
-  color: #666;
+  color: var(--text-muted); /* #666 */
   margin: 32px -30px;
   width: calc(100% + 60px);
 }
@@ -154,32 +170,24 @@
   content: "";
   position: absolute;
   height: 1px;
-  background-color: #ccc;
+  background-color: var(--border-light); /* #ccc -> --border-light */
   top: 50%;
   width: 40%;
   flex: 1;
   margin: 0 1rem;
 }
 
-.divider::before {
-  left: 0;
-}
-
-.divider::after {
-  right: 0;
-}
-
 .divider-text {
   position: relative;
   padding: 0 12px;
-  background-color: white;
-  color: #64748b;
+  background-color: var(--background-light); /* white */
+  color: var(--text-muted); /* #64748b -> --text-muted */
   font-size: 0.95rem;
   font-weight: 500;
   z-index: 1;
 }
 
-.external-signin { /* You might not use this class if social buttons are directly placed */
+.external-signin {
   margin-top: 24px;
 }
 
@@ -198,14 +206,14 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 1px solid #e2e8f0;
-  background-color: white;
+  border: 1px solid var(--border-light); /* #e2e8f0 -> --border-light */
+  background-color: var(--background-light); /* white */
 }
 
 .social-auth-button:hover {
-  background-color: #f8fafc;
+  background-color: var(--background-muted); /* #f8fafc -> --background-muted */
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(var(--text-dark-rgb), 0.05); /* Using rgba with text-dark for shadow */
 }
 
 .social-auth-button:active {
@@ -222,17 +230,21 @@
   font-weight: 500;
 }
 
+/* Specific Social Buttons - using original values if no direct variable mapping */
 .google-button {
-  color: #757575;
-  background-color: #ffffff;
+  color: var(--text-muted); /* #757575 -> --text-muted */
+  background-color: var(--background-light); /* #ffffff */
 }
 
 .google-button:hover {
-  background-color: #f5f5f5;
+  background-color: var(--background-muted); /* #f5f5f5 -> --background-muted */
 }
 
 .linkedin-button {
-  color: #ffffff;
+  color: var(--text-light); /* #ffffff */
+  /* Keeping specific brand colors for social buttons if no direct variable,
+     as they are often external brand requirements. If you want these
+     to conform to your palette, you'd need specific variables for them. */
   background-color: #0077B5;
 }
 
@@ -244,66 +256,66 @@
 .enrollment-form {
   display: flex;
   flex-direction: column;
-  gap: 25px; /* Space between the main form sections */
+  gap: 25px;
 }
 
 .course-selection-section,
 .initial-details-section {
   text-align: left;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-light); /* #e0e0e0 -> --border-light */
   border-radius: 10px;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: var(--background-muted); /* #f9f9f9 -> --background-muted */
 }
 
 .course-selection-section h3,
 .initial-details-section h3 {
   font-size: 1.5rem;
-  color: #1e293b;
+  color: var(--text-dark); /* #1e293b -> --text-dark */
   margin-bottom: 20px;
   text-align: center;
 }
 
 /* Program Card Styling */
 .program-card {
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-light); /* #e0e0e0 -> --border-light */
   border-radius: 10px;
   padding: 15px;
   margin-bottom: 15px;
-  background-color: #ffffff;
+  background-color: var(--background-light); /* #ffffff */
   transition: all 0.2s ease-in-out;
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 5px rgba(var(--text-dark-rgb),0.05); /* Using rgba with text-dark */
   position: relative;
 }
 
 .program-card:hover {
-  border-color: #b0e0ff;
+  border-color: var(--primary-blue-light); /* #b0e0ff -> --primary-blue-light */
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 6px 12px rgba(var(--text-dark-rgb),0.1); /* Using rgba with text-dark */
 }
 
 .program-card.selected {
-  border-color: #00BFFF;
-  box-shadow: 0 4px 10px rgba(0, 191, 255, 0.15);
-  background-color: #e6f7ff;
+  border-color: var(--primary-blue); /* #00BFFF -> --primary-blue */
+  box-shadow: 0 4px 10px rgba(var(--primary-blue-rgb), 0.15); /* Adjusted for primary blue */
+  background-color: var(--indigo-light); /* #e6f7ff -> --indigo-light */
 }
 
-.program-card::before { /* Overlay for whole card clickability */
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-    pointer-events: none;
+.program-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  pointer-events: none;
 }
 .program-card .program-header-selection,
 .program-card .program-short-description,
 .program-card .program-card-footer {
-    position: relative;
-    z-index: 2;
+  position: relative;
+  z-index: 2;
 }
 
 .program-header-selection {
@@ -316,7 +328,7 @@
 .program-card input[type="checkbox"] {
   width: 22px;
   height: 22px;
-  accent-color: #00BFFF;
+  accent-color: var(--primary-blue); /* #00BFFF -> --primary-blue */
   cursor: pointer;
   flex-shrink: 0;
   pointer-events: all;
@@ -330,14 +342,14 @@
 
 .program-card h4 {
   font-size: 1.3rem;
-  color: #1e293b;
+  color: var(--text-dark); /* #1e293b -> --text-dark */
   font-weight: 600;
   margin: 0;
 }
 
 .program-short-description {
   font-size: 0.95rem;
-  color: #64748b;
+  color: var(--text-muted); /* #64748b -> --text-muted */
   margin-left: 32px;
   margin-bottom: 15px;
 }
@@ -348,45 +360,45 @@
   align-items: center;
   margin-top: 15px;
   padding-top: 10px;
-  border-top: 1px dashed #e0e0e0;
+  border-top: 1px dashed var(--border-light); /* #e0e0e0 -> --border-light */
 }
 
 .program-price-label {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #009ACD;
+  color: var(--primary-blue-dark); /* #009ACD -> --primary-blue-dark */
 }
 
 .total-price {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--text-dark); /* #1e293b -> --text-dark */
   text-align: right;
   margin-top: 15px;
   padding-top: 15px;
-  border-top: 1px dashed #e0e0e0;
+  border-top: 1px dashed var(--border-light); /* #e0e0e0 -> --border-light */
 }
 
 /* Single "View All Courses" Link Section */
 .view-all-courses-container {
   margin-top: 30px;
   padding-top: 20px;
-  border-top: 1px dashed #e0e0e0;
+  border-top: 1px dashed var(--border-light); /* #e0e0e0 -> --border-light */
   text-align: center;
 }
 
 .view-all-courses-container p {
   font-size: 0.95rem;
-  color: #64748b;
+  color: var(--text-muted); /* #64748b -> --text-muted */
   margin-bottom: 15px;
 }
 
 .view-all-courses-link {
   display: inline-block;
   padding: 10px 20px;
-  background-color: #f0f8ff;
-  color: #007bff;
-  border: 1px solid #cceeff;
+  background-color: var(--indigo-light); /* #f0f8ff -> --indigo-light */
+  color: var(--primary-blue); /* #007bff -> --primary-blue */
+  border: 1px solid var(--primary-blue-light); /* #cceeff -> --primary-blue-light */
   border-radius: 8px;
   text-decoration: none;
   font-weight: 500;
@@ -394,28 +406,28 @@
 }
 
 .view-all-courses-link:hover {
-  background-color: #e0f2ff;
-  border-color: #aaddff;
+  background-color: var(--primary-blue-light); /* #e0f2ff -> --primary-blue-light */
+  border-color: var(--hover-blue); /* #aaddff -> --hover-blue (stronger than primary-blue-light for border) */
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.1);
+  box-shadow: 0 4px 8px rgba(var(--primary-blue-rgb), 0.1); /* Adjusted for primary blue */
 }
 
 .view-all-courses-link:active {
   transform: translateY(0);
 }
 
-/* --- NEW: Form Navigation Buttons --- */
+/* --- Form Navigation Buttons --- */
 .form-navigation-buttons {
   display: flex;
   gap: 15px;
-  justify-content: flex-end; /* Align buttons to the right */
-  margin-top: 25px; /* Space from the current step's content */
+  justify-content: flex-end;
+  margin-top: 25px;
 }
 
 .form-navigation-buttons .button {
-  flex-grow: 1; /* Allow buttons to expand */
-  max-width: 180px; /* Control max width for better appearance */
-  margin-top: 0; /* Override default button margin-top */
+  flex-grow: 1;
+  max-width: 180px;
+  margin-top: 0;
 }
 
 /* Ensure AuthForm's internal button is hidden as we use external ones */
@@ -467,10 +479,10 @@
     font-size: 1.1rem;
   }
   .form-navigation-buttons {
-    flex-direction: column; /* Stack buttons on small screens */
+    flex-direction: column;
     gap: 10px;
   }
   .form-navigation-buttons .button {
-    max-width: 100%; /* Take full width on small screens */
+    max-width: 100%;
   }
 }
