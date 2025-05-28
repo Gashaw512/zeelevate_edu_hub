@@ -12,7 +12,6 @@ import PaymentSuccessPage from "../pages/PaymentSuccessPage";  // Add this page
 
 // Dashboard Related
 import PrivateRoute from "../components/auth/PrivateRoute";
-import StudentDashboardPage from "../pages/StudentDashboardPage";
 import StudentDashboard from "../components/layouts/StudentDashboard";
 // import { StudentDashboardRoutes } from "../components/dashboard/StudentDashboard";
 import StudentDashboardRoutes from "../components/Dashboard/StudentDashboardRoutes";
