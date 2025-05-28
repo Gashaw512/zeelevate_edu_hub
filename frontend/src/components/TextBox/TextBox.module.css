@@ -1,11 +1,32 @@
 /* components/TextBox/TextBox.module.css */
 
+/* --- CSS Variables (assuming these are globally accessible or imported) --- */
+/* Example:
+:root {
+  --primary-blue: #3686FF;
+  --primary-blue-dark: #265EC1;
+  --primary-blue-light: #7CAEFF;
+  --accent-cyan: #00D9FF;
+  --background-dark: #1A202C; // Dark background for contrast
+  --text-light: #FFFFFF;
+  --text-muted-light: rgba(255, 255, 255, 0.9);
+}
+*/
+
 /* --- Hero Section Styling --- */
 .heroSection {
   position: relative;
-  padding: 4rem 2rem;
-  color: white;
-  overflow: hidden; /* Ensures no content overflows its boundaries */
+  width: 100%;
+  height: 100vh; /* Make it full viewport height */
+  display: flex;
+  align-items: center; /* Vertically center content */
+  justify-content: center; /* Horizontally center content */
+  color: var(--text-light); /* Ensure text is white */
+  overflow: hidden;
+  text-align: center;
+  /* Remove section-wide background gradient or make it very subtle if desired
+     background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%); */
+  font-family: 'Poppins', sans-serif; /* A more modern font example */
 }
 
 .heroImageContainer {
@@ -14,36 +35,60 @@
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 0; /* Positions the image behind the text */
+  z-index: -1; /* Place behind content */
 }
 
 .heroBackgroundImage {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Ensures the image covers the container */
-  filter: brightness(0.7); /* Dims the image for better text readability */
+  object-fit: cover;
+  object-position: center; /* Ensure image is centered */
+  /* --- ADJUSTMENT HERE: Lighter brightness filter --- */
+  filter: brightness(0.75) contrast(1.05); /* Less dim, slightly less contrast */
+  transform: scale(1.05); /* Slightly larger to give subtle parallax feel on hover/scroll */
+  transition: transform 0.5s ease-out; /* Smooth transition */
 }
 
-.heroContentOverlay {
+.heroImageContainer:hover .heroBackgroundImage {
+  transform: scale(1.03); /* Subtle zoom out on hover */
+}
+
+.heroImageOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* --- ADJUSTMENT HERE: Lighter overlay gradient --- */
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.2) 0%,   /* Top fade - very subtle */
+    rgba(0, 0, 0, 0.4) 60%,  /* Stronger fade towards bottom, but still lighter */
+    rgba(0, 0, 0, 0.5) 100% /* Max darkness at bottom */
+  );
+  z-index: 0; /* Above image, below content */
+}
+
+.heroContent { /* Renamed from heroContentOverlay for clarity */
   position: relative;
-  z-index: 1; /* Ensures text appears above the image */
-  max-width: 800px;
+  z-index: 1; /* Ensures text appears above all overlays */
+  max-width: 900px; /* Increased max-width for more spacious feel */
   margin: 0 auto;
-  text-align: center;
-  padding-top: 8rem;
-  padding-bottom: 6rem;
+  padding: 2rem; /* Add some internal padding */
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5); /* Stronger text shadow for readability */
 }
 
 .heroTitle {
-  font-size: 3.5rem;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.03em;
+  font-size: 5rem; /* Significantly larger for impact */
+  font-weight: 800; /* Extra bold */
+  line-height: 1.1;
+  letter-spacing: -0.05em; /* Tighter letter spacing for larger text */
   margin-bottom: 1.5rem;
+  animation: fadeInDown 1s ease-out forwards; /* Add entry animation */
 }
 
 .heroTitleHighlight {
-  color: #00d9ff; /* Highlight color for the brand name */
+  color: var(--accent-cyan); /* Highlight color for the brand name */
   position: relative;
   display: inline-block;
 }
@@ -51,110 +96,200 @@
 .heroTitleHighlight::after {
   content: '';
   position: absolute;
-  bottom: -8px;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg, #00d9ff, #0984e3); /* Gradient underline */
-  border-radius: 2px;
+  bottom: -10px; /* Adjust position */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120%; /* Wider underline */
+  height: 6px; /* Thicker underline */
+  background: linear-gradient(90deg, var(--accent-cyan), var(--primary-blue)); /* Vibrant gradient underline */
+  border-radius: 3px;
+  animation: expandWidth 1.2s ease-out forwards 0.5s; /* Animation delay */
+  transform-origin: center;
 }
 
 .heroSubtitle {
-  font-size: 1.4rem;
+  font-size: 1.8rem; /* Larger for better readability */
   line-height: 1.6;
-  max-width: 600px;
-  margin: 0 auto 2.5rem;
-  color: rgba(255, 255, 255, 0.9); /* Slightly transparent white for subtitle */
+  max-width: 700px; /* Adjust max-width */
+  margin: 0 auto 3.5rem; /* More space below subtitle */
+  color: var(--text-muted-light); /* Consistent muted white */
+  animation: fadeInUp 1s ease-out forwards 0.3s; /* Add entry animation with delay */
+}
+
+.ctaButtonsContainer { /* New container for better button layout */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+  gap: 1.8rem; /* Space between buttons */
+  margin-top: 3rem; /* Space from subtitle */
+  animation: fadeInUp 1s ease-out forwards 0.6s; /* Animation delay */
 }
 
 .ctaPrimaryButton {
   display: inline-flex;
   align-items: center;
   gap: 1rem;
-  padding: 1rem 2.2rem;
-  background: linear-gradient(135deg, #00d9ff, #0984e3); /* Vibrant gradient background */
-  color: white;
+  padding: 1.2rem 2.8rem; /* More generous padding */
+  background: linear-gradient(135deg, var(--accent-cyan), var(--primary-blue)); /* Vibrant gradient */
+  color: var(--text-light);
   border-radius: 50px;
-  font-weight: 600;
+  font-weight: 700; /* Bolder text */
+  font-size: 1.15rem; /* Larger font size */
   text-decoration: none;
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effects */
-  box-shadow: 0 8px 24px rgba(0, 217, 255, 0.2); /* Subtle shadow */
-  margin-right: 1.5rem;
+  transition: all 0.3s ease; /* Smooth hover effects for all properties */
+  box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3); /* Stronger initial shadow */
+  border: none; /* Ensure no default button border */
 }
 
 .ctaPrimaryButton:hover {
-  transform: translateY(-2px); /* Lifts button on hover */
-  box-shadow: 0 12px 32px rgba(0, 217, 255, 0.3); /* Enhanced shadow on hover */
+  transform: translateY(-3px) scale(1.02); /* Lifts and slightly scales */
+  box-shadow: 0 15px 40px rgba(0, 217, 255, 0.5); /* Enhanced shadow on hover */
+  background: linear-gradient(135deg, var(--primary-blue), var(--accent-cyan)); /* Reverse gradient on hover */
 }
 
 .ctaArrow {
-  font-size: 1.4rem;
-  transition: transform 0.3s ease; /* Smooth arrow movement */
+  font-size: 1.6rem; /* Larger arrow */
+  transition: transform 0.3s ease;
 }
 
 .ctaPrimaryButton:hover .ctaArrow {
-  transform: translateX(4px); /* Moves arrow slightly on button hover */
+  transform: translateX(6px); /* More pronounced arrow movement */
 }
 
-/* --- About Us Call to Action Section --- */
-
-/* --- Responsive Adjustments --- */
-@media (max-width: 768px) {
-  .heroTitle {
-    font-size: 2.8rem; /* Adjust title size for smaller screens */
-  }
-
-  .heroSubtitle {
-    font-size: 1.2rem; /* Adjust subtitle size for smaller screens */
-  }
-
-  .ctaPrimaryButton {
-    padding: 1rem 2rem; /* Adjust button padding for smaller screens */
-  }
-
-  .aboutUsCtaTitle {
-    font-size: 1.3rem; /* Adjust About Us title for smaller screens */
-  }
-}
-
-.bottomCta {
-  margin-top: 3rem;
-}
-
-.aboutCtaButton {
-  display: inline-block;
-  background: linear-gradient(135deg, #0984e3, #00d9ff);
-  color: white;
-  padding: 0.75rem 2rem;
-  border-radius: 50px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 8px 24px rgba(0, 217, 255, 0.2);
-}
-
-.aboutCtaButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(0, 217, 255, 0.3);
-}
-
-/* === Secondary CTA - About Us Button === */
-
-.secondaryCta {
-  display: inline-block;
-  margin-top: 2rem;
-  padding: 0.75rem 1.75rem;
+/* === Secondary CTA Button === */
+.ctaSecondaryButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 1.2rem 2.8rem; /* Consistent padding with primary */
   background-color: transparent;
-  color: white;
-  border: 2px solid white;
+  color: var(--text-light);
+  border: 2px solid var(--text-light); /* White border */
   border-radius: 50px;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 1.15rem;
   text-decoration: none;
   transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1); /* Subtle white shadow */
 }
 
-.secondaryCta:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #00d9ff;
-  border-color: #00d9ff;
+.ctaSecondaryButton:hover {
+  background-color: rgba(255, 255, 255, 0.15); /* Slightly more opaque background on hover */
+  color: var(--accent-cyan); /* Highlight text with accent color */
+  border-color: var(--accent-cyan); /* Highlight border with accent color */
+  transform: translateY(-3px) scale(1.02); /* Consistent lift and scale */
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2); /* Enhanced shadow */
+}
+
+
+/* --- Keyframe Animations --- */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes expandWidth {
+  from {
+    width: 0;
+  }
+  to {
+    width: 120%;
+  }
+}
+
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 992px) {
+  .heroTitle {
+    font-size: 4.5rem;
+  }
+  .heroSubtitle {
+    font-size: 1.6rem;
+  }
+  .ctaButtonsContainer {
+    gap: 1.5rem;
+  }
+  .ctaPrimaryButton,
+  .ctaSecondaryButton {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .heroSection {
+    height: 85vh; /* Slightly less than full height on tablets */
+  }
+  .heroTitle {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+  }
+  .heroTitleHighlight::after {
+    bottom: -8px;
+    height: 5px;
+  }
+  .heroSubtitle {
+    font-size: 1.4rem;
+    margin-bottom: 2.5rem;
+  }
+  .ctaButtonsContainer {
+    flex-direction: column; /* Stack buttons vertically on smaller screens */
+    gap: 1.2rem;
+  }
+  .ctaPrimaryButton,
+  .ctaSecondaryButton {
+    width: 80%; /* Make buttons wider when stacked */
+    max-width: 300px;
+    justify-content: center; /* Center text in stacked buttons */
+    padding: 0.9rem 2rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroSection {
+    height: 80vh; /* Further reduce height on small phones */
+  }
+  .heroContent {
+    padding: 1rem;
+  }
+  .heroTitle {
+    font-size: 2.5rem;
+    letter-spacing: -0.03em;
+  }
+  .heroTitleHighlight::after {
+    bottom: -6px;
+    height: 4px;
+    width: 100%;
+  }
+  .heroSubtitle {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+  .ctaPrimaryButton,
+  .ctaSecondaryButton {
+    width: 90%;
+    padding: 0.8rem 1.8rem;
+    font-size: 0.95rem;
+  }
+  .ctaArrow {
+    font-size: 1.2rem;
+  }
 }
