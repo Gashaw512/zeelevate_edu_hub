@@ -72,16 +72,16 @@ const Navbar = () => {
   }, []);
 
   // Effect to prevent body scrolling when mobile menu is open
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
+useEffect(() => {
+  const hash = window.location.hash;
+  if (hash) {
+    const id = hash.replace('#', '');
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
     }
-    return () => {
-      document.body.style.overflow = 'unset'; // Clean up on unmount
-    };
-  }, [isMobileMenuOpen]);
+  }
+}, []);
 
 
   return (

@@ -33,14 +33,14 @@ const LandingPage = () => {
       <TextBox />
 
       {/* Features / Value Proposition */}
-      <section id="features" className="py-24 bg-gray-50">
+      <section id="feature" className="py-24 bg-gray-50">
         <div className="container mx-auto px-6">
           <Feature />
         </div>
       </section>
 
       {/* Programs Section */}
-      <section id="programs" className="py-20 bg-white">
+      <section id="service" className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <Programs />
         </div>
@@ -63,16 +63,6 @@ const LandingPage = () => {
       <section id="team" className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <Team />
-        </div>
-      </section>
-
-      {/* Separator Line */}
-      <div className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 h-[1px] opacity-70"></div>
-
-      {/* Testimonials */}
-      <section id="testimonials" className="py-20 bg-gray-50">
-        <div className="container mx-auto px-6">
-          {/* <Testimonials /> */}
         </div>
       </section>
 
