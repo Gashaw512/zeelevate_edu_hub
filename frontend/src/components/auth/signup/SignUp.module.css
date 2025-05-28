@@ -1,0 +1,553 @@
+/* src/pages/SignUp/SignUp.module.css */
+
+/* --- CSS Variables (Ensure these are defined globally or in your root) --- */
+/* :root {
+  --primary-blue: #3686FF;
+  --primary-blue-dark: #265EC1;
+  --primary-blue-light: #7CAEFF;
+  --hover-blue: #2c73e8;
+  --active-blue: #1e69d9;
+  --accent-cyan: #00D9FF;
+  --background-light: #FFFFFF;
+  --background-muted: #F7F9FC;
+  --text-dark: #222222;
+  --text-muted: #666666;
+  --text-light: #FFFFFF;
+  --text-light-alt: #F0F0F0;
+  --border-light: #D1D5DB;
+  --success-green: #28a745;
+  --warning-yellow: #ffc107;
+  --error-red: #dc3545;
+  --cool-gray: #A0AEC0;
+} */
+
+/* --- General Auth Layout Overrides (if needed) --- */
+/* These styles assume AuthLayout provides a central container.
+   If AuthLayout also uses CSS Modules, you might need to pass classes or
+   adjust its internal structure to allow overriding these. */
+.authContainer { /* Example if AuthLayout has a specific class */
+  max-width: 500px; /* Slightly wider for the enrollment flow */
+  padding: 40px; /* More padding for a premium feel */
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15); /* Deeper, softer shadow */
+}
+
+.welcomeText { /* Corresponds to AuthLayout's title */
+  font-size: 2.5rem; /* Larger welcome text */
+  margin-bottom: 15px;
+  color: var(--primary-blue-dark); /* More prominent color */
+}
+
+.instruction { /* Corresponds to AuthLayout's instruction */
+  font-size: 1.1rem;
+  margin-bottom: 40px; /* More space before form */
+  color: var(--text-muted);
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* --- Enrollment Form Specific Styles --- */
+.enrollmentForm {
+  display: flex;
+  flex-direction: column;
+  gap: 30px; /* Increased gap between form sections */
+}
+
+/* --- Form Sections (Program Selection, Account Details) --- */
+.formSection { /* General class for form sections like ProgramSelection */
+  background-color: var(--background-light); /* White background for sections */
+  border: 1px solid var(--border-light);
+  border-radius: 12px; /* Slightly more rounded */
+  padding: 25px; /* Generous padding */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* Subtle shadow */
+}
+
+.sectionTitle { /* Title within ProgramSelection, AccountDetailsForm */
+  font-size: 1.6rem;
+  color: var(--primary-blue-dark);
+  margin-bottom: 25px;
+  text-align: center;
+  font-weight: 700;
+  position: relative; /* For underline effect */
+  padding-bottom: 10px;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background-color: var(--accent-cyan);
+  border-radius: 2px;
+}
+
+/* --- NEW: Program Cards Container for Horizontal Layout --- */
+.programCardsGrid { /* NEW CLASS for the container of program cards */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Auto-fit columns, min width 300px, max 1fr */
+  gap: 20px; /* Space between cards */
+  margin-bottom: 20px; /* Space before total price */
+}
+
+/* --- Program Card Styling --- */
+.programCard {
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 20px;
+  background-color: var(--background-light);
+  transition: all 0.3s ease-in-out; /* Smoother transition */
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Softer initial shadow */
+  position: relative;
+  display: flex; /* Make card content a flex container for internal layout if needed */
+  flex-direction: column; /* Stack internal content vertically */
+  justify-content: space-between; /* Pushes footer to bottom if card height varies */
+}
+
+.programCard:hover {
+  border-color: var(--primary-blue-light);
+  transform: translateY(-4px); /* More pronounced lift */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+}
+
+.programCard.selected {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px var(--primary-blue-light), 0 8px 20px rgba(0, 0, 0, 0.15); /* Accent blue ring and depth */
+  background-color: var(--background-muted); /* Slightly tinted background when selected */
+}
+
+/* Ensure checkbox and content are interactive within the card */
+.programCard .programHeaderSelection,
+.programCard .programShortDescription,
+.programCard .programCardFooter {
+  position: relative;
+  z-index: 2;
+}
+
+.programHeaderSelection {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* More space between checkbox and title */
+  margin-bottom: 10px;
+}
+
+.programCard input[type="checkbox"] {
+  width: 24px; /* Larger checkbox */
+  height: 24px; /* Larger checkbox */
+  accent-color: var(--primary-blue); /* Custom checkbox color */
+  cursor: pointer;
+  flex-shrink: 0;
+  border: 2px solid var(--border-light); /* Custom border */
+  border-radius: 5px; /* Slightly rounded checkbox */
+  transition: all 0.2s ease;
+}
+
+.programCard input[type="checkbox"]:checked {
+  border-color: var(--primary-blue); /* Border color when checked */
+  box-shadow: 0 0 0 3px var(--primary-blue-light); /* Subtle glow when checked */
+}
+
+.programTitleLabel {
+  flex: 1;
+  cursor: pointer;
+  font-size: 1.4rem; /* Larger program title */
+  color: var(--text-dark);
+  font-weight: 600;
+  margin: 0;
+}
+
+.programShortDescription {
+  font-size: 1rem; /* Slightly larger description */
+  color: var(--text-muted);
+  margin-left: 38px; /* Align with title due to checkbox */
+  margin-bottom: 15px;
+  line-height: 1.5;
+  flex-grow: 1; /* Allows description to take available space */
+}
+
+.programCardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto; /* Pushes footer to the bottom of the flex container */
+  padding-top: 15px;
+  border-top: 1px dashed var(--border-light);
+}
+
+.programPriceLabel {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary-blue-dark);
+}
+
+.totalPrice {
+  font-size: 1.3rem; /* Larger total price */
+  font-weight: 700;
+  color: var(--text-dark);
+  text-align: right;
+  margin-top: 25px; /* More space above total price */
+  padding-top: 20px;
+  border-top: 1px dashed var(--border-light);
+}
+
+/* "View All Courses" Link */
+.viewAllCoursesContainer {
+  margin-top: 35px;
+  padding-top: 25px;
+  border-top: 1px dashed var(--border-light);
+  text-align: center;
+}
+
+.viewAllCoursesContainer p {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+
+.viewAllCoursesLink {
+  display: inline-block;
+  padding: 12px 25px; /* More padding */
+  background-color: var(--background-muted); /* Muted background */
+  color: var(--primary-blue);
+  border: 1px solid var(--primary-blue-light);
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.viewAllCoursesLink:hover {
+  background-color: var(--primary-blue-light);
+  border-color: var(--primary-blue);
+  color: var(--text-light); /* Text becomes white on hover */
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Account Details Form Inputs --- */
+.inputGroup { /* Wrapper for label + input */
+  margin-bottom: 20px;
+}
+
+.inputLabel {
+  display: block;
+  font-size: 1rem;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+  font-weight: 500;
+  text-align: left;
+}
+
+.input { /* Individual input field */
+  width: 100%;
+  padding: 14px 18px; /* More padding */
+  font-size: 1rem;
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  color: var(--text-dark); /* Ensure input text color is dark */
+}
+
+.input:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 4px rgba(54, 134, 255, 0.15); /* Stronger focus ring */
+}
+
+.input::placeholder {
+  color: var(--cool-gray);
+  opacity: 0.8; /* Make placeholder slightly less visible */
+}
+
+/* --- Form Navigation Buttons --- */
+.formNavigationButtons {
+  display: flex;
+  gap: 20px; /* More space between nav buttons */
+  justify-content: space-between; /* Space out buttons */
+  margin-top: 30px;
+}
+
+.button { /* General button style */
+  flex-grow: 1; /* Allow buttons to grow */
+  padding: 15px 25px; /* More padding for buttons */
+  font-size: 1.05rem; /* Consistent font size */
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 10px; /* Slightly more rounded */
+  transition: all 0.3s ease;
+  border: none;
+  text-decoration: none; /* For Link components acting as buttons */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.primaryButton {
+  background: linear-gradient(135deg, var(--primary-blue), var(--accent-cyan)); /* Vibrant gradient */
+  color: var(--text-light);
+  box-shadow: 0 8px 20px rgba(0, 217, 255, 0.2);
+}
+
+.primaryButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--primary-blue)); /* Reverse gradient on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 217, 255, 0.3);
+}
+
+.secondaryButton { /* For 'Previous' button */
+  background-color: var(--background-muted);
+  color: var(--primary-blue-dark);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.secondaryButton:hover:not(:disabled) {
+  background-color: var(--border-light);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Error Message --- */
+.errorMessage {
+  color: var(--error-red);
+  margin-top: 20px; /* More space above error */
+  font-size: 1rem;
+  text-align: center;
+  padding: 10px 15px;
+  background-color: rgba(220, 53, 69, 0.1); /* Light red background */
+  border-radius: 8px;
+  border: 1px solid var(--error-red);
+  font-weight: 500;
+}
+
+/* --- Footer Link and Divider --- */
+.signUpPrompt { /* Renamed for clarity */
+  margin-top: 30px;
+  font-size: 1rem;
+  color: var(--text-dark);
+  text-align: center;
+}
+
+.link {
+  font-weight: 600;
+  color: var(--primary-blue);
+  text-decoration: none;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+
+.link:hover {
+  color: var(--hover-blue);
+  text-decoration: underline;
+}
+
+.divider {
+  position: relative;
+  text-align: center;
+  margin: 35px 0; /* More vertical space for divider */
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  position: absolute;
+  height: 1px;
+  background-color: var(--border-light);
+  top: 50%;
+  width: 40%; /* Adjust width to make the line longer */
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+.dividerText {
+  position: relative;
+  padding: 0 15px; /* More padding around text */
+  background-color: var(--background-light);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  z-index: 1;
+}
+
+/* --- Social Auth Buttons --- */
+.socialAuthContainer { /* Container for social buttons */
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* More space between buttons */
+  margin-top: 25px; /* Space from divider */
+}
+
+.socialAuthButton {
+  padding: 14px 18px; /* More padding for social buttons */
+  font-size: 1rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-light);
+  background-color: var(--background-light);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+}
+
+.socialAuthButton:hover {
+  background-color: var(--background-muted);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.socialIcon {
+  margin-right: 12px; /* More space for icon */
+  height: 22px; /* Slightly larger icon */
+  width: 22px;
+}
+
+.socialButtonLabel {
+  font-weight: 600; /* Bolder label */
+  color: var(--text-dark);
+}
+
+/* Specific Social Buttons (if using direct styles) */
+/* Ideally, these should still use your brand's color palette where possible */
+.googleButton {
+  color: var(--text-muted);
+  background-color: var(--background-light);
+}
+.googleButton:hover {
+  background-color: var(--background-muted);
+}
+
+.linkedinButton {
+  color: var(--text-light);
+  background-color: #0077B5; /* Standard LinkedIn blue */
+}
+.linkedinButton:hover {
+  background-color: #006097; /* Darker LinkedIn blue */
+}
+
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+  .authContainer {
+    max-width: 90%;
+    margin: 30px auto;
+    padding: 30px;
+  }
+  .welcomeText {
+    font-size: 2rem;
+  }
+  .instruction {
+    font-size: 1rem;
+    margin-bottom: 30px;
+  }
+  .sectionTitle {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+  }
+  .programCardsGrid {
+    grid-template-columns: 1fr; /* Stack vertically on smaller screens */
+    gap: 15px; /* Reduce gap when stacked */
+  }
+  .programCard {
+    padding: 15px;
+  }
+  .programCard h4 {
+    font-size: 1.2rem;
+  }
+  .programShortDescription {
+    font-size: 0.9rem;
+    margin-left: 36px;
+  }
+  .programPriceLabel {
+    font-size: 1.1rem;
+  }
+  .totalPrice {
+    font-size: 1.2rem;
+    margin-top: 20px;
+    padding-top: 15px;
+  }
+  .input,
+  .button,
+  .socialAuthButton {
+    font-size: 0.95rem;
+  }
+  .button {
+    padding: 12px 20px;
+  }
+  .socialIcon {
+    height: 20px;
+    width: 20px;
+  }
+  .formNavigationButtons {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .button {
+    max-width: 100%; /* Full width when stacked */
+  }
+}
+
+@media (max-width: 480px) {
+  .authContainer {
+    padding: 20px;
+    margin: 20px 10px;
+  }
+  .welcomeText {
+    font-size: 1.8rem;
+  }
+  .instruction {
+    font-size: 0.9rem;
+    margin-bottom: 25px;
+  }
+  .sectionTitle {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+  }
+  .programCard {
+    padding: 12px;
+  }
+  .programCard h4 {
+    font-size: 1.1rem;
+  }
+  .programShortDescription {
+    margin-left: 32px;
+    font-size: 0.85rem;
+  }
+  .programPriceLabel {
+    font-size: 1rem;
+  }
+  .totalPrice {
+    font-size: 1.1rem;
+    margin-top: 15px;
+    padding-top: 10px;
+  }
+  .input,
+  .socialAuthButton {
+    padding: 12px 15px;
+  }
+  .button {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+  }
+  .divider {
+    margin: 25px 0;
+  }
+  .dividerText {
+    font-size: 0.8rem;
+  }
+}

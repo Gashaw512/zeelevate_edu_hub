@@ -507,3 +507,12 @@
     font-size: 0.85rem;
   }
 }
+
+/* AboutUsBox.module.css */
+.founderBio p {
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+.founderBio p:last-child {
+  margin-bottom: 0; /* Remove margin from the last paragraph */
+}

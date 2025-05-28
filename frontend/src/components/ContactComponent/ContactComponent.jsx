@@ -18,23 +18,22 @@ const ContactComponent = () => {
             <div className="info-item">
               <FontAwesomeIcon icon={faMapMarkerAlt} className="contact-icon" /> {/* Using faMapMarkerAlt */}
               <span>
-                <h5>Ras Mekonen St, Cyber Security Training Center</h5>
-                <p>Addis Ababa, Ethiopia</p> {/* Changed Amharic to English for broader readability */}
+                <h5>Minnesota</h5>
               </span>
             </div>
 
             <div className="info-item">
               <FontAwesomeIcon icon={faPhone} className="contact-icon" />
               <span>
-                <h5>+251 934 343434</h5> {/* Formatted phone number */}
-                <p>Monday to Saturday, 10 AM to 6 PM EAT</p> {/* Added EAT for clarity */}
+                <h5>(651) 468-7345</h5> {/* Formatted phone number */}
+                {/* <p>Monday to Saturday, 10 AM to 6 PM EAT</p>  */}
               </span>
             </div>
 
             <div className="info-item">
               <FontAwesomeIcon icon={faEnvelope} className="contact-icon" />
               <span>
-                <h5>info@zeelevate.com</h5> {/* Changed email to be specific to Zeelevate */}
+                <h5>tech@zeelevate.com</h5> {/* Changed email to be specific to Zeelevate */}
                 <p>Send us your query anytime!</p> {/* More inviting text */}
               </span>
             </div>
