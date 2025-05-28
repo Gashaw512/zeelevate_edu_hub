@@ -1,0 +1,217 @@
+/* components/Feature/Feature.module.css */
+
+/* --- CSS Variables (Assuming these are globally available or imported) --- */
+/* :root {
+  --primary-blue: #3686FF;
+  --primary-blue-dark: #265EC1;
+  --primary-blue-light: #7CAEFF;
+  --hover-blue: #2c73e8;
+  --accent-cyan: #00D9FF;
+  --background-light: #FFFFFF;
+  --background-muted: #F7F9FC;
+  --text-dark: #222222;
+  --text-muted: #666666;
+  --text-light: #FFFFFF;
+  --text-light-alt: #F0F0F0;
+  --border-light: #D1D5DB;
+  --cool-gray: #A0AEC0; // Example if you need a specific gray
+} */
+
+/* === Feature Section Styles === */
+
+.featuresSection { /* Renamed class */
+  padding: 6rem 1.5rem; /* Consistent vertical padding */
+  background-color: var(--background-muted); /* Light gray background */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Consistent font */
+}
+
+.featuresContainer { /* Renamed class */
+  max-width: 1280px; /* Wider container */
+  margin: 0 auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  text-align: center;
+}
+
+.featuresHeading { /* Renamed class */
+  font-size: 3.2rem; /* Larger, impactful heading */
+  line-height: 1.2;
+  font-weight: 800; /* Extra bold */
+  color: var(--primary-blue); /* Primary blue for main heading */
+  margin-bottom: 1rem; /* Less space if subtitle follows */
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.05); /* Subtle text shadow */
+}
+
+.featuresSubtitle { /* New class for subtitle */
+  color: var(--text-muted); /* Muted text color */
+  font-size: 1.25rem; /* Larger for readability */
+  max-width: 800px; /* Constrain width */
+  margin: 0 auto 4rem; /* More space before grid */
+  line-height: 1.6;
+}
+
+.featuresGrid { /* Renamed class */
+  display: grid;
+  grid-template-columns: 1fr; /* Default to single column */
+  gap: 2.5rem; /* Consistent gap */
+  justify-items: center;
+}
+
+@media (min-width: 640px) { /* Small tablet/large phone */
+  .featuresGrid {
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
+  }
+}
+
+@media (min-width: 1024px) { /* Desktop */
+  .featuresGrid {
+    grid-template-columns: repeat(3, 1fr); /* Three columns */
+  }
+}
+
+/* === Feature Card Styles (General purpose, no --about specific) === */
+/* Assumes FeatureCard component itself has these styles */
+/* If FeatureCard is a separate component, these styles would be in FeatureCard.module.css */
+
+.featureCard { /* Root class of FeatureCard component */
+  background-color: var(--background-light); /* White background */
+  border: 1px solid var(--border-light); /* Subtle border */
+  border-radius: 12px; /* Consistent border radius */
+  padding: 2.5rem 2rem; /* Generous padding */
+  text-align: center;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); /* Professional shadow */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+  max-width: 400px; /* Limit card width on larger screens */
+  width: 100%; /* Ensure it takes full width on smaller screens */
+}
+
+.featureCard:hover {
+  transform: translateY(-8px); /* Subtle lift effect */
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.15); /* More pronounced shadow on hover */
+}
+
+.iconContainer { /* Added a container for the icon */
+  width: 70px;
+  height: 70px;
+  background-color: var(--primary-blue-light); /* Light blue background for icon */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem; /* Center and add space below */
+  font-size: 2.5rem; /* Icon size */
+  color: var(--text-light); /* White color for icon */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for icon container */
+}
+
+
+.cardTitle { /* Title within the FeatureCard */
+  font-size: 1.8rem; /* Larger title */
+  font-weight: 700;
+  color: var(--primary-blue-dark); /* Dark primary blue for title */
+  margin-bottom: 0.8rem;
+}
+
+.description { /* Description within the FeatureCard */
+  font-size: 1.05rem; /* Readable font size */
+  line-height: 1.6;
+  color: var(--text-dark); /* Dark text for description */
+  margin-bottom: 1rem; /* Space before potential CTA */
+}
+
+/* If you need a CTA button or link within the FeatureCard (optional) */
+/* .featureCard__cta {
+  display: inline-block;
+  color: var(--accent-cyan);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+  margin-top: 1rem;
+}
+
+.featureCard__cta:hover {
+  color: var(--primary-blue);
+  text-decoration: underline;
+} */
+
+
+/* Responsive adjustments for headings */
+@media (max-width: 992px) {
+  .featuresHeading {
+    font-size: 2.6rem;
+  }
+  .featuresSubtitle {
+    font-size: 1.15rem;
+    margin-bottom: 3.5rem;
+  }
+  .featureCard {
+    padding: 2rem 1.5rem;
+  }
+  .cardTitle {
+    font-size: 1.6rem;
+  }
+  .description {
+    font-size: 1rem;
+  }
+  .iconContainer {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+    margin-bottom: 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .featuresSection {
+    padding: 4rem 1rem;
+  }
+  .featuresHeading {
+    font-size: 2.2rem;
+  }
+  .featuresSubtitle {
+    font-size: 1rem;
+    margin-bottom: 3rem;
+  }
+  .featureCard {
+    padding: 1.8rem 1.2rem;
+    border-radius: 10px;
+  }
+  .cardTitle {
+    font-size: 1.4rem;
+  }
+  .description {
+    font-size: 0.95rem;
+  }
+  .iconContainer {
+    width: 55px;
+    height: 55px;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .featuresSection {
+    padding: 3rem 0.8rem;
+  }
+  .featuresHeading {
+    font-size: 1.8rem;
+  }
+  .featuresSubtitle {
+    font-size: 0.9rem;
+  }
+  .featureCard {
+    padding: 1.5rem 1rem;
+  }
+  .cardTitle {
+    font-size: 1.2rem;
+  }
+  .description {
+    font-size: 0.9rem;
+  }
+  .iconContainer {
+    width: 50px;
+    height: 50px;
+    font-size: 1.6rem;
+  }
+}

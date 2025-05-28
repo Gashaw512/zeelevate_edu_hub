@@ -1,33 +1,38 @@
-import './feature.css';
-import FeatureCard from './FeatureCard';
+// components/Feature/Feature.jsx
+import React from 'react';
+import FeatureCard from './FeatureCard'; // Ensure this component is well-defined and styled
+import styles from './Feature.module.css'; // Using CSS Modules for this component
 
 /**
  * Feature Section Component
  *
- * A clean, responsive, and visually appealing "Why Choose Us" section.
+ * A clean, responsive, and visually appealing "Why Choose Us" section
+ * designed to highlight core benefits of Zeelevate Academy.
  */
 const Feature = () => {
   return (
-    <section id="features" className="feature-section">
-      <div className="feature-container">
-        <h2 className="feature-heading">Why Choose Zeelevate?</h2>
-        <div className="feature-grid">
+    <section id="approach-section" className={styles.featuresSection}>
+      <div className={styles.featuresContainer}>
+        <h2 className={styles.featuresHeading}>Our Approach to Empowering Digital Futures</h2> {/* New heading */}
+        <p className={styles.featuresSubtitle}>
+          At Zeelevate, we've designed our learning experience around principles that guarantee your success.
+        </p>
+        <div className={styles.featuresGrid}>
           <FeatureCard
-            icon="🎓"
-            title="High-Quality Education"
-            description="Master programming, digital literacy, financial skills, and more — all at your own pace."
+            icon="🔗" // Chain, interconnected
+            title="Integrated & Holistic Curriculum"
+            description="Our courses seamlessly blend technical, digital, and financial literacy, providing a well-rounded foundation for modern life."
           />
           <FeatureCard
-            icon="🌍"
-            title="Inclusive Learning"
-            description="Designed for teens and adults — accessible, affordable, and flexible."
+            icon="🗣️" // Speech bubble, community
+            title="Interactive & Collaborative Environment"
+            description="Engage with peers and instructors through dynamic projects, discussions, and real-time support."
           />
           <FeatureCard
-            icon="🚀"
-            title="Career Growth"
-            description="Unlock opportunities with certifications that help you thrive in the modern world."
+            icon="📈" // Upward trend
+            title="Continuous Skill Evolution"
+            description="Our content is regularly updated to reflect the latest industry trends, ensuring your skills remain relevant and in-demand."
           />
-          
         </div>
       </div>
     </section>

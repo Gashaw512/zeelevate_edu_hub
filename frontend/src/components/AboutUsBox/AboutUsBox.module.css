@@ -1,6 +1,7 @@
 /* src/components/AboutUs/AboutUsBox.module.css */
 
-/* --- Import CSS Variables (assuming :root variables are accessible globally) --- */
+/* --- Define your CSS Variables (ensure these are globally accessible or imported) --- */
+/* For example, in your main index.css or a dedicated _variables.css */
 /* :root {
   --primary-blue: #3686FF;
   --primary-blue-dark: #265EC1;
@@ -22,14 +23,14 @@
 } */
 
 /* --- General Section Styles --- */
-.aboutUsSection { /* Renamed for CSS Modules */
+.aboutUsSection {
   padding: 6rem 2rem; /* More generous vertical padding */
   background: var(--background-muted); /* Light gray for the section background */
   color: var(--text-dark); /* Default dark text for content */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Consistent font */
 }
 
-.aboutUsContainer { /* Renamed for CSS Modules */
+.aboutUsContainer {
   max-width: 1300px; /* Wider container for more expansive content */
   margin: 0 auto;
 }
@@ -101,28 +102,8 @@
   border: 1px solid var(--border-light); /* Subtle border */
 }
 
-/* Ensure child components like OrgStory and IntroVideo inherit or override these as needed */
-/* For example, OrgStory might have a .org-story-title within it. */
-
-/* OrgStory Component Specific Overrides/Enhancements */
-/* (Assuming OrgStory and IntroVideo are separate components that need styling) */
-/* You would move their specific styles from your original CSS here or into their own modules */
-
-/* Example for OrgStory (if it's not a module) */
-/* .org-story-section { ... } // Adjust if it's already a module
-.org-story-title { ... }
-.org-story-text { ... }
-.specializations { ... }
-.specializations li { ... }
-.specializations li::before { ... } */
-
-/* Example for IntroVideo (if it's not a module) */
-/* .video-section { ... }
-.intro-video { ... } */
-
-
 /* Founder Profiles */
-.founderProfiles { /* Renamed for CSS Modules */
+.founderProfiles {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Slightly wider min width */
   gap: 2.5rem; /* Increased gap */
@@ -130,8 +111,7 @@
 }
 
 /* FounderCard Component Styles (Assumes FounderCard is a separate component) */
-/* These styles should ideally be in FounderCard.module.css */
-/* For now, applying here assuming it's in the same module or shared */
+/* These styles are applied here, ensure FounderCard.jsx uses these class names */
 .founderCard {
   background: var(--background-light); /* White background for cards */
   padding: 2.5rem 1.5rem; /* Adjusted padding */
@@ -147,67 +127,82 @@
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
 }
 
-.founderImage { /* Renamed for CSS Modules */
-  width: 160px; /* Slightly larger image */
+/* --- FOUNDER IMAGE REFINEMENT --- */
+.founderImage {
+  width: 160px;
   height: 160px;
   border-radius: 50%;
   margin: 0 auto 1.5rem;
   object-fit: cover;
-  border: 5px solid var(--accent-cyan); /* Accent border around image */
-  box-shadow: 0 0 0 5px rgba(0, 217, 255, 0.25); /* Soft glow around border */
+  /* Layered box-shadows create the concentric rings */
+  box-shadow:
+    0 0 0 4px var(--background-light),    /* Inner white ring for separation */
+    0 0 0 10px var(--accent-cyan),        /* Main accent-colored outer ring */
+    0 10px 20px rgba(0, 0, 0, 0.25);      /* Drop shadow for depth */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth transitions for hover */
 }
 
-.founderName { /* Renamed for CSS Modules */
-  color: var(--text-dark); /* Dark text for names */
-  font-size: 1.6rem; /* Larger font for names */
+/* Hover effect on the image when its parent card is hovered */
+.founderCard:hover .founderImage {
+  transform: scale(1.05); /* Slightly enlarge image on hover for a subtle pop */
+  box-shadow:
+    0 0 0 4px var(--background-light),
+    0 0 0 10px var(--primary-blue),       /* Change outer ring color to primary blue on hover */
+    0 15px 30px rgba(0, 0, 0, 0.4);       /* Deeper, more noticeable shadow on hover */
+}
+/* --- END FOUNDER IMAGE REFINEMENT --- */
+
+
+.founderName {
+  color: var(--text-dark);
+  font-size: 1.6rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
 }
 
-.founderRole { /* Renamed for CSS Modules */
-  color: var(--primary-blue); /* Primary blue for roles */
+.founderRole {
+  color: var(--primary-blue);
   font-size: 1.15rem;
   font-weight: 500;
   margin-bottom: 1rem;
 }
 
-.founderBio { /* Renamed for CSS Modules */
-  color: var(--text-muted); /* Muted text for bios */
+.founderBio {
+  color: var(--text-muted);
   font-size: 1rem;
   line-height: 1.6;
-  text-align: center; /* Center align bios now for consistency with card */
-  margin-bottom: 1.5rem; /* Space before social links */
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
-.socialLinks { /* Renamed for CSS Modules */
+.socialLinks {
   display: flex;
-  gap: 1.2rem; /* Increased gap */
+  gap: 1.2rem;
   justify-content: center;
   margin-top: 1rem;
 }
 
 .socialLinks a {
-  color: var(--primary-blue-dark); /* Primary blue for icons */
-  font-size: 2rem; /* Larger icons */
+  color: var(--primary-blue-dark);
+  font-size: 2rem;
   transition: color 0.3s ease, transform 0.2s ease;
 }
 
 .socialLinks a:hover {
-  color: var(--accent-cyan); /* Accent color on hover */
-  transform: translateY(-3px) scale(1.1); /* Subtle lift and grow */
+  color: var(--accent-cyan);
+  transform: translateY(-3px) scale(1.1);
 }
 
-
-/* In-Section CTA (between video and founders) */
+/* In-Section CTA */
 .aboutSectionCta {
-  background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark)); /* Gradient for CTA */
-  padding: 4rem 2rem; /* More generous padding */
-  border-radius: 15px; /* Consistent rounded corners */
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+  padding: 4rem 2rem;
+  border-radius: 15px;
   text-align: center;
-  margin: 5rem auto; /* Consistent margin */
+  margin: 5rem auto;
   max-width: 900px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Deeper shadow */
-  color: var(--text-light); /* White text */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  color: var(--text-light);
 }
 
 .ctaHeadingSmall {
@@ -218,18 +213,18 @@
   text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
-/* --- "Why Choose Us" Section: Special Treatment --- */
-.whyChooseUsSection { /* Wrapper for the new "Why Choose Us" */
-  background: var(--background-light); /* White background for this section */
-  padding: 5rem 2rem; /* Very generous padding */
-  border-radius: 15px; /* Consistent rounded corners */
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15); /* Prominent shadow */
-  border: 1px solid var(--border-light); /* Subtle border */
-  margin-top: 6rem; /* Clear separation from previous content */
+/* "Why Choose Us" Section: Special Treatment */
+.whyChooseUsSection {
+  background: var(--background-light);
+  padding: 5rem 2rem;
+  border-radius: 15px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border-light);
+  margin-top: 6rem;
 }
 
 .whyChooseUsHeading {
-  color: var(--primary-blue); /* Primary blue for main heading */
+  color: var(--primary-blue);
   font-size: 3.2rem;
   font-weight: 800;
   margin-bottom: 1rem;
@@ -242,50 +237,50 @@
   font-size: 1.2rem;
   line-height: 1.7;
   max-width: 800px;
-  margin: 0 auto 4rem; /* More space before grid */
+  margin: 0 auto 4rem;
   text-align: center;
 }
 
-.valuesGrid { /* New grid for the "Why Choose Us" items */
+.valuesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
-  gap: 2.5rem; /* Spacing between value items */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
 }
 
 .valueItem {
-  background: var(--background-muted); /* Muted background for each item */
-  padding: 2.5rem 1.5rem; /* Generous padding */
+  background: var(--background-muted);
+  padding: 2.5rem 1.5rem;
   border-radius: 10px;
   text-align: center;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* Subtle shadow */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
   border: 1px solid var(--border-light);
 }
 
 .valueItem:hover {
-  transform: translateY(-5px); /* Lift effect */
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Stronger shadow */
-  background-color: var(--background-light); /* Lighter on hover */
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  background-color: var(--background-light);
 }
 
 .valueIcon {
-  font-size: 3rem; /* Large emoji icons */
+  font-size: 3rem;
   margin-bottom: 1.2rem;
-  display: block; /* Ensure it takes full width */
-  filter: grayscale(10%) drop-shadow(0 3px 5px rgba(0,0,0,0.1)); /* Subtle effect */
+  display: block;
+  filter: grayscale(10%) drop-shadow(0 3px 5px rgba(0,0,0,0.1));
 }
 
 .valueTitle {
   font-size: 1.6rem;
   font-weight: 700;
-  color: var(--primary-blue-dark); /* Dark primary blue for titles */
+  color: var(--primary-blue-dark);
   margin-bottom: 0.8rem;
 }
 
 .valueText {
   font-size: 1rem;
   line-height: 1.6;
-  color: var(--text-dark); /* Dark text for descriptions */
+  color: var(--text-dark);
 }
 
 
@@ -421,7 +416,7 @@
     margin: 3rem auto;
   }
   .founderProfiles {
-    grid-template-columns: 1fr; /* Stack founders vertically */
+    grid-template-columns: 1fr;
     gap: 1.5rem;
   }
   .founderCard {
@@ -449,7 +444,6 @@
   }
   .ctaHeadingSmall {
     font-size: 1.8rem;
-    margin-bottom: 1rem;
   }
   .whyChooseUsSection {
     padding: 3rem 1rem;
@@ -464,7 +458,7 @@
     margin-bottom: 2.5rem;
   }
   .valuesGrid {
-    grid-template-columns: 1fr; /* Stack value items vertically */
+    grid-template-columns: 1fr;
     gap: 1.5rem;
   }
   .valueItem {

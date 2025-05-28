@@ -1,55 +1,110 @@
 // src/components/AboutUs/AboutUsBox.jsx
+import React from 'react';
 import { Link } from "react-router-dom";
-import FounderCard from "./FounderCard"; // Assuming this is correct
-import OrgStory from "./OrgStory";     // Assuming this is correct
-import IntroVideo from "./IntroVideo"; // Assuming this is correct
+import FounderCard from "./FounderCard"; // Ensure this component is well-defined
+import OrgStory from "./OrgStory";     // Ensure this component is well-defined
+import IntroVideo from "./IntroVideo"; // Ensure this component is well-defined
 import { founders } from "../../data/founders"; // Adjust path as needed
-import "./AboutUsBox.css";
+import styles from "./AboutUsBox.module.css"; // Correctly import CSS Modules
 
 const AboutUsBox = () => {
   return (
-    <section className="about-us-section"> {/* Renamed for clarity */}
-      <div className="about-us-container">
-        <h1 className="section-title">Discover Zeelevate Academy</h1> {/* Main title for the section */}
+    <section className={styles.aboutUsSection}>
+      <div className={styles.aboutUsContainer}>
+        {/* Main Title & Intro Description */}
+        <h1 className={styles.sectionTitle}>Discover Zeelevate Academy</h1>
+        <p className={styles.sectionDescription}>
+          At Zeelevate, we're more than just an academy; we're a launchpad for digital empowerment.
+          Our mission is to equip individuals with the essential skills to thrive in today's interconnected world,
+          fostering a community of confident and capable digital citizens.
+        </p>
 
-        <div className="about-content">
-          {/* Organization Story first - sets the context */}
+        {/* Organization Story - Sets the core narrative */}
+        <div className={styles.sectionBlock}>
           <OrgStory />
+        </div>
 
-          {/* Introductory Video - adds a dynamic element */}
+        {/* Introductory Video - Adds a dynamic and personal touch */}
+        <div className={styles.sectionBlock}>
+          <h2 className={styles.subsectionHeading}>Experience Zeelevate in Action</h2>
           <IntroVideo />
+        </div>
 
-          {/* Call-to-action within the section, prompting for course exploration */}
-          <div className="about-section-cta">
-            <h2 className="cta-heading-small">Ready to start your learning journey?</h2>
-            <Link to="/courses" className="cta-button primary-cta-button"> {/* Reusing CTA button styles */}
-              Explore All Courses
-            </Link>
-          </div>
+        {/* Call-to-action - Prompts for course exploration */}
+        <div className={styles.aboutSectionCta}>
+          <h2 className={styles.ctaHeadingSmall}>Ready to Elevate Your Skills?</h2>
+          <Link to="/courses" className="cta-button primary-cta-button"> {/* Assumes these are global or imported */}
+            Explore Our Programs
+          </Link>
+        </div>
 
-          {/* Meet the Team - Founders */}
-          <h2 className="section-subtitle">Meet Our Visionary Founders</h2> {/* Subtitle for this subsection */}
-          <p className="section-description">
-            The foundation of Zeelevate Academy lies in the passion and expertise of our founders, dedicated to empowering the next generation.
+        {/* Meet the Team - Founders */}
+        <div className={styles.sectionBlock}>
+          <h2 className={styles.subsectionHeading}>Meet Our Visionary Founders</h2>
+          <p className={styles.sectionDescription}>
+            The foundation of Zeelevate Academy lies in the passion and expertise of our founders,
+            dedicated to empowering the next generation of digital leaders.
           </p>
-          <div className="founder-profiles">
+          <div className={styles.founderProfiles}>
             {founders.map((founder) => (
+              // Ensure FounderCard correctly uses styles.founderImage etc.
               <FounderCard key={founder.name} {...founder} />
             ))}
           </div>
+        </div>
 
-          {/* Optional: Add a "Why Choose Us" or "Our Values" section here */}
-          <div className="why-choose-us">
-            <h2 className="section-subtitle">Why Choose Zeelevate?</h2>
-            <ul className="values-list">
-              <li>**Expert-Led Content:** Learn from industry professionals with real-world experience.</li>
-              <li>**Practical Skills Focus:** Gain actionable knowledge directly applicable to today's job market.</li>
-              <li>**Community & Support:** Join a vibrant learning community with dedicated mentorship.</li>
-              <li>**Flexible Learning:** Access courses anytime, anywhere, at your own pace.</li>
-              <li>**Future-Ready Curriculum:** Stay ahead with constantly updated content in vital domains.</li>
-            </ul>
+        {/* "Why Choose Us" - Special Treatment */}
+        <div className={styles.whyChooseUsSection}>
+          <h2 className={styles.whyChooseUsHeading}>Why Zeelevate is Your Best Choice</h2>
+          <p className={styles.whyChooseUsDescription}>
+            We stand out by providing a unique learning experience tailored for real-world impact.
+          </p>
+          <div className={styles.valuesGrid}>
+            <div className={styles.valueItem}>
+              <span className={styles.valueIcon}>🌟</span>
+              <h3 className={styles.valueTitle}>Unparalleled Expertise</h3>
+              <p className={styles.valueText}>
+                Learn from industry veterans and subject-matter experts who bring real-world insights directly to your lessons.
+              </p>
+            </div>
+            <div className={styles.valueItem}>
+              <span className={styles.valueIcon}>💡</span>
+              <h3 className={styles.valueTitle}>Future-Proof Curriculum</h3>
+              <p className={styles.valueText}>
+                Our dynamic courses are constantly updated to reflect the latest industry trends and technological advancements.
+              </p>
+            </div>
+            <div className={styles.valueItem}>
+              <span className={styles.valueIcon}>🤝</span>
+              <h3 className={styles.valueTitle}>Supportive Community</h3>
+              <p className={styles.valueText}>
+                Connect with peers and mentors in an active, collaborative environment designed to foster mutual growth.
+              </p>
+            </div>
+            <div className={styles.valueItem}>
+              <span className={styles.valueIcon}>⏱️</span>
+              <h3 className={styles.valueTitle}>Flexible Learning Paths</h3>
+              <p className={styles.valueText}>
+                Study at your own pace, on your schedule, with accessible content tailored for both teens and adults.
+              </p>
+            </div>
+            <div className={styles.valueItem}>
+              <span className={styles.valueIcon}>🌍</span>
+              <h3 className={styles.valueTitle}>Globally Relevant Skills</h3>
+              <p className={styles.valueText}>
+                Acquire digital, financial, and soft skills that are highly valued and applicable across diverse global industries.
+              </p>
+            </div>
+            <div className={styles.valueItem}>
+              <span className={styles.valueIcon}>🔑</span>
+              <h3 className={styles.valueTitle}>Certifications & Career Launch</h3>
+              <p className={styles.valueText}>
+                Earn recognized certifications that open doors to new opportunities and accelerate your professional journey.
+              </p>
+            </div>
           </div>
         </div>
+
       </div>
     </section>
   );
