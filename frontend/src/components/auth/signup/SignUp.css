@@ -14,6 +14,9 @@
   --error-red: #dc3545;
   --success-green: #28a745;
   --warning-yellow: #ffc107;
+  box-shadow: 0 10px 25px rgba(var(--text-dark-rgb), 0.1);
+  box-shadow: 0 0 0 3px rgba(var(--primary-blue-rgb), 0.1);
+
 }
 
 .sign-in-container {
@@ -259,8 +262,7 @@
   gap: 25px;
 }
 
-.course-selection-section,
-.initial-details-section {
+.course-selection-section {
   text-align: left;
   border: 1px solid var(--border-light); /* #e0e0e0 -> --border-light */
   border-radius: 10px;
@@ -268,12 +270,113 @@
   background-color: var(--background-muted); /* #f9f9f9 -> --background-muted */
 }
 
-.course-selection-section h3,
-.initial-details-section h3 {
+.course-selection-section h3 {
   font-size: 1.5rem;
   color: var(--text-dark); /* #1e293b -> --text-dark */
   margin-bottom: 20px;
   text-align: center;
+}
+
+/* New: Container for horizontal program cards */
+.program-cards-container {
+  display: flex; /* Enable flexbox for horizontal layout */
+  flex-wrap: wrap; /* Allow cards to wrap to the next line if space is limited */
+  gap: 20px; /* Space between cards */
+  justify-content: center; /* Center the cards if there's extra space */
+  margin-bottom: 20px; /* Add some space below the cards */
+}
+
+/* Program Card Styling */
+.program-card {
+  flex: 1; /* Allow cards to grow and shrink, taking equal space */
+  min-width: 280px; /* Minimum width for each card */
+  max-width: 350px; /* Maximum width for each card, adjust as needed */
+  border: 1px solid var(--border-light); /* #e0e0e0 -> --border-light */
+  border-radius: 10px;
+  padding: 20px; /* Increased padding for more breathing room */
+  background-color: var(--background-light); /* #ffffff */
+  transition: all 0.3s ease-in-out; /* Increased transition time for smoother effect */
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(var(--text-dark-rgb),0.08); /* More subtle initial shadow */
+  position: relative;
+  display: flex; /* Make card content flex for better alignment */
+  flex-direction: column; /* Stack content vertically within the card */
+  justify-content: space-between; /* Push footer to the bottom */
+}
+
+.program-card:hover {
+  border-color: var(--primary-blue-light); /* #b0e0ff -> --primary-blue-light */
+  transform: translateY(-5px); /* More noticeable lift effect */
+  box-shadow: 0 10px 25px rgba(var(--primary-blue-rgb),0.15); /* Stronger, more prominent shadow on hover */
+}
+
+.program-card.selected {
+  border-color: var(--primary-blue); /* #00BFFF -> --primary-blue */
+  box-shadow: 0 6px 15px rgba(var(--primary-blue-rgb), 0.25); /* Stronger shadow for selected state */
+  background-color: var(--indigo-light); /* #e6f7ff -> --indigo-light */
+}
+
+/* Adjust checkbox and title alignment */
+.program-header-selection {
+  display: flex;
+  align-items: flex-start; /* Align checkbox and title to the top */
+  gap: 15px; /* More space between checkbox and title */
+  margin-bottom: 15px;
+}
+
+.program-card input[type="checkbox"] {
+  width: 24px; /* Slightly larger checkbox */
+  height: 24px; /* Slightly larger checkbox */
+  accent-color: var(--primary-blue); /* #00BFFF -> --primary-blue */
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 2px; /* Adjust vertical alignment with title */
+}
+
+.program-title-label {
+  flex: 1;
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.program-card h4 {
+  font-size: 1.4rem; /* Slightly larger title */
+  color: var(--text-dark); /* #1e293b -> --text-dark */
+  font-weight: 700; /* Bolder title */
+  margin: 0;
+}
+
+.program-short-description {
+  font-size: 1rem; /* Slightly larger description font */
+  color: var(--text-muted); /* #64748b -> --text-muted */
+  margin-left: 39px; /* Adjust margin to align with title content */
+  margin-bottom: 20px; /* More space below description */
+  line-height: 1.6; /* Improved readability */
+}
+
+.program-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto; /* Push footer to the bottom of the flex column */
+  padding-top: 15px; /* More padding above the footer */
+  border-top: 1px dashed var(--border-light); /* #e0e0e0 -> --border-light */
+}
+
+.program-price-label {
+  font-size: 1.2rem; /* Larger price font */
+  font-weight: 700;
+  color: var(--primary-blue-dark); /* #009ACD -> --primary-blue-dark */
+}
+
+.total-price {
+  font-size: 1.3rem; /* Larger total price font */
+  font-weight: 700; /* Bolder total price */
+  color: var(--primary-blue); /* Use primary blue for total price */
+  text-align: right;
+  margin-top: 20px; /* More space above total price */
+  padding-top: 20px; /* More padding above total price border */
+  border-top: 1px dashed var(--border-light); /* #e0e0e0 -> --border-light */
 }
 
 /* Program Card Styling */
@@ -332,51 +435,6 @@
   cursor: pointer;
   flex-shrink: 0;
   pointer-events: all;
-}
-
-.program-title-label {
-  flex: 1;
-  cursor: pointer;
-  pointer-events: all;
-}
-
-.program-card h4 {
-  font-size: 1.3rem;
-  color: var(--text-dark); /* #1e293b -> --text-dark */
-  font-weight: 600;
-  margin: 0;
-}
-
-.program-short-description {
-  font-size: 0.95rem;
-  color: var(--text-muted); /* #64748b -> --text-muted */
-  margin-left: 32px;
-  margin-bottom: 15px;
-}
-
-.program-card-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 15px;
-  padding-top: 10px;
-  border-top: 1px dashed var(--border-light); /* #e0e0e0 -> --border-light */
-}
-
-.program-price-label {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--primary-blue-dark); /* #009ACD -> --primary-blue-dark */
-}
-
-.total-price {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--text-dark); /* #1e293b -> --text-dark */
-  text-align: right;
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px dashed var(--border-light); /* #e0e0e0 -> --border-light */
 }
 
 /* Single "View All Courses" Link Section */

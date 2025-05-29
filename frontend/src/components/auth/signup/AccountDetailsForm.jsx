@@ -1,8 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import AuthForm from '../../common/AuthForm'; // Adjust path if necessary
+// Assuming AuthForm is located at '../../common/AuthForm'
+import AuthForm from '../../common/AuthForm';
+import styles from './AccountDetailsForm.module.css'; // Still used for title/description styles
 
 const AccountDetailsForm = ({ formData, onFormChange }) => {
+  // Configuration for the fields to be rendered by AuthForm
   const enrollmentFieldsConfig = [
     { name: 'name', label: 'Full Name', type: 'text', placeholder: 'John Doe', required: true },
     { name: 'email', label: 'Email Address', type: 'email', placeholder: 'you@example.com', required: true },
@@ -12,8 +15,15 @@ const AccountDetailsForm = ({ formData, onFormChange }) => {
   ];
 
   return (
+    // The 'initial-details-section' class is assumed to be defined in a parent CSS file
+    // (e.g., SignUp.css or a global stylesheet) and provides the overall container styling
+    // like background, border, padding, and shadow for this step.
     <div className="initial-details-section">
-      <h3>2. Your Account Details</h3>
+      <h3 className={styles.formTitle}>Step 2: Your Account Details</h3>
+      <p className={styles.formDescription}>
+        Please provide your personal and account information to complete your enrollment.
+      </p>
+      {/* AuthForm component handles the rendering of inputs based on fieldsConfig */}
       <AuthForm
         formData={formData}
         onChange={onFormChange}

@@ -1,35 +1,77 @@
+/* AuthLayout.css */
+
 .auth-layout-container {
-    max-width: 450px;
-    margin: 50px auto;
-    padding: 40px 30px;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    position: relative;
+  max-width: 450px; /* Default narrow width for login/signup forms */
+  margin: 50px auto;
+  padding: 40px 30px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  position: relative;
+  transition: max-width 0.3s ease-in-out, padding 0.3s ease-in-out; /* Smooth transition for width change */
+}
+
+/* New class for wider layout */
+.auth-layout-container-wide {
+  max-width: 1200px; /* Significantly wider for program selection */
+  padding: 40px; /* Adjust padding for wider layout if needed */
+  /* You might want to adjust margin-top for wider layouts if the content is taller */
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+/* Responsive adjustments for the wide container */
+@media (max-width: 1200px) {
+  .auth-layout-container-wide {
+    max-width: 90%; /* Use percentage for fluid width on larger screens */
   }
-  
-  .logo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 40px;
+}
+
+@media (max-width: 768px) {
+  .auth-layout-container {
+    max-width: 90%; /* Make default container fluid on smaller screens */
+    margin: 30px auto;
+    padding: 30px 20px;
   }
-  
-  .logo-image {
-    width: 400px;
+  .auth-layout-container-wide {
+    max-width: 95%; /* Even wider on smaller screens */
+    padding: 20px 15px;
   }
-  
-  .welcome-text {
-    font-size: 2.2rem;
-    margin-bottom: 12px;
-    color: #1e293b;
-    font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .auth-layout-container,
+  .auth-layout-container-wide {
+    margin: 20px auto;
+    padding: 20px 15px;
   }
-  
-  .auth-instruction {
-    font-size: 1.1rem;
-    margin-bottom: 35px;
-    color: #64748b;
-    line-height: 1.5;
-  }
+}
+
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.logo-image {
+  width: 400px; /* This might be too wide for the default 450px container. Consider making it responsive or smaller. */
+  max-width: 80%; /* Ensure logo scales down for smaller containers */
+  height: auto;
+}
+
+.welcome-text {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.auth-instruction {
+  font-size: 1.1rem;
+  margin-bottom: 35px;
+  color: #64748b;
+  line-height: 1.5;
+}

@@ -1,0 +1,153 @@
+/* AuthForm.module.css */
+
+/* Variables (ensure these are consistent with your global theme) */
+/* These variables should ideally be defined once in a global stylesheet
+   and imported at the root of your application, or directly in your
+   component if they are truly component-specific. */
+:root {
+  --primary-blue: #3686FF;
+  --primary-blue-dark: #265EC1;
+  --primary-blue-light: #7CAEFF;
+  --background-light: #FFFFFF;
+  --background-muted: #F7F9FC;
+  --text-dark: #222222;
+  --text-muted: #666666;
+  --border-light: #D1D5DB;
+  --error-red: #dc3545;
+  --primary-blue-rgb: 54, 134, 255; /* For shadows */
+  --text-light: #FFFFFF; /* Assuming white for text on dark backgrounds */
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Space between form groups */
+  padding: 0 15px; /* Add horizontal padding to the form container itself */
+  /* This padding helps constrain the inputs visually within the AuthLayout's narrow width */
+}
+
+.inputGroup { /* New class to wrap label and input */
+  display: flex;
+  flex-direction: column; /* Label above input */
+  gap: 8px; /* Space between label and input */
+}
+
+.label {
+  font-size: 0.95em;
+  color: var(--text-dark);
+  font-weight: 600;
+  text-align: left; /* Ensure label text aligns left */
+}
+
+.requiredIndicator {
+  color: var(--error-red); /* Red asterisk for required fields */
+  margin-left: 4px;
+}
+
+.input {
+  width: 100%; /* Fills the available width of its parent (.inputGroup) */
+  max-width: 400px; /* Optional: Set a max-width for inputs to prevent them from becoming too wide */
+  /* This max-width will be effective when the parent container (AuthLayout) is wide enough.
+     When AuthLayout is narrow (e.g., 450px), the 100% width will naturally constrain it. */
+  padding: 14px 16px;
+  font-size: 1em;
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  outline: none;
+  box-sizing: border-box; /* Crucial: ensures padding/border don't increase total width */
+  transition: all 0.3s ease;
+  color: var(--text-dark);
+  background-color: var(--background-light);
+}
+
+.input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.input:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 4px rgba(var(--primary-blue-rgb), 0.25); /* Professional focus ring */
+}
+
+/* --- Button Styles (moved from previous general CSS, now specific to AuthForm) --- */
+.button {
+  width: 100%; /* Button fills the container width */
+  max-width: 400px; /* Optional: Constrain button width like inputs if desired */
+  margin: 10px auto 0; /* Center the button and add top margin */
+  padding: 14px 20px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: none;
+  text-align: center;
+}
+
+.primaryButton {
+  background-color: var(--primary-blue);
+  color: var(--text-light); /* White text */
+}
+
+.primaryButton:hover {
+  background-color: var(--primary-blue-dark); /* Darker blue on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(var(--primary-blue-rgb), 0.2);
+}
+
+.primaryButton:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.button:disabled {
+  background-color: var(--border-light); /* Lighter background for disabled */
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.8;
+  box-shadow: none;
+  transform: none;
+}
+
+
+/* Responsive adjustments for AuthForm's internal elements */
+@media (max-width: 768px) {
+  .formContainer {
+    gap: 15px;
+    padding: 0 10px; /* Reduce padding on smaller screens */
+  }
+
+  .input {
+    padding: 12px 14px;
+    font-size: 0.95em;
+    max-width: 100%; /* Allow inputs to take full width on small screens */
+  }
+
+  .label {
+    font-size: 0.9em;
+  }
+
+  .button {
+    padding: 12px 15px;
+    font-size: 1em;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .formContainer {
+    gap: 12px;
+    padding: 0 5px; /* Even less padding on very small screens */
+  }
+
+  .input {
+    padding: 10px 12px;
+    font-size: 0.9em;
+  }
+
+  .button {
+    padding: 10px 12px;
+    font-size: 0.95em;
+  }
+}

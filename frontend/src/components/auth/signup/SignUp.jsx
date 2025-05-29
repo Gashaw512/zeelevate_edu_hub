@@ -1,5 +1,6 @@
+// SignUp.jsx
 import { useState, useEffect, useCallback } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate, useParams } from "react-router-dom";
 
 // Import your new sub-components
 import ProgramSelection from "./ProgramSelection";
@@ -7,12 +8,12 @@ import AccountDetailsForm from "./AccountDetailsForm";
 import FormNavigation from "./FormNavigation";
 
 // Existing common components and utilities
-import AuthLayout from "../../layouts/auth/AuthLayout";
+import AuthLayout from "../../layouts/auth/AuthLayout"; // Ensure correct path
 import SocialAuthButtons from "../../common/SocialAuthButton";
-import { getAllProviders } from "../../../data/externalAuthProviderConfig"; // Ensure this path is correct
+import { getAllProviders } from "../../../data/externalAuthProviderConfig";
 
-// Ensure your CSS path is correct
-import "./SignUp.css";
+// Ensure your CSS path is correct (if you still have general SignUp.css)
+// import "./SignUp.css"; // If you have general styles for SignUp itself
 
 // ---
 // Mock PROGRAM data remains here as it's directly tied to the SignUp logic
@@ -46,6 +47,7 @@ const MOCK_PROGRAMS = [
 const SignUp = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { programType } = useParams();
   const externalProviders = getAllProviders();
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -60,16 +62,23 @@ const SignUp = () => {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Auto-fill logic using useEffect and useSearchParams
+  // Effect to handle initial program selection and step adjustment
   useEffect(() => {
     const programIdFromUrl = searchParams.get('programId');
-    if (programIdFromUrl) {
+
+    if (programType) { // If programType is present in the URL (from /enroll/:key)
+      const matchingProgram = MOCK_PROGRAMS.find(p => p.id.startsWith(programType));
+      if (matchingProgram && !selectedProgramIds.includes(matchingProgram.id)) {
+        setSelectedProgramIds([matchingProgram.id]);
+        setCurrentStep(2); // Directly move to step 2
+      }
+    } else if (programIdFromUrl) { // Existing logic for programId in search params
       const programExists = MOCK_PROGRAMS.some(p => p.id === programIdFromUrl);
       if (programExists && !selectedProgramIds.includes(programIdFromUrl)) {
         setSelectedProgramIds([programIdFromUrl]);
       }
     }
-  }, [searchParams, selectedProgramIds]);
+  }, [searchParams, selectedProgramIds, programType]);
 
   const calculateTotalPrice = useCallback(() => {
     let total = 0;
@@ -111,8 +120,13 @@ const SignUp = () => {
 
   const handlePreviousStep = useCallback(() => {
     setError('');
+    if (programType) { // If we came from a direct program link, prevent going back to step 1
+      navigate('/'); // Or navigate back to the programs page, or do nothing.
+      return;
+    }
     setCurrentStep(prev => Math.max(1, prev - 1));
-  }, []);
+  }, [programType, navigate]);
+
 
   const handleSubmitFinalDetails = useCallback(async (e) => {
     e.preventDefault();
@@ -163,6 +177,7 @@ const SignUp = () => {
     <AuthLayout
       title="Enroll in Programs"
       instruction={currentStep === 1 ? "Select your program modules." : "Provide your details to begin your learning journey."}
+      isWide={currentStep === 1} // Pass isWide prop based on currentStep
     >
       <form onSubmit={currentStep === 2 ? handleSubmitFinalDetails : handleNextStep} className="enrollment-form">
         {currentStep === 1 && (
@@ -188,7 +203,8 @@ const SignUp = () => {
           isSubmitting={isSubmitting}
           onPreviousStep={handlePreviousStep}
           selectedProgramIdsLength={selectedProgramIds.length}
-          formData={formData} // Pass formData for validation checks within FormNavigation
+          formData={formData}
+          programType={programType}
         />
       </form>
 

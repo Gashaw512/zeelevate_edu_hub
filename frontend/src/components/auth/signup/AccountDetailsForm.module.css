@@ -1,0 +1,124 @@
+/* AccountDetailsForm.module.css */
+
+/* Variables (ensure these are consistent with your global theme) */
+:root {
+  --primary-blue: #3686FF;
+  --primary-blue-dark: #265EC1;
+  --primary-blue-light: #7CAEFF;
+  --background-light: #FFFFFF;
+  --background-muted: #F7F9FC;
+  --text-dark: #222222;
+  --text-muted: #666666;
+  --border-light: #D1D5DB;
+  --error-red: #dc3545;
+  --primary-blue-rgb: 54, 134, 255; /* For shadows */
+}
+
+.accountDetailsForm {
+  background-color: var(--background-muted); /* Light background for the form section */
+  border-radius: 12px;
+  padding: 30px; /* Generous padding */
+  box-shadow: 0 5px 15px rgba(var(--text-dark-rgb), 0.05); /* Subtle shadow */
+  display: flex;
+  flex-direction: column; /* Stack elements vertically */
+  gap: 20px; /* Space between form groups */
+  text-align: left; /* Align text within the form to the left */
+}
+
+.formTitle {
+  font-size: 1.8em;
+  color: var(--primary-blue-dark);
+  margin-bottom: 10px;
+  text-align: center; /* Center the title */
+  font-weight: 700;
+}
+
+.formDescription {
+  font-size: 1em;
+  color: var(--text-muted);
+  margin-bottom: 25px; /* Space before first input */
+  text-align: center; /* Center the description */
+  line-height: 1.5;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column; /* Label above input */
+  gap: 8px; /* Space between label and input */
+}
+
+.label {
+  font-size: 0.95em;
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+.input {
+  width: 100%; /* Important for responsiveness: fills available width */
+  padding: 14px 16px;
+  font-size: 1em;
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  outline: none;
+  box-sizing: border-box; /* Ensures padding/border don't increase total width */
+  transition: all 0.3s ease;
+  color: var(--text-dark); /* Ensure text color is dark */
+  background-color: var(--background-light); /* White background for inputs */
+}
+
+.input::placeholder {
+  color: var(--text-muted); /* Placeholder text color */
+  opacity: 0.7; /* Make placeholder slightly faded */
+}
+
+.input:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 4px rgba(var(--primary-blue-rgb), 0.25); /* Professional focus ring */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .accountDetailsForm {
+    padding: 25px;
+    gap: 15px;
+  }
+
+  .formTitle {
+    font-size: 1.6em;
+  }
+
+  .formDescription {
+    font-size: 0.95em;
+    margin-bottom: 20px;
+  }
+
+  .input {
+    padding: 12px 14px;
+    font-size: 0.95em;
+  }
+}
+
+@media (max-width: 480px) {
+  .accountDetailsForm {
+    padding: 20px;
+    gap: 12px;
+  }
+
+  .formTitle {
+    font-size: 1.4em;
+  }
+
+  .formDescription {
+    font-size: 0.9em;
+    margin-bottom: 15px;
+  }
+
+  .input {
+    padding: 10px 12px;
+    font-size: 0.9em;
+  }
+
+  .label {
+    font-size: 0.9em;
+  }
+}
