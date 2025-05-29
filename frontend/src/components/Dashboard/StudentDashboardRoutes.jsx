@@ -13,10 +13,10 @@ import SettingsPage from '../../pages/studentDashboard/Settings';
 const StudentDashboardRoutes = () => {
   const { user } = useAuth(); // Get 'user' from AuthContext
 
-  if (!user) {
+  // if (!user) {
     // This case should ideally be handled by PrivateRoute, but good for robustness
-    return null;
-  }
+  //   return null;
+  // }
 
   return (
     <Routes>

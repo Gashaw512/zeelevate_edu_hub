@@ -1,70 +1,113 @@
-// frontend/src/pages/PaymentSuccessPage.jsx
-import  { useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { createUserWithEmailAndPassword, auth } from "../firebase/auth";
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { FaCheckCircle, FaSpinner, FaExclamationTriangle } from 'react-icons/fa';
+import { db } from '../firebase/firestore';
+import { collection, setDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { auth } from '../firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
-const PaymentSuccessPage = () => {
-  const [searchParams] = useSearchParams();
-  const orderId = searchParams.get("orderId"); // Comes from Square redirect
+export default function PaymentSuccess() {
+  const location = useLocation();
   const navigate = useNavigate();
+  const [status, setStatus] = useState('verifying');
+  const [error, setError] = useState(null);
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    const handlePaymentSuccess = async () => {
+    const completeRegistration = async () => {
+      const params = new URLSearchParams(location.search);
+      const firstname = decodeURIComponent(params.get('firstname') || '');
+      const lastname = decodeURIComponent(params.get('lastname') || '');
+      const email = decodeURIComponent(params.get('email') || '');
+      const password = decodeURIComponent(params.get('password') || '');
+      const amount = parseFloat(params.get('amount') || 0);
+      const course = decodeURIComponent(params.get('course') || '');
+      const role = decodeURIComponent(params.get('role') || 'student');
+      const courseId = params.get('courseId') || 'default';
+      const orderId = params.get('orderId');
+
+      if (!orderId || !email || !password) {
+        setError('Missing required registration information.');
+        setStatus('error');
+        return;
+      }
+
       try {
-        // Step 1: Verify payment
-        const verifyRes = await fetch(`${process.env.REACT_APP_API_URL}/verify-payment?orderId=${orderId}`);
-        const verifyData = await verifyRes.json();
+        setStatus('registering');
 
-        if (!verifyData.success) {
-          throw new Error("Payment verification failed");
-        }
+        // Register user
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const { uid } = userCredential.user;
 
-        // Step 2: Get pending user data
-        const userDataJSON = localStorage.getItem("pendingUser");
-        if (!userDataJSON) {
-          alert("No user data found. Please sign up again.");
-          navigate("/signup");
-          return;
-        }
-
-        const userData = JSON.parse(userDataJSON);
-
-        // Step 3: Create Firebase user
-        const userCredential = await createUserWithEmailAndPassword(
-          auth,
-          userData.email,
-          userData.password
-        );
-
-        const user = userCredential.user;
-
-        // Step 4: Save user to Firestore via backend
-        await fetch(`${process.env.REACT_APP_API_URL}/save-user`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            uid: user.uid,
-            email: userData.email,
-            name: userData.name,
-            courseId: verifyData.courseId,
-          }),
+        // Save to Firestore using uid
+        await setDoc(doc(db, 'users', uid), {
+          firstname,
+          lastname,
+          email,
+          course,
+          courseId,
+          amount,
+          orderId,
+          createdAt: serverTimestamp(),
         });
 
-        // Step 5: Clean up and redirect
-        localStorage.removeItem("pendingUser");
-        navigate("/student/dashboard");
-      } catch (error) {
-        console.error("Registration failed:", error.message);
-        alert("Something went wrong. Please contact support.");
-        navigate("/signin");
+        setUserData({
+          firstname,
+          lastname,
+          email,
+          course,
+          amount,
+          userId: uid,
+        });
+
+        setStatus('success');
+      } catch (err) {
+        console.error('Registration error:', err);
+        if (err.code === 'auth/email-already-in-use') {
+          setError('This email is already registered. Try logging in instead.');
+        } else {
+          setError(err.message);
+        }
+        setStatus('error');
       }
     };
 
-    handlePaymentSuccess();
-  }, []);
+    completeRegistration();
+  }, [location.search]);
 
-  return <div>Processing your payment and registering you...</div>;
-};
+  useEffect(() => {
+    if (status === 'success') {
+      const timer = setTimeout(() => {
+        navigate('/student/dashboard'); // change to '/login' if that's more appropriate
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [status]);
 
+  return (
+    <div className="flex flex-col items-center justify-center h-screen text-center px-4">
+      {status === 'verifying' || status === 'registering' ? (
+        <>
+          <FaSpinner className="animate-spin text-blue-500 text-4xl mb-4" />
+          <p className="text-lg">
+            {status === 'verifying' ? 'Verifying payment...' : 'Registering user...'}
+          </p>
+        </>
+      ) : status === 'success' ? (
+        <>
+          <FaCheckCircle className="text-green-500 text-4xl mb-4" />
+          <p className="text-xl font-semibold mb-2">Registration Successful!</p>
+          <p className="text-sm text-gray-600">Redirecting to your dashboard...</p>
+        </>
+      ) : (
+        <>
+          <FaExclamationTriangle className="text-red-500 text-4xl mb-4" />
+          <p className="text-xl font-semibold mb-2">Registration Failed</p>
+          <p className="text-sm text-gray-600">{error}</p>
+        </>
+      )}
+    </div>
+  );
+}
 
-export default PaymentSuccessPage;
+export const PaymentSuccessPage = PaymentSuccess; // For consistency with your routing structure

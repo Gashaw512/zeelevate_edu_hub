@@ -5,7 +5,7 @@ import Footer from "../components/Footer/Footer";
 const SignInPage = () => {
   return (
     <>
-      <Subheader header="About Us" />
+      {/* <Subheader header="About Us" /> */}
       <SignIn />
       {/* <AuthLayout/> */}
       <Footer />

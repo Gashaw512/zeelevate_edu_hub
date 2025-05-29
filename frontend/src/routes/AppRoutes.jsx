@@ -28,13 +28,14 @@ const AppRoutes = () => {
 
       {/* New Routes for Payment Flow */}
       <Route path="/checkout" element={<CheckoutPage />} />
-      <Route path="/payment/success" element={<PaymentSuccessPage />} />
+      <Route path="/payment-success" element={<PaymentSuccessPage />} />
       
   {/* Student Dashboard Route (Protected) */}
       <Route
         path="/student/dashboard/*" // Use /* for nested routes
         element={
-          <PrivateRoute role="student">
+          <PrivateRoute role="student"> {/* Ensure PrivateRoute checks for student role */}
+            {/* StudentDashboard is the layout component that includes navigation/sidebar */}
             <StudentDashboard /> {/* Layout component with nav/sidebar */}
           </PrivateRoute>
         }

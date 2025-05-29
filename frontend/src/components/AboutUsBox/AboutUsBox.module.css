@@ -1,8 +1,7 @@
 /* src/components/AboutUs/AboutUsBox.module.css */
 
-/* --- Define your CSS Variables (ensure these are globally accessible or imported) --- */
-/* For example, in your main index.css or a dedicated _variables.css */
-/* :root {
+/* --- Define your CSS Variables (Best practice: move to a global file like index.css or _variables.css) --- */
+:root {
   --primary-blue: #3686FF;
   --primary-blue-dark: #265EC1;
   --primary-blue-light: #7CAEFF;
@@ -10,7 +9,7 @@
   --active-blue: #1e69d9;
   --accent-cyan: #00D9FF;
   --background-light: #FFFFFF;
-  --background-muted: #F7F9FC;
+  --background-muted: #F7F9FC; /* This is the key color for the section background */
   --text-dark: #222222;
   --text-muted: #666666;
   --text-light: #FFFFFF;
@@ -20,30 +19,33 @@
   --warning-yellow: #ffc107;
   --error-red: #dc3545;
   --cool-gray: #A0AEC0;
-} */
+}
 
 /* --- General Section Styles --- */
 .aboutUsSection {
-  padding: 6rem 2rem; /* More generous vertical padding */
-  background: var(--background-muted); /* Light gray for the section background */
-  color: var(--text-dark); /* Default dark text for content */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Consistent font */
+  padding: 6rem 2rem;
+  background-color: var(--background-muted); /* This gives the section a distinct background */
+  color: var(--text-dark);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-x: hidden; /* Prevent horizontal scroll on some mobile layouts */
+  position: relative; /* Needed for any potential pseudo-elements or background patterns */
+  z-index: 1; /* Ensures it sits above other content if needed for complex layouts */
 }
 
 .aboutUsContainer {
-  max-width: 1300px; /* Wider container for more expansive content */
+  max-width: 1300px;
   margin: 0 auto;
 }
 
 /* Section Headings */
-.sectionTitle { /* Main title for the entire About Us page */
-  color: var(--primary-blue); /* Primary blue for main section titles */
-  font-size: 3.8rem; /* Larger, impactful title */
-  font-weight: 800; /* Extra bold */
-  margin-bottom: 1.5rem; /* Space below title */
+.sectionTitle {
+  color: var(--primary-blue);
+  font-size: 3.8rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
   text-align: center;
   position: relative;
-  padding-bottom: 0.8rem; /* Space for underline effect */
+  padding-bottom: 0.8rem;
   line-height: 1.2;
 }
 
@@ -53,24 +55,24 @@
   left: 50%;
   bottom: 0;
   transform: translateX(-50%);
-  width: 100px; /* Longer, impactful underline */
+  width: 100px;
   height: 5px;
-  background-color: var(--accent-cyan); /* Accent color for underline */
+  background-color: var(--accent-cyan);
   border-radius: 3px;
 }
 
-.subsectionHeading { /* Subtitles for subsections like "Meet Our Founders" */
-  color: var(--primary-blue-dark); /* Darker primary blue for subsections */
+.subsectionHeading {
+  color: var(--primary-blue-dark);
   font-size: 2.8rem;
   font-weight: 700;
-  margin-top: 5rem; /* Significant space above new subsections */
+  margin-top: 5rem;
   margin-bottom: 2rem;
   text-align: center;
   position: relative;
-  padding-bottom: 0.5rem; /* Space for subtle underline */
+  padding-bottom: 0.5rem;
 }
 
-.subsectionHeading::after { /* Subtle underline for subsections */
+.subsectionHeading::after {
   content: '';
   position: absolute;
   left: 50%;
@@ -82,104 +84,197 @@
   border-radius: 2px;
 }
 
-.sectionDescription { /* General description text */
-  color: var(--text-muted); /* Muted text for descriptive paragraphs */
+.sectionDescription {
+  color: var(--text-muted);
   font-size: 1.2rem;
   line-height: 1.7;
   max-width: 900px;
-  margin: 0 auto 3.5rem; /* Center and add space below */
+  margin: 0 auto 3.5rem;
   text-align: center;
 }
 
 /* Block Styles for major sections within About Us */
 .sectionBlock {
-  margin: 4rem auto; /* Consistent margin for main content blocks */
-  max-width: 1000px; /* Max width for story and video blocks */
-  background: var(--background-light); /* White background for card-like sections */
-  padding: 3rem; /* Generous padding */
-  border-radius: 15px; /* More rounded corners */
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1); /* Deeper shadow */
-  border: 1px solid var(--border-light); /* Subtle border */
+  margin: 4rem auto;
+  max-width: 1000px;
+  background: var(--background-light);
+  padding: 3rem;
+  border-radius: 15px;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-light);
 }
 
-/* Founder Profiles */
+/* Founder Profiles Grid */
 .founderProfiles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Slightly wider min width */
-  gap: 2.5rem; /* Increased gap */
-  margin-bottom: 4rem; /* Consistent bottom margin */
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 2.5rem;
+  margin-bottom: 4rem;
 }
 
-/* FounderCard Component Styles (Assumes FounderCard is a separate component) */
-/* These styles are applied here, ensure FounderCard.jsx uses these class names */
+/* FounderCard Component Styles (Default: Horizontal Layout for Large Screens) */
 .founderCard {
-  background: var(--background-light); /* White background for cards */
-  padding: 2.5rem 1.5rem; /* Adjusted padding */
+  background: var(--background-light);
+  padding: 2.5rem;
   border-radius: 12px;
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); /* Stronger initial shadow */
-  text-align: center;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  border: 1px solid var(--border-light); /* Subtle border */
+  border: 1px solid var(--border-light);
+  height: 100%;
+
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 2rem;
+  text-align: left;
 }
 
 .founderCard:hover {
-  transform: translateY(-8px); /* More pronounced lift */
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+  transform: translateY(-8px);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
 }
 
-/* --- FOUNDER IMAGE REFINEMENT --- */
+/* --- FOUNDER IMAGE (Rectangular & Subtle) --- */
 .founderImage {
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  margin: 0 auto 1.5rem;
+  width: 150px;
+  height: 180px;
+  border-radius: 8px;
   object-fit: cover;
-  /* Layered box-shadows create the concentric rings */
-  box-shadow:
-    0 0 0 4px var(--background-light),    /* Inner white ring for separation */
-    0 0 0 10px var(--accent-cyan),        /* Main accent-colored outer ring */
-    0 10px 20px rgba(0, 0, 0, 0.25);      /* Drop shadow for depth */
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth transitions for hover */
+  object-position: center top;
+  flex-shrink: 0;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  filter: grayscale(0%);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, filter 0.3s ease-in-out;
 }
 
-/* Hover effect on the image when its parent card is hovered */
 .founderCard:hover .founderImage {
-  transform: scale(1.05); /* Slightly enlarge image on hover for a subtle pop */
-  box-shadow:
-    0 0 0 4px var(--background-light),
-    0 0 0 10px var(--primary-blue),       /* Change outer ring color to primary blue on hover */
-    0 15px 30px rgba(0, 0, 0, 0.4);       /* Deeper, more noticeable shadow on hover */
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  filter: grayscale(10%);
 }
-/* --- END FOUNDER IMAGE REFINEMENT --- */
+/* --- END FOUNDER IMAGE --- */
 
+/* Wrapper for Text Content */
+.founderTextContent {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-between;
+}
 
 .founderName {
   color: var(--text-dark);
   font-size: 1.6rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
+  line-height: 1.3;
 }
 
 .founderRole {
   color: var(--primary-blue);
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 500;
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
 }
 
+/* --- FOUNDER BIO (Read More/Show Less) --- */
 .founderBio {
   color: var(--text-muted);
   font-size: 1rem;
   line-height: 1.6;
-  text-align: center;
-  margin-bottom: 1.5rem;
+  text-align: justify;
+  margin-bottom: 1rem;
+  flex-grow: 1;
+  position: relative;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out;
+}
+
+.founderBio.collapsed {
+  max-height: 120px;
+}
+
+.founderBio.collapsed::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background: linear-gradient(to top, var(--background-light) 0%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+
+.founderBio.expanded {
+  max-height: 1000px;
+  overflow: visible;
+}
+
+.founderBio.expanded::after {
+  display: none;
+}
+
+.bioParagraph {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.founderBio .bioParagraph:last-child {
+  margin-bottom: 0;
+}
+
+/* "Read More" / "Show Less" Button Styling */
+.readMoreButton {
+  background: none;
+  border: none;
+  color: var(--primary-blue);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  padding: 0;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.readMoreButton:hover {
+  color: var(--accent-cyan);
+  text-decoration: underline;
+  transform: translateY(-2px);
+}
+
+.readMoreIcon {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease-in-out;
+}
+/* --- END FOUNDER BIO --- */
+
+
+/* --- FOUNDER CARD FOOTER --- */
+.founderCardFooter {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px dotted var(--border-light);
+  flex-shrink: 0;
+}
+
+.footerSeparator {
+  display: none;
 }
 
 .socialLinks {
   display: flex;
   gap: 1.2rem;
-  justify-content: center;
-  margin-top: 1rem;
+  justify-content: flex-start;
+  margin-top: 0;
 }
 
 .socialLinks a {
@@ -192,6 +287,8 @@
   color: var(--accent-cyan);
   transform: translateY(-3px) scale(1.1);
 }
+/* --- END FOUNDER CARD FOOTER --- */
+
 
 /* In-Section CTA */
 .aboutSectionCta {
@@ -215,7 +312,7 @@
 
 /* "Why Choose Us" Section: Special Treatment */
 .whyChooseUsSection {
-  background: var(--background-light);
+  background: var(--background-light); /* This section is inside the main aboutUsSection, but has its own distinct white background */
   padding: 5rem 2rem;
   border-radius: 15px;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
@@ -285,228 +382,154 @@
 
 
 /* --- Media Queries --- */
+
+/* Medium-Large screens (e.g., small desktops, large tablets in landscape) */
 @media (max-width: 1200px) {
-  .sectionTitle {
-    font-size: 3.2rem;
+  .sectionTitle { font-size: 3.2rem; }
+  .subsectionHeading { font-size: 2.4rem; }
+  .sectionDescription { font-size: 1.1rem; }
+  .aboutSectionCta .ctaHeadingSmall { font-size: 2.2rem; }
+  .whyChooseUsHeading { font-size: 2.8rem; }
+  .whyChooseUsDescription { font-size: 1.1rem; }
+  .valueTitle { font-size: 1.4rem; }
+  .valueIcon { font-size: 2.5rem; }
+
+  .founderProfiles {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   }
-  .subsectionHeading {
-    font-size: 2.4rem;
+  .founderImage {
+    width: 130px;
+    height: 160px;
   }
-  .sectionDescription {
-    font-size: 1.1rem;
+  .founderCard {
+    gap: 1.5rem;
+    padding: 2rem;
   }
-  .aboutSectionCta .ctaHeadingSmall {
-    font-size: 2.2rem;
-  }
-  .whyChooseUsHeading {
-    font-size: 2.8rem;
-  }
-  .whyChooseUsDescription {
-    font-size: 1.1rem;
-  }
-  .valueTitle {
-    font-size: 1.4rem;
-  }
-  .valueIcon {
-    font-size: 2.5rem;
+  .founderBio.collapsed {
+    max-height: 100px;
   }
 }
 
-@media (max-width: 992px) {
-  .aboutUsSection {
-    padding: 5rem 1rem;
-  }
-  .sectionTitle {
-    font-size: 2.8rem;
-  }
-  .sectionTitle::after {
-    width: 80px;
-  }
-  .subsectionHeading {
-    font-size: 2.2rem;
-    margin-top: 4rem;
-  }
-  .sectionDescription {
-    font-size: 1rem;
-  }
-  .sectionBlock {
-    padding: 2.5rem;
-    margin: 3.5rem auto;
-  }
+/* Medium screens (e.g., tablets in portrait, small laptops) - The stacking point */
+@media (max-width: 850px) {
+  .aboutUsSection { padding: 5rem 1rem; }
+  .sectionTitle { font-size: 2.8rem; }
+  .sectionTitle::after { width: 80px; }
+  .subsectionHeading { margin-top: 4rem; font-size: 2.2rem; }
+  .sectionDescription { font-size: 1rem; }
+  .sectionBlock { padding: 2.5rem; margin: 3.5rem auto; }
   .founderProfiles {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-  }
-  .founderImage {
-    width: 140px;
-    height: 140px;
-  }
-  .founderName {
-    font-size: 1.4rem;
-  }
-  .founderRole {
-    font-size: 1rem;
-  }
-  .founderBio {
-    font-size: 0.95rem;
-  }
-  .socialLinks a {
-    font-size: 1.8rem;
-  }
-  .aboutSectionCta {
-    padding: 3rem 1.5rem;
-    margin: 4rem auto;
-  }
-  .ctaHeadingSmall {
-    font-size: 2rem;
-  }
-  .whyChooseUsSection {
-    padding: 4rem 1.5rem;
-    margin-top: 5rem;
-  }
-  .whyChooseUsHeading {
-    font-size: 2.4rem;
-  }
-  .whyChooseUsDescription {
-    font-size: 1rem;
-    margin-bottom: 3rem;
-  }
-  .valuesGrid {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
   }
-  .valueItem {
-    padding: 2rem 1.2rem;
-  }
-  .valueTitle {
-    font-size: 1.3rem;
-  }
-  .valueIcon {
-    font-size: 2.2rem;
-  }
-}
 
-@media (max-width: 768px) {
-  .aboutUsSection {
-    padding: 4rem 1rem;
-  }
-  .sectionTitle {
-    font-size: 2.2rem;
-    margin-bottom: 1rem;
-  }
-  .sectionTitle::after {
-    width: 60px;
-    height: 3px;
-  }
-  .sectionDescription {
-    font-size: 0.95rem;
-    margin-bottom: 2.5rem;
-  }
-  .subsectionHeading {
-    font-size: 1.8rem;
-    margin-top: 3rem;
-    margin-bottom: 1.5rem;
-  }
-  .subsectionHeading::after {
-    width: 40px;
-    height: 2px;
-  }
-  .sectionBlock {
-    padding: 2rem;
-    margin: 3rem auto;
-  }
-  .founderProfiles {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
+  /* --- REVERT FOUNDERCARD TO VERTICAL STACK --- */
   .founderCard {
-    padding: 1.8rem 1rem;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    gap: 0;
   }
+
   .founderImage {
-    width: 120px;
-    height: 120px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    object-position: center;
+    box-shadow:
+      0 0 0 4px var(--background-light),
+      0 0 0 10px var(--accent-cyan),
+      0 10px 20px rgba(0, 0, 0, 0.25);
+    filter: none;
   }
-  .founderName {
-    font-size: 1.3rem;
+  .founderCard:hover .founderImage {
+    transform: scale(1.05);
+    box-shadow:
+      0 0 0 4px var(--background-light),
+      0 0 0 10px var(--primary-blue),
+      0 15px 30px rgba(0, 0, 0, 0.4);
+    filter: none;
   }
-  .founderRole {
-    font-size: 0.95rem;
+
+  .founderTextContent {
+    align-items: center;
   }
-  .founderBio {
-    font-size: 0.9rem;
+
+  .founderName { font-size: 1.4rem; }
+  .founderRole { font-size: 1rem; margin-bottom: 1rem; }
+  .founderBio.collapsed {
+    max-height: 160px;
   }
-  .socialLinks a {
-    font-size: 1.6rem;
+  .founderBio.collapsed::after { height: 35px; }
+
+  .readMoreButton {
+    justify-content: center;
   }
-  .aboutSectionCta {
-    padding: 2.5rem 1rem;
-    margin: 3.5rem auto;
+
+  /* Footer adjustments for vertical stack */
+  .founderCardFooter {
+    border-top: 1px dotted var(--border-light);
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
   }
-  .ctaHeadingSmall {
-    font-size: 1.8rem;
+  .socialLinks {
+    justify-content: center;
   }
-  .whyChooseUsSection {
-    padding: 3rem 1rem;
-    margin-top: 4rem;
-  }
-  .whyChooseUsHeading {
-    font-size: 2rem;
-    margin-bottom: 0.8rem;
-  }
-  .whyChooseUsDescription {
-    font-size: 0.95rem;
-    margin-bottom: 2.5rem;
-  }
-  .valuesGrid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-  .valueItem {
-    padding: 1.8rem 1rem;
-  }
-  .valueTitle {
-    font-size: 1.2rem;
-  }
-  .valueIcon {
-    font-size: 2rem;
-  }
-  .valueText {
-    font-size: 0.9rem;
-  }
+
+  /* General adjustments */
+  .aboutSectionCta { padding: 3rem 1.5rem; margin: 4rem auto; }
+  .ctaHeadingSmall { font-size: 2rem; }
+  .whyChooseUsSection { padding: 4rem 1.5rem; margin-top: 5rem; }
+  .whyChooseUsHeading { font-size: 2.4rem; }
+  .whyChooseUsDescription { font-size: 1rem; margin-bottom: 3rem; }
+  .valuesGrid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+  .valueItem { padding: 2rem 1.2rem; }
+  .valueTitle { font-size: 1.3rem; }
+  .valueIcon { font-size: 2.2rem; }
 }
 
+/* Small screens (e.g., mobile phones) */
+@media (max-width: 768px) {
+  .aboutUsSection { padding: 4rem 1rem; }
+  .sectionTitle { font-size: 2.2rem; margin-bottom: 1rem; }
+  .sectionTitle::after { width: 60px; height: 3px; }
+  .sectionDescription { font-size: 0.95rem; margin-bottom: 2.5rem; }
+  .subsectionHeading { font-size: 1.8rem; margin-top: 3rem; margin-bottom: 1.5rem; }
+  .subsectionHeading::after { width: 40px; height: 2px; }
+  .sectionBlock { padding: 2rem; margin: 3rem auto; }
+  .founderProfiles { grid-template-columns: 1fr; gap: 1.5rem; }
+
+  .founderCard { padding: 1.8rem 1rem; }
+  .founderImage { width: 120px; height: 120px; }
+  .founderName { font-size: 1.3rem; }
+  .founderRole { font-size: 0.95rem; }
+  .founderBio.collapsed { max-height: 140px; font-size: 0.95rem; }
+  .founderBio.collapsed::after { height: 30px; }
+
+  .aboutSectionCta { padding: 2.5rem 1rem; margin: 3.5rem auto; }
+  .ctaHeadingSmall { font-size: 1.8rem; }
+  .whyChooseUsSection { padding: 3rem 1rem; margin-top: 4rem; }
+  .whyChooseUsHeading { font-size: 2rem; margin-bottom: 0.8rem; }
+  .whyChooseUsDescription { font-size: 0.95rem; margin-bottom: 2.5rem; }
+  .valuesGrid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .valueItem { padding: 1.8rem 1rem; }
+  .valueTitle { font-size: 1.2rem; }
+  .valueIcon { font-size: 2rem; }
+  .valueText { font-size: 0.9rem; }
+}
+
+/* Very small screens (e.g., older phones) */
 @media (max-width: 480px) {
-  .aboutUsSection {
-    padding: 3rem 0.8rem;
-  }
-  .sectionTitle {
-    font-size: 1.8rem;
-  }
-  .subsectionHeading {
-    font-size: 1.6rem;
-  }
-  .sectionBlock {
-    padding: 1.5rem;
-  }
-  .founderName {
-    font-size: 1.1rem;
-  }
-  .ctaHeadingSmall {
-    font-size: 1.5rem;
-  }
-  .whyChooseUsHeading {
-    font-size: 1.6rem;
-  }
-  .whyChooseUsDescription {
-    font-size: 0.85rem;
-  }
-}
-
-/* AboutUsBox.module.css */
-.founderBio p {
-  margin-bottom: 0.75rem;
-  line-height: 1.5;
-}
-.founderBio p:last-child {
-  margin-bottom: 0; /* Remove margin from the last paragraph */
-}
+  .aboutUsSection { padding: 3rem 0.8rem; }
+  .sectionTitle { font-size: 1.8rem; }
+  .subsectionHeading { font-size: 1.6rem; }
+  .sectionBlock { padding: 1.5rem; }
+  .founderName { font-size: 1.1rem; }
+  .ctaHeadingSmall { font-size: 1.5rem; }
+  .whyChooseUsHeading { font-size: 1.6rem; }
+  .whyChooseUsDescription { font-size: 0.85rem; }
+  .founderBio.collapsed { max-height: 120px; font-size: 0.9rem; }
+  .founderBio.collapsed::after { height: 25px; }
+} 

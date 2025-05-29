@@ -1,11 +1,11 @@
-// src/components/AboutUs/AboutUsBox.jsx
+// src/components/AboutUs/AboutUsBox.jsx (No significant changes needed for toggle)
 import React from 'react';
 import { Link } from "react-router-dom";
-import FounderCard from "./FounderCard"; // Ensure this component is well-defined
-import OrgStory from "./OrgStory";     // Ensure this component is well-defined
-import IntroVideo from "./IntroVideo"; // Ensure this component is well-defined
-import { founders } from "../../data/founders"; // Adjust path as needed
-import styles from "./AboutUsBox.module.css"; // Correctly import CSS Modules
+import FounderCard from "./FounderCard";
+import OrgStory from "./OrgStory";
+import IntroVideo from "./IntroVideo";
+import { founders } from "../../data/founders";
+import styles from "./AboutUsBox.module.css";
 
 const AboutUsBox = () => {
   return (
@@ -33,7 +33,7 @@ const AboutUsBox = () => {
         {/* Call-to-action - Prompts for course exploration */}
         <div className={styles.aboutSectionCta}>
           <h2 className={styles.ctaHeadingSmall}>Ready to Elevate Your Skills?</h2>
-          <Link to="/courses" className="cta-button primary-cta-button"> {/* Assumes these are global or imported */}
+          <Link to="/courses" className="cta-button primary-cta-button">
             Explore Our Programs
           </Link>
         </div>
@@ -47,8 +47,11 @@ const AboutUsBox = () => {
           </p>
           <div className={styles.founderProfiles}>
             {founders.map((founder) => (
-              // Ensure FounderCard correctly uses styles.founderImage etc.
-              <FounderCard key={founder.name} {...founder} />
+              <FounderCard
+                key={founder.name}
+                // Ensure social is always an object here before spreading
+                {...{ ...founder, social: founder.social || {} }}
+              />
             ))}
           </div>
         </div>
@@ -104,7 +107,6 @@ const AboutUsBox = () => {
             </div>
           </div>
         </div>
-
       </div>
     </section>
   );

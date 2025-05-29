@@ -6,7 +6,7 @@ import Footer from "../components/Footer/Footer";
 const SignUpPage = () => {
   return (
     <>
-      <Subheader header="About Us" />
+      {/* <Subheader header="About Us" /> */}
       <SignUp />
       <Footer />
     </>
