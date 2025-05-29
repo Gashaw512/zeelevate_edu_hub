@@ -1,6 +1,7 @@
 // pages/SignUp/SignUp.jsx
-import { useState, useEffect, useCallback } from "react"; // Import useRef
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useNavigate, useParams } from "react-router-dom";
+import axios from 'axios'; // Import axios
 
 import ProgramSelection from "./ProgramSelection";
 import AccountDetailsForm from "./AccountDetailsForm";
@@ -11,7 +12,6 @@ import SocialAuthButtons from "../../common/SocialAuthButton";
 import { getAllProviders } from "../../../data/externalAuthProviderConfig";
 import { MOCK_PROGRAMS } from "../../../data/mockPrograms";
 
-// import useFormValidation from "../../../hooks/useFormValidation"; 
 import styles from "./SignUp.module.css";
 
 const SignUp = () => {
@@ -33,15 +33,6 @@ const SignUp = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [triggerAccountDetailsValidation, setTriggerAccountDetailsValidation] = useState(false);
 
-    // To use `validateAccountDetailsForm` from the hook in SignUp,
-    // we need to instantiate the hook here as well.
-    // However, it's generally cleaner if AccountDetailsForm handles its own validation display
-    // and SignUp only performs the final check.
-    // For the final check, we don't *need* the useFormValidation state (fieldErrors, isValid) here,
-    // just the `validate` function. We can mock it for this final check if needed,
-    // or rely on AccountDetailsForm's internal validation for display.
-
-    // Let's explicitly define the config here for the local validation check in SignUp
     const accountDetailsFieldsConfig = [
         { name: 'name', label: 'Full Name', type: 'text', required: true },
         { name: 'email', label: 'Email Address', type: 'email', required: true },
@@ -50,7 +41,6 @@ const SignUp = () => {
         { name: 'confirmPassword', label: 'Confirm Password', type: 'password', required: true },
     ];
 
-    // Create a local validation function for SignUp's final check
     const validateSignUpFormData = useCallback(() => {
         let errors = {};
         let currentFormIsValid = true;
@@ -74,8 +64,6 @@ const SignUp = () => {
             errors.confirmPassword = 'Passwords do not match.';
             currentFormIsValid = false;
         }
-        // SignUp just needs to know if it's valid, not the specific errors here.
-        // AccountDetailsForm will display them.
         return currentFormIsValid;
     }, [formData, accountDetailsFieldsConfig]);
 
@@ -115,8 +103,7 @@ const SignUp = () => {
     const handleChange = useCallback(({ target: { name, value } }) => {
         setFormData(prev => ({ ...prev, [name]: value }));
         setGlobalError('');
-        setTriggerAccountDetailsValidation(false); // Reset trigger when user types
-        // No need to call setFieldErrors from SignUp, AccountDetailsForm's hook handles it
+        setTriggerAccountDetailsValidation(false);
     }, []);
 
     const handleNextStep = useCallback((e) => {
@@ -134,54 +121,84 @@ const SignUp = () => {
 
     const handlePreviousStep = useCallback(() => {
         setGlobalError('');
-        setTriggerAccountDetailsValidation(false); // Reset trigger when going back
-        // No need to call setFieldErrors from SignUp, AccountDetailsForm's hook handles it
+        setTriggerAccountDetailsValidation(false);
         programType ? navigate('/') : setCurrentStep(prev => Math.max(1, prev - 1));
     }, [programType, navigate]);
 
-    const handleSubmitAccountDetails = useCallback(async () => {
-        setGlobalError('');
-        setIsSubmitting(true);
+  const handleSubmitAccountDetails = useCallback(async () => {
+    console.log("handleSubmitAccountDetails called!"); // THIS IS THE FIRST THING TO CHECK
+    setGlobalError('');
+    setIsSubmitting(true);
 
-        // 1. Trigger validation in AccountDetailsForm to display errors
-        setTriggerAccountDetailsValidation(true);
+    setTriggerAccountDetailsValidation(true);
 
-        // 2. Perform the final validation check in SignUp
-        const finalCheckIsValid = validateSignUpFormData(); // Use the local validation function
+    const finalCheckIsValid = validateSignUpFormData();
+    console.log("Validation result:", finalCheckIsValid); // Add this
 
-        if (!finalCheckIsValid) {
-            setGlobalError('Please correct the highlighted fields in your account details to proceed.');
-            setIsSubmitting(false);
-            // IMPORTANT: Reset the trigger after validation is done
-            setTimeout(() => setTriggerAccountDetailsValidation(false), 0); // Reset after render cycle
-            return;
-        }
-
-        // If validation passes, proceed with submission
-        await new Promise(res => setTimeout(res, 500));
-
-        const coursesToEnroll = selectedProgramIds.flatMap(programId => {
-            const program = MOCK_PROGRAMS.find(p => p.id === programId);
-            return program?.courses.map(course => ({
-                ...course,
-                programId: program.id,
-                programName: program.name
-            })) || [];
-        });
-
-        navigate('/checkout', {
-            state: {
-                formData,
-                selectedPrograms: selectedProgramIds,
-                coursesToEnroll,
-                totalPrice: calculateTotalPrice(),
-            },
-        });
-
+    if (!finalCheckIsValid) {
+        setGlobalError('Please correct the highlighted fields in your account details to proceed.');
         setIsSubmitting(false);
-        // IMPORTANT: Reset the trigger even on success
         setTimeout(() => setTriggerAccountDetailsValidation(false), 0);
-    }, [formData, selectedProgramIds, calculateTotalPrice, navigate, validateSignUpFormData]); // validateSignUpFormData is a dependency
+        return;
+    }
+
+    const firstCourse = MOCK_PROGRAMS.find(p => p.id === selectedProgramIds[0]);
+    const totalPrice = calculateTotalPrice();
+
+    const nameParts = formData.name.split(' ');
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts.slice(1).join(' ') || '';
+
+    console.log("Data to send to backend:", { // Add this
+        courseType: firstCourse ? firstCourse.id : '',
+        customerDetails: {
+            firstName,
+            lastName,
+            email: formData.email,
+            authPassword: formData.password,
+        },
+        courseDetails: {
+            title: firstCourse ? firstCourse.name : 'Selected Program',
+            price: totalPrice,
+        }
+    });
+
+    try {
+        const response = await axios.post('http://localhost:3001/create-payment', {
+            courseType: firstCourse ? firstCourse.id : '',
+            customerDetails: {
+                firstName,
+                lastName,
+                email: formData.email,
+                authPassword: formData.password,
+            },
+            courseDetails: {
+                title: firstCourse ? firstCourse.name : 'Selected Program',
+                price: totalPrice,
+            }
+        });
+
+        console.log("Backend response:", response.data); // Add this
+
+        if (response.data.success && response.data.paymentUrl) {
+            console.log("Redirecting to:", response.data.paymentUrl); // Add this
+            window.location.href = response.data.paymentUrl;
+        } else {
+            setGlobalError(response.data.message || 'Payment link creation failed.');
+            console.log("Payment link creation failed or success is false."); // Add this
+        }
+    } catch (err) {
+        console.error('Payment error caught in frontend:', err); // Add this
+        if (err.response && err.response.data && err.response.data.message) {
+            setGlobalError(`Failed to initiate payment: ${err.response.data.message}`);
+        } else {
+            setGlobalError('Failed to initiate payment. Please try again later.');
+        }
+    } finally {
+        setIsSubmitting(false);
+        setTimeout(() => setTriggerAccountDetailsValidation(false), 0);
+    }
+}, [formData, selectedProgramIds, calculateTotalPrice, validateSignUpFormData]);
 
     const handleSocialAuthIntent = useCallback((providerName) => {
         setGlobalError("For payment-first flow, social sign-in needs backend coordination to avoid pre-payment registration.");
