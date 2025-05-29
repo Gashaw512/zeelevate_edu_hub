@@ -5,8 +5,8 @@ import styles from "./AuthForm.module.css";
 const AuthForm = ({
   formData,
   onChange,
-  onSubmit, // Prop: function to call when the form is conceptually "submitted"
-  submitButtonText, // This will now be optional
+  // onSubmit, // REMOVE THIS PROP - The form's onSubmit will be handled by the parent
+  submitButtonText,
   disabled = false,
   fieldsConfig = [],
   errors = {}, // Object to hold field-specific error messages
@@ -39,7 +39,6 @@ const AuthForm = ({
 
   return (
     <div className={styles.formContainer}>
-      {/* Render ALL fields within the horizontal form row */}
       {fieldsConfig.length > 0 && (
         <div className={styles.formRow}>
           {fieldsConfig.map(renderInputField)}
@@ -51,10 +50,10 @@ const AuthForm = ({
       {/* Conditionally render the submit button only if submitButtonText is provided */}
       {submitButtonText && (
         <button
-          type="button" // Changed to type="button" to prevent automatic form submission
+          type="submit" // <--- CHANGED BACK TO type="submit"!
           className={`${styles.button} ${styles.primaryButton}`}
           disabled={disabled}
-          onClick={onSubmit} // Explicitly trigger the onSubmit prop
+          // onClick={onSubmit} // REMOVE THIS - type="submit" handles it
         >
           {submitButtonText}
         </button>
@@ -66,7 +65,7 @@ const AuthForm = ({
 AuthForm.propTypes = {
   formData: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func, // onSubmit is now optional as it might not be passed
+  // onSubmit: PropTypes.func, // REMOVE THIS PROPTYPE
   submitButtonText: PropTypes.string, // submitButtonText is now optional
   disabled: PropTypes.bool,
   fieldsConfig: PropTypes.arrayOf(

@@ -38,7 +38,7 @@ const FounderCard = ({ name, role, bio, image, social }) => {
 
 FounderCard.propTypes = {
   name: PropTypes.string.isRequired,
-  role: PropTypes.string.isRequired,
+  role: PropTypes.string,
   bio: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.arrayOf(PropTypes.string)
@@ -48,10 +48,6 @@ FounderCard.propTypes = {
     linkedin: PropTypes.string,
     twitter: PropTypes.string,
   }),
-};
-
-FounderCard.defaultProps = {
-  social: {},
 };
 
 export default FounderCard;
