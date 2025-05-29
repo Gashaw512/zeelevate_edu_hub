@@ -126,14 +126,14 @@ const SignUp = () => {
     }, [programType, navigate]);
 
   const handleSubmitAccountDetails = useCallback(async () => {
-    console.log("handleSubmitAccountDetails called!"); // THIS IS THE FIRST THING TO CHECK
+    console.log("handleSubmitAccountDetails called!"); 
     setGlobalError('');
     setIsSubmitting(true);
 
     setTriggerAccountDetailsValidation(true);
 
     const finalCheckIsValid = validateSignUpFormData();
-    console.log("Validation result:", finalCheckIsValid); // Add this
+    console.log("Validation result:", finalCheckIsValid); 
 
     if (!finalCheckIsValid) {
         setGlobalError('Please correct the highlighted fields in your account details to proceed.');
@@ -178,17 +178,17 @@ const SignUp = () => {
             }
         });
 
-        console.log("Backend response:", response.data); // Add this
+        console.log("Backend response:", response.data); 
 
         if (response.data.success && response.data.paymentUrl) {
-            console.log("Redirecting to:", response.data.paymentUrl); // Add this
+            console.log("Redirecting to:", response.data.paymentUrl); 
             window.location.href = response.data.paymentUrl;
         } else {
             setGlobalError(response.data.message || 'Payment link creation failed.');
-            console.log("Payment link creation failed or success is false."); // Add this
+            console.log("Payment link creation failed or success is false."); 
         }
     } catch (err) {
-        console.error('Payment error caught in frontend:', err); // Add this
+        console.error('Payment error caught in frontend:', err); 
         if (err.response && err.response.data && err.response.data.message) {
             setGlobalError(`Failed to initiate payment: ${err.response.data.message}`);
         } else {
