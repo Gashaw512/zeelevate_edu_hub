@@ -1,3 +1,4 @@
+
 import PropTypes from "prop-types"; // Recommended for type checking props
 import { Link } from "react-router-dom"; // Assuming you use react-router-dom for /courses link
 import styles from "./ProgramSelection.module.css"; // Import the CSS Module

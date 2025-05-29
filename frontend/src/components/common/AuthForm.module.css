@@ -16,14 +16,23 @@
   --error-red: #dc3545;
   --primary-blue-rgb: 54, 134, 255; /* For shadows */
   --text-light: #FFFFFF; /* Assuming white for text on dark backgrounds */
+  --error-red-rgb: 220, 53, 69; /* RGB for error-red for rgba usage */
 }
 
 .formContainer {
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Space between form groups */
+  gap: 20px; /* Space between form groups or rows */
   padding: 0 15px; /* Add horizontal padding to the form container itself */
-  /* This padding helps constrain the inputs visually within the AuthLayout's narrow width */
+}
+
+.formRow { /* Class for horizontal grouping of fields */
+  display: grid;
+  /* Creates a responsive grid: two columns, each taking 1fr of available space,
+     but ensuring a minimum width of 200px before wrapping. */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px; /* Space between items within this horizontal row */
+  align-items: flex-start; /* Align items to the top in the row */
 }
 
 .inputGroup { /* New class to wrap label and input */
@@ -47,8 +56,6 @@
 .input {
   width: 100%; /* Fills the available width of its parent (.inputGroup) */
   max-width: 400px; /* Optional: Set a max-width for inputs to prevent them from becoming too wide */
-  /* This max-width will be effective when the parent container (AuthLayout) is wide enough.
-     When AuthLayout is narrow (e.g., 450px), the 100% width will naturally constrain it. */
   padding: 14px 16px;
   font-size: 1em;
   border: 2px solid var(--border-light);
@@ -70,6 +77,18 @@
   box-shadow: 0 0 0 4px rgba(var(--primary-blue-rgb), 0.25); /* Professional focus ring */
 }
 
+.inputError { /* Style for input fields with errors */
+  border-color: var(--error-red); /* Red border for error state */
+  box-shadow: 0 0 0 3px rgba(var(--error-red-rgb), 0.2); /* Subtle red shadow */
+}
+
+.fieldError { /* Style for individual field error messages */
+  color: var(--error-red);
+  font-size: 0.85em;
+  margin-top: 4px; /* Space between input and error message */
+  text-align: left;
+}
+
 /* --- Button Styles (moved from previous general CSS, now specific to AuthForm) --- */
 .button {
   width: 100%; /* Button fills the container width */
@@ -88,12 +107,13 @@
 .primaryButton {
   background-color: var(--primary-blue);
   color: var(--text-light); /* White text */
+  box-shadow: 0 4px 12px rgba(var(--primary-blue-rgb), 0.2); /* Subtle shadow */
 }
 
 .primaryButton:hover {
   background-color: var(--primary-blue-dark); /* Darker blue on hover */
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(var(--primary-blue-rgb), 0.2);
+  box-shadow: 0 6px 15px rgba(var(--primary-blue-rgb), 0.3); /* More pronounced shadow on hover */
 }
 
 .primaryButton:active {
@@ -105,7 +125,7 @@
   background-color: var(--border-light); /* Lighter background for disabled */
   color: var(--text-muted);
   cursor: not-allowed;
-  opacity: 0.8;
+  opacity: 0.7; /* Slightly faded */
   box-shadow: none;
   transform: none;
 }
@@ -116,6 +136,11 @@
   .formContainer {
     gap: 15px;
     padding: 0 10px; /* Reduce padding on smaller screens */
+  }
+
+  .formRow { /* On smaller screens, stack items vertically within the row */
+    grid-template-columns: 1fr;
+    gap: 15px; /* Adjust gap for vertical stacking */
   }
 
   .input {
@@ -141,6 +166,10 @@
     padding: 0 5px; /* Even less padding on very small screens */
   }
 
+  .formRow {
+    gap: 12px;
+  }
+
   .input {
     padding: 10px 12px;
     font-size: 0.9em;
@@ -150,4 +179,15 @@
     padding: 10px 12px;
     font-size: 0.95em;
   }
+}
+
+/* Add to AuthForm.module.css */
+.inputError {
+  border-color: #ff4d4f !important;
+}
+
+.fieldError {
+  color: #ff4d4f;
+  font-size: 0.875rem;
+  margin-top: 4px;
 }

@@ -1,229 +1,243 @@
-// SignUp.jsx
-import { useState, useEffect, useCallback } from "react";
+// pages/SignUp/SignUp.jsx
+import { useState, useEffect, useCallback } from "react"; // Import useRef
 import { useSearchParams, useNavigate, useParams } from "react-router-dom";
 
-// Import your new sub-components
 import ProgramSelection from "./ProgramSelection";
 import AccountDetailsForm from "./AccountDetailsForm";
 import FormNavigation from "./FormNavigation";
 
-// Existing common components and utilities
-import AuthLayout from "../../layouts/auth/AuthLayout"; // Ensure correct path
+import AuthLayout from "../../layouts/auth/AuthLayout";
 import SocialAuthButtons from "../../common/SocialAuthButton";
 import { getAllProviders } from "../../../data/externalAuthProviderConfig";
+import { MOCK_PROGRAMS } from "../../../data/mockPrograms";
 
-// Ensure your CSS path is correct (if you still have general SignUp.css)
-// import "./SignUp.css"; // If you have general styles for SignUp itself
-
-// ---
-// Mock PROGRAM data remains here as it's directly tied to the SignUp logic
-// ---
-const MOCK_PROGRAMS = [
-  {
-    id: 'teen-programs',
-    name: 'Teen Programs',
-    shortDescription: 'Designed for young learners, covering foundational skills.',
-    fixedPrice: 150.00,
-    courses: [
-      { id: 'teen-python', name: 'Python for Teens' },
-      { id: 'teen-digital-lit', name: 'Digital Citizenship for Youth' },
-      { id: 'teen-coding-basics', name: 'Coding Basics for Kids' },
-    ],
-  },
-  {
-    id: 'adult-programs',
-    name: 'Adult Programs',
-    shortDescription: 'Advanced skills and career development for professionals.',
-    fixedPrice: 280.00,
-    courses: [
-      { id: 'adult-financial-lit', name: 'Financial Literacy for Adults' },
-      { id: 'adult-college-prep', name: 'Career & College Readiness' },
-      { id: 'adult-excel', name: 'Excel for Professionals' },
-      { id: 'adult-web-dev', name: 'Web Development Bootcamp' },
-    ],
-  },
-];
+// import useFormValidation from "../../../hooks/useFormValidation"; 
+import styles from "./SignUp.module.css";
 
 const SignUp = () => {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const { programType } = useParams();
-  const externalProviders = getAllProviders();
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const { programType } = useParams();
+    const externalProviders = getAllProviders();
 
-  const [currentStep, setCurrentStep] = useState(1);
-  const [selectedProgramIds, setSelectedProgramIds] = useState([]);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phoneNumber: '',
-    password: '',
-    confirmPassword: '',
-  });
-  const [error, setError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Effect to handle initial program selection and step adjustment
-  useEffect(() => {
-    const programIdFromUrl = searchParams.get('programId');
-
-    if (programType) { // If programType is present in the URL (from /enroll/:key)
-      const matchingProgram = MOCK_PROGRAMS.find(p => p.id.startsWith(programType));
-      if (matchingProgram && !selectedProgramIds.includes(matchingProgram.id)) {
-        setSelectedProgramIds([matchingProgram.id]);
-        setCurrentStep(2); // Directly move to step 2
-      }
-    } else if (programIdFromUrl) { // Existing logic for programId in search params
-      const programExists = MOCK_PROGRAMS.some(p => p.id === programIdFromUrl);
-      if (programExists && !selectedProgramIds.includes(programIdFromUrl)) {
-        setSelectedProgramIds([programIdFromUrl]);
-      }
-    }
-  }, [searchParams, selectedProgramIds, programType]);
-
-  const calculateTotalPrice = useCallback(() => {
-    let total = 0;
-    MOCK_PROGRAMS.forEach(program => {
-      if (selectedProgramIds.includes(program.id)) {
-        total += program.fixedPrice;
-      }
+    const [currentStep, setCurrentStep] = useState(1);
+    const [selectedProgramIds, setSelectedProgramIds] = useState([]);
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phoneNumber: '',
+        password: '',
+        confirmPassword: '',
     });
-    return total;
-  }, [selectedProgramIds]);
+    const [globalError, setGlobalError] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [triggerAccountDetailsValidation, setTriggerAccountDetailsValidation] = useState(false);
 
-  const handleProgramSelection = useCallback((programId) => {
-    setSelectedProgramIds(prev =>
-      prev.includes(programId)
-        ? prev.filter(id => id !== programId)
-        : [programId]
+    // To use `validateAccountDetailsForm` from the hook in SignUp,
+    // we need to instantiate the hook here as well.
+    // However, it's generally cleaner if AccountDetailsForm handles its own validation display
+    // and SignUp only performs the final check.
+    // For the final check, we don't *need* the useFormValidation state (fieldErrors, isValid) here,
+    // just the `validate` function. We can mock it for this final check if needed,
+    // or rely on AccountDetailsForm's internal validation for display.
+
+    // Let's explicitly define the config here for the local validation check in SignUp
+    const accountDetailsFieldsConfig = [
+        { name: 'name', label: 'Full Name', type: 'text', required: true },
+        { name: 'email', label: 'Email Address', type: 'email', required: true },
+        { name: 'phoneNumber', 'label': 'Phone Number', type: 'tel', required: true },
+        { name: 'password', label: 'Password', type: 'password', required: true },
+        { name: 'confirmPassword', label: 'Confirm Password', type: 'password', required: true },
+    ];
+
+    // Create a local validation function for SignUp's final check
+    const validateSignUpFormData = useCallback(() => {
+        let errors = {};
+        let currentFormIsValid = true;
+
+        accountDetailsFieldsConfig.forEach(field => {
+            if (field.required && !formData[field.name]) {
+                errors[field.name] = `${field.label} is required.`;
+                currentFormIsValid = false;
+            }
+        });
+
+        if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            errors.email = 'Invalid email format.';
+            currentFormIsValid = false;
+        }
+        if (formData.password && formData.password.length < 6) {
+            errors.password = 'Password must be at least 6 characters.';
+            currentFormIsValid = false;
+        }
+        if (formData.password && formData.confirmPassword && formData.password !== formData.confirmPassword) {
+            errors.confirmPassword = 'Passwords do not match.';
+            currentFormIsValid = false;
+        }
+        // SignUp just needs to know if it's valid, not the specific errors here.
+        // AccountDetailsForm will display them.
+        return currentFormIsValid;
+    }, [formData, accountDetailsFieldsConfig]);
+
+
+    useEffect(() => {
+        const programIdFromUrl = searchParams.get('programId');
+
+        if (programType) {
+            const match = MOCK_PROGRAMS.find(p => p.id.startsWith(programType));
+            if (match && !selectedProgramIds.includes(match.id)) {
+                setSelectedProgramIds([match.id]);
+                setCurrentStep(2);
+            }
+        } else if (programIdFromUrl) {
+            const exists = MOCK_PROGRAMS.some(p => p.id === programIdFromUrl);
+            if (exists && !selectedProgramIds.includes(programIdFromUrl)) {
+                setSelectedProgramIds([programIdFromUrl]);
+            }
+        }
+    }, [searchParams, selectedProgramIds, programType]);
+
+    const calculateTotalPrice = useCallback(() =>
+        selectedProgramIds.reduce((total, id) => {
+            const program = MOCK_PROGRAMS.find(p => p.id === id);
+            return total + (program?.fixedPrice || 0);
+        }, 0),
+        [selectedProgramIds]
     );
-    setError('');
-  }, []);
 
-  const handleChange = useCallback((e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (error) setError('');
-  }, [error]);
+    const handleProgramSelection = useCallback((programId) => {
+        setSelectedProgramIds(prev =>
+            prev.includes(programId) ? prev.filter(id => id !== programId) : [programId]
+        );
+        setGlobalError('');
+    }, []);
 
-  const handleNextStep = useCallback((e) => {
-    e.preventDefault();
-    setError('');
+    const handleChange = useCallback(({ target: { name, value } }) => {
+        setFormData(prev => ({ ...prev, [name]: value }));
+        setGlobalError('');
+        setTriggerAccountDetailsValidation(false); // Reset trigger when user types
+        // No need to call setFieldErrors from SignUp, AccountDetailsForm's hook handles it
+    }, []);
 
-    if (currentStep === 1) {
-      if (selectedProgramIds.length === 0) {
-        setError('Please select at least one program module to proceed.');
-        return;
-      }
-      setCurrentStep(2);
-    }
-  }, [currentStep, selectedProgramIds]);
+    const handleNextStep = useCallback((e) => {
+        e.preventDefault();
+        setGlobalError('');
 
-  const handlePreviousStep = useCallback(() => {
-    setError('');
-    if (programType) { // If we came from a direct program link, prevent going back to step 1
-      navigate('/'); // Or navigate back to the programs page, or do nothing.
-      return;
-    }
-    setCurrentStep(prev => Math.max(1, prev - 1));
-  }, [programType, navigate]);
+        if (currentStep === 1) {
+            if (selectedProgramIds.length === 0) {
+                setGlobalError('Please select at least one program module to proceed.');
+                return;
+            }
+            setCurrentStep(2);
+        }
+    }, [currentStep, selectedProgramIds]);
 
+    const handlePreviousStep = useCallback(() => {
+        setGlobalError('');
+        setTriggerAccountDetailsValidation(false); // Reset trigger when going back
+        // No need to call setFieldErrors from SignUp, AccountDetailsForm's hook handles it
+        programType ? navigate('/') : setCurrentStep(prev => Math.max(1, prev - 1));
+    }, [programType, navigate]);
 
-  const handleSubmitFinalDetails = useCallback(async (e) => {
-    e.preventDefault();
-    setError('');
-    setIsSubmitting(true);
+    const handleSubmitAccountDetails = useCallback(async () => {
+        setGlobalError('');
+        setIsSubmitting(true);
 
-    if (!formData.name || !formData.email || !formData.phoneNumber || !formData.password || !formData.confirmPassword) {
-      setError('Please fill in all required personal details.');
-      setIsSubmitting(false);
-      return;
-    }
+        // 1. Trigger validation in AccountDetailsForm to display errors
+        setTriggerAccountDetailsValidation(true);
 
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match.');
-      setIsSubmitting(false);
-      return;
-    }
+        // 2. Perform the final validation check in SignUp
+        const finalCheckIsValid = validateSignUpFormData(); // Use the local validation function
 
-    const coursesToEnroll = [];
-    MOCK_PROGRAMS.forEach(program => {
-      if (selectedProgramIds.includes(program.id)) {
-        coursesToEnroll.push(...program.courses.map(course => ({
-          id: course.id,
-          name: course.name,
-          programId: program.id,
-          programName: program.name
-        })));
-      }
-    });
+        if (!finalCheckIsValid) {
+            setGlobalError('Please correct the highlighted fields in your account details to proceed.');
+            setIsSubmitting(false);
+            // IMPORTANT: Reset the trigger after validation is done
+            setTimeout(() => setTriggerAccountDetailsValidation(false), 0); // Reset after render cycle
+            return;
+        }
 
-    navigate('/checkout', {
-      state: {
-        formData,
-        selectedPrograms: selectedProgramIds,
-        coursesToEnroll,
-        totalPrice: calculateTotalPrice(),
-      },
-    });
+        // If validation passes, proceed with submission
+        await new Promise(res => setTimeout(res, 500));
 
-    setIsSubmitting(false);
-  }, [formData, selectedProgramIds, calculateTotalPrice, navigate]);
+        const coursesToEnroll = selectedProgramIds.flatMap(programId => {
+            const program = MOCK_PROGRAMS.find(p => p.id === programId);
+            return program?.courses.map(course => ({
+                ...course,
+                programId: program.id,
+                programName: program.name
+            })) || [];
+        });
 
-  const handleSocialAuthIntent = useCallback((providerName) => {
-    setError("For payment-first flow, social sign-in needs backend coordination to avoid pre-payment registration.");
-  }, []);
+        navigate('/checkout', {
+            state: {
+                formData,
+                selectedPrograms: selectedProgramIds,
+                coursesToEnroll,
+                totalPrice: calculateTotalPrice(),
+            },
+        });
 
-  return (
-    <AuthLayout
-      title="Enroll in Programs"
-      instruction={currentStep === 1 ? "Select your program modules." : "Provide your details to begin your learning journey."}
-      isWide={currentStep === 1} // Pass isWide prop based on currentStep
-    >
-      <form onSubmit={currentStep === 2 ? handleSubmitFinalDetails : handleNextStep} className="enrollment-form">
-        {currentStep === 1 && (
-          <ProgramSelection
-            programs={MOCK_PROGRAMS}
-            selectedProgramIds={selectedProgramIds}
-            onProgramSelect={handleProgramSelection}
-            calculateTotalPrice={calculateTotalPrice}
-          />
-        )}
+        setIsSubmitting(false);
+        // IMPORTANT: Reset the trigger even on success
+        setTimeout(() => setTriggerAccountDetailsValidation(false), 0);
+    }, [formData, selectedProgramIds, calculateTotalPrice, navigate, validateSignUpFormData]); // validateSignUpFormData is a dependency
 
-        {currentStep === 2 && (
-          <AccountDetailsForm
-            formData={formData}
-            onFormChange={handleChange}
-          />
-        )}
+    const handleSocialAuthIntent = useCallback((providerName) => {
+        setGlobalError("For payment-first flow, social sign-in needs backend coordination to avoid pre-payment registration.");
+    }, []);
 
-        {error && <p className="error-message">{error}</p>}
+    return (
+        <AuthLayout
+            title="Enroll in Programs"
+            instruction={currentStep === 1 ? "Select your program modules." : "Provide your details to begin your learning journey."}
+            isWide={currentStep === 1}
+        >
+            <form onSubmit={e => e.preventDefault()} className={styles.enrollmentForm}>
+                {currentStep === 1 && (
+                    <ProgramSelection
+                        programs={MOCK_PROGRAMS}
+                        selectedProgramIds={selectedProgramIds}
+                        onProgramSelect={handleProgramSelection}
+                        calculateTotalPrice={calculateTotalPrice}
+                    />
+                )}
 
-        <FormNavigation
-          currentStep={currentStep}
-          isSubmitting={isSubmitting}
-          onPreviousStep={handlePreviousStep}
-          selectedProgramIdsLength={selectedProgramIds.length}
-          formData={formData}
-          programType={programType}
-        />
-      </form>
+                {currentStep === 2 && (
+                    <AccountDetailsForm
+                        formData={formData}
+                        onFormChange={handleChange}
+                        isSubmitting={isSubmitting}
+                        triggerValidation={triggerAccountDetailsValidation}
+                    />
+                )}
 
-      <p className="sign-up">
-        Already have an account?{" "}
-        <a href="/signin" className="link">
-          Sign In
-        </a>
-      </p>
+                {globalError && <p className={styles.errorMessage}>{globalError}</p>}
 
-      <div className="divider">
-        <span className="divider-text">OR</span>
-      </div>
-      <SocialAuthButtons
-        providers={externalProviders}
-        onSignIn={handleSocialAuthIntent}
-      />
-    </AuthLayout>
-  );
+                <FormNavigation
+                    currentStep={currentStep}
+                    isSubmitting={isSubmitting}
+                    onPreviousStep={handlePreviousStep}
+                    onNextStep={handleNextStep}
+                    onFinalSubmit={handleSubmitAccountDetails}
+                    selectedProgramIdsLength={selectedProgramIds.length}
+                />
+            </form>
+
+            <p className={styles.signUpPrompt}>
+                Already have an account? <a href="/signin" className={styles.link}>Sign In</a>
+            </p>
+
+            <div className={styles.divider}>
+                <span className={styles.dividerText}>OR</span>
+            </div>
+
+            <SocialAuthButtons
+                providers={externalProviders}
+                onSignIn={handleSocialAuthIntent}
+            />
+        </AuthLayout>
+    );
 };
 
 export default SignUp;

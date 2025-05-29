@@ -1,0 +1,148 @@
+/* SocialAuthButtons.module.css */
+
+/* Variables (ensure these are consistent with your global theme) */
+:root {
+  --primary-blue: #3686FF;
+  --primary-blue-dark: #265EC1;
+  --primary-blue-light: #7CAEFF;
+  --background-light: #FFFFFF;
+  --background-muted: #F7F9FC;
+  --text-dark: #222222;
+  --text-muted: #666666;
+  --border-light: #D1D5DB;
+  --primary-blue-rgb: 54, 134, 255; /* For shadows */
+}
+
+.externalSignin { /* Wrapper for the social sign-in section */
+  margin-top: 25px; /* Space above the social buttons */
+  margin-bottom: 20px; /* Space below the social buttons */
+}
+
+.socialAuthContainer {
+  display: flex;
+  flex-direction: row; /* Changed to row for horizontal alignment */
+  flex-wrap: wrap; /* Allow buttons to wrap to the next line */
+  justify-content: center; /* Center buttons horizontally when there's space */
+  gap: 15px; /* Space between social auth buttons */
+  padding: 0 15px; /* Add some horizontal padding for spacing */
+}
+
+.socialAuthButton {
+  flex-grow: 1; /* Allow buttons to grow to fill space */
+  flex-shrink: 1; /* Allow buttons to shrink */
+  min-width: 180px; /* Minimum width for each button before wrapping */
+  max-width: 250px; /* Maximum width for each button to prevent them from becoming too wide */
+  padding: 14px 20px; /* Generous padding for good touch targets */
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center content horizontally */
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-light); /* Light border */
+  background-color: var(--background-light); /* White background */
+  color: var(--text-dark); /* Default text color */
+  box-shadow: 0 2px 8px rgba(var(--text-dark-rgb, 34, 34, 34), 0.05); /* Subtle shadow */
+}
+
+.socialAuthButton:hover {
+  background-color: var(--background-muted); /* Slightly darker background on hover */
+  transform: translateY(-2px); /* Slight lift effect */
+  box-shadow: 0 4px 12px rgba(var(--text-dark-rgb, 34, 34, 34), 0.1); /* More pronounced shadow */
+}
+
+.socialAuthButton:active {
+  transform: translateY(0); /* Reset on click */
+  box-shadow: none;
+}
+
+/* Specific Provider Button Styles (using brand colors) */
+.googleButton {
+  color: var(--text-dark); /* Google's text is often dark */
+  background-color: var(--background-light); /* White background */
+  border-color: var(--border-light); /* Light border, as Google buttons often have */
+}
+
+.googleButton:hover {
+  background-color: #f0f0f0; /* Slightly darker white on hover */
+}
+
+.linkedinButton {
+  color: #FFFFFF; /* White text for LinkedIn */
+  background-color: #0077B5; /* LinkedIn brand blue */
+  border-color: #0077B5; /* Match border color */
+}
+
+.linkedinButton:hover {
+  background-color: #005f90; /* Darker blue on hover */
+  border-color: #005f90;
+}
+
+/* Add more provider specific styles as needed */
+/* Example:
+.facebookButton {
+  color: #FFFFFF;
+  background-color: #1877F2;
+  border-color: #1877F2;
+}
+.facebookButton:hover {
+  background-color: #166FE5;
+}
+*/
+
+.socialIcon {
+  margin-right: 12px; /* Space between icon and label */
+  height: 22px; /* Icon size */
+  width: 22px;
+  flex-shrink: 0; /* Prevent icon from shrinking */
+}
+
+.socialButtonLabel {
+  font-weight: 600;
+  flex-grow: 1; /* Allow label to take available space */
+  text-align: center; /* Center the label text */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .socialAuthContainer {
+    flex-direction: column; /* Stack buttons vertically on smaller screens */
+    align-items: center; /* Center stacked buttons */
+    gap: 12px;
+    padding: 0 10px;
+  }
+
+  .socialAuthButton {
+    width: 100%; /* Take full width when stacked */
+    max-width: 300px; /* Max width for stacked buttons */
+    padding: 12px 18px;
+    font-size: 0.95em;
+  }
+
+  .socialIcon {
+    height: 20px;
+    width: 20px;
+    margin-right: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .socialAuthContainer {
+    gap: 10px;
+    padding: 0 5px;
+  }
+
+  .socialAuthButton {
+    padding: 10px 15px;
+    font-size: 0.9em;
+    max-width: 100%; /* Ensure full width on very small screens */
+  }
+
+  .socialIcon {
+    height: 18px;
+    width: 18px;
+    margin-right: 8px;
+  }
+}

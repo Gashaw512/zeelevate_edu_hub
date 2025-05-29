@@ -1,20 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import styles from './SocialAuthButtons.module.css'; // Import the CSS Module
 
 const SocialAuthButtons = ({ providers, onSignIn }) => {
   return (
-    <div className="external-signin">
-      <div className="social-auth-container">
+    <div className={styles.externalSignin}> {/* Use CSS Module class */}
+      <div className={styles.socialAuthContainer}> {/* Use CSS Module class */}
         {providers.map((provider) => (
           <button
             key={provider.name}
             onClick={() => onSignIn(provider.name)}
-            className={`social-auth-button ${provider.name.toLowerCase()}-button`}
+            // Dynamically apply provider-specific styles using template literals
+            className={`${styles.socialAuthButton} ${styles[provider.name.toLowerCase() + 'Button'] || ''}`}
           >
             {provider.icon &&
               provider.icon.component &&
-              React.createElement(provider.icon.component, { className: provider.icon.className })}
-            <span className="social-button-label">{provider.label}</span>
+              React.createElement(provider.icon.component, { className: styles.socialIcon })} {/* Apply icon style */}
+            <span className={styles.socialButtonLabel}>{provider.label}</span> {/* Use CSS Module class */}
           </button>
         ))}
       </div>
@@ -31,6 +33,8 @@ SocialAuthButtons.propTypes = {
       label: PropTypes.string.isRequired,
       icon: PropTypes.shape({
         component: PropTypes.elementType,
+        // className is no longer directly used from provider.icon,
+        // as we apply our own styles. You might remove it if not needed elsewhere.
         className: PropTypes.string,
       }),
     })
