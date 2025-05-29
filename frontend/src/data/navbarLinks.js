@@ -7,7 +7,7 @@ import { faRightFromBracket, faUser } from '@fortawesome/free-solid-svg-icons';
 // ---
 export const navLinks = [
   {
-    id: 'hero', // For react-scroll
+    id: "home", // For react-scroll
     label: 'Home',
     linkProps: { smooth: true, offset: 0, duration: 500 },
   },
@@ -18,7 +18,7 @@ export const navLinks = [
   },
   {
     id: 'service',
-    label: 'Services',
+    label: 'Courses',
     linkProps: { smooth: true, offset: -150, duration: 500 },
   },
   {

@@ -11,8 +11,7 @@ import { useScrollToSection } from "../../utils/scrollUtils";
 // New, more modular imports
 import NavItem from "./NavItem";
 import AuthNavigation from "./AuthNavigation";
-import { FaBars, FaTimes } from 'react-icons/fa'; // Import icons for menu toggle
-
+import { FaBars, FaTimes } from "react-icons/fa"; // Import icons for menu toggle
 
 /**
  * Navbar Component
@@ -54,7 +53,8 @@ const Navbar = () => {
       if (id) {
         handleNavLinkClick(id, e, closeMobileMenu); // Pass e for scroll behavior
       } else {
-        closeMobileMenu(); // Just close for router links
+        window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to top for Home or fallback
+        closeMobileMenu();
       }
     },
     [handleNavLinkClick, closeMobileMenu]
@@ -72,27 +72,40 @@ const Navbar = () => {
   }, []);
 
   // Effect to prevent body scrolling when mobile menu is open
-useEffect(() => {
-  const hash = window.location.hash;
-  if (hash) {
-    const id = hash.replace('#', '');
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      const id = hash.replace("#", "");
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
     }
-  }
-}, []);
-
+  }, []);
 
   return (
     <nav className={`navbar ${isSticky ? "dark-nav" : "transparent-nav"}`}>
-      <div className="navbar-logo">
+      <div
+        className="navbar-logo"
+        onClick={(e) => handleNavLinkClick("home", e)}
+        role="button"
+        tabIndex="0"
+        aria-label="Scroll to home section"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleNavLinkClick("home", e);
+          }
+        }}
+      >
         <img src={logo} alt="Zeelevate Company Logo" />
       </div>
 
       <ul
         // THIS IS THE CRUCIAL CHANGE: Conditional class for mobile menu display
-        className={`navbar-links ${isMobileMenuOpen ? "show-mobile-menu" : "hide-mobile-menu"}`}
+        className={`navbar-links ${
+          isMobileMenuOpen ? "show-mobile-menu" : "hide-mobile-menu"
+        }`}
       >
         {/* Render static navigation links using the new NavItem component */}
         {navLinks.map((link) => (
@@ -125,7 +138,8 @@ useEffect(() => {
           }
         }}
       >
-        {isMobileMenuOpen ? <FaTimes /> : <FaBars />} {/* Show X icon when open, Bars when closed */}
+        {isMobileMenuOpen ? <FaTimes /> : <FaBars />}{" "}
+        {/* Show X icon when open, Bars when closed */}
       </div>
     </nav>
   );

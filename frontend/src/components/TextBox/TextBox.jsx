@@ -42,15 +42,13 @@ const TextBox = () => {
           <Link to="/signup" className={styles.ctaPrimaryButton}>
             Join Us Now! <span className={styles.ctaArrow}>→</span>
           </Link>
-          {/* <Link to="#about" className={styles.ctaSecondaryButton}>
-         
-          </Link> */}
-          <button
+          <Link
+            to="#about"
             className={styles.ctaSecondaryButton}
             onClick={(e) => handleNavLinkClick("about", e)}
           >
             Learn More About Us
-          </button>
+          </Link>
         </div>
       </div>
     </section>
