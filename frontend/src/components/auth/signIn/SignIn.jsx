@@ -1,14 +1,13 @@
-// src/pages/auth/SignIn.jsx
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signInWithPopup } from "firebase/auth";
-import { auth } from "../../firebase/auth";
-import { useAuth } from "../../context/AuthContext";
-import { getAllProviders } from "../../data/externalAuthProviderConfig";
-import useSignIn from "../../hooks/useSignIn";
-import AuthLayout from "../layouts/auth/AuthLayout";
-import AuthForm from "../common/AuthForm";
-import SocialAuthButtons from "../common/SocialAuthButton";
+import { auth } from "../../../firebase/auth";
+import { useAuth } from "../../../context/AuthContext";
+import { getAllProviders } from "../../../data/externalAuthProviderConfig";
+import useSignIn from "../../../hooks/useSignIn";
+import AuthLayout from "../../layouts/auth/AuthLayout";
+import AuthForm from "../../common/AuthForm";
+import SocialAuthButtons from "../../common/SocialAuthButton";
 import styles from "./SignIn.module.css";
 
 const SignIn = () => {

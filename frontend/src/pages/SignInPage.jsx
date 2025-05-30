@@ -1,5 +1,5 @@
 import Subheader from "../components/Subheader/Subheader";
-import SignIn from "../components/auth/SignIn";
+import SignIn from "../components/auth/signIn/SignIn";
 import Footer from "../components/Footer/Footer";
 
 const SignInPage = () => {
