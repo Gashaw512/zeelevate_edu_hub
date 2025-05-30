@@ -78,15 +78,27 @@
 }
 
 .inputError { /* Style for input fields with errors */
-  border-color: var(--error-red); /* Red border for error state */
-  box-shadow: 0 0 0 3px rgba(var(--error-red-rgb), 0.2); /* Subtle red shadow */
+   border-color: var(--error-red); /* Red border for error state */
+   box-shadow: 0 0 0 3px rgba(var(--error-red-rgb), 0.2); /* Subtle red shadow */
+}
+
+/* You also added this, which is fine and will take precedence due to !important or being last */
+.inputError {
+  border-color: #ff4d4f !important; /* Specific red color with high priority */
 }
 
 .fieldError { /* Style for individual field error messages */
-  color: var(--error-red);
+  color: var(--error-red); /* Red text for error message */
   font-size: 0.85em;
-  margin-top: 4px; /* Space between input and error message */
+  margin-top: 4px;
   text-align: left;
+}
+
+/* Also confirmed: */
+.fieldError {
+  color: #ff4d4f; /* Specific red color */
+  font-size: 0.875rem;
+  margin-top: 4px;
 }
 
 /* --- Button Styles (moved from previous general CSS, now specific to AuthForm) --- */

@@ -1,102 +1,80 @@
-// hooks/useFormValidation.js
 import { useState, useCallback, useEffect, useRef } from 'react';
 
 const useFormValidation = (formData, fieldsConfig) => {
     const [fieldErrors, setFieldErrors] = useState({});
     const [isValid, setIsValid] = useState(false);
-
     const touchedFields = useRef({});
+    const isInitialRender = useRef(true);
 
     const validate = useCallback(() => {
         let errors = {};
-        let currentFormIsValid = true;
+        let formIsValid = true;
 
+        // Required field validation
         fieldsConfig.forEach(field => {
-            if (field.required && !formData[field.name]) {
+            if (field.required && !formData[field.name]?.trim()) {
                 errors[field.name] = `${field.label} is required.`;
-                currentFormIsValid = false;
+                formIsValid = false;
             }
         });
 
+        // Email validation
         if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
             errors.email = 'Invalid email format.';
-            currentFormIsValid = false;
+            formIsValid = false;
         }
 
-        // For sign-in, we usually don't need password length/confirm password validation here.
-        // It's mostly about presence if required. If you want password minimum length for sign-in, keep it.
-        // For general use, I'll keep the password rules, but SignIn's `fieldsConfig` might not need `confirmPassword`.
-        if (formData.password && formData.password.length < 6) {
-            errors.password = 'Password must be at least 6 characters.';
-            currentFormIsValid = false;
+        // Password validation
+        if (formData.password) {
+            if (formData.password.length < 6) {
+                errors.password = 'Password must be at least 6 characters.';
+                formIsValid = false;
+            }
+            if (formData.confirmPassword && formData.password !== formData.confirmPassword) {
+                errors.confirmPassword = 'Passwords do not match.';
+                formIsValid = false;
+            }
         }
 
-        if (formData.password && formData.confirmPassword && formData.password !== formData.confirmPassword) {
-            errors.confirmPassword = 'Passwords do not match.';
-            currentFormIsValid = false;
+        // Update state only if changes exist
+        if (JSON.stringify(fieldErrors) !== JSON.stringify(errors)) {
+            setFieldErrors(errors);
+        }
+        if (isValid !== formIsValid) {
+            setIsValid(formIsValid);
         }
 
-        // Filter errors to only show for touched fields or during explicit validation.
-        // For a general hook, simply return all detected errors. The component decides how to display.
-        const newFieldErrors = {};
-        for (const fieldName in errors) {
-            newFieldErrors[fieldName] = errors[fieldName];
-        }
-
-        // Only update if they are actually different to prevent unnecessary renders
-        if (JSON.stringify(fieldErrors) !== JSON.stringify(newFieldErrors)) {
-            setFieldErrors(newFieldErrors);
-        }
-        if (isValid !== currentFormIsValid) {
-            setIsValid(currentFormIsValid);
-        }
-
-        return currentFormIsValid;
+        return formIsValid;
     }, [formData, fieldsConfig, fieldErrors, isValid]);
 
+    // Validation effect
     useEffect(() => {
-        const isInitialEmptyRender = Object.values(formData).every(val => val === '') && Object.keys(touchedFields.current).length === 0;
-
-        if (isInitialEmptyRender) {
-            if (Object.keys(fieldErrors).length > 0 || isValid) {
-                setFieldErrors({});
-                setIsValid(false);
-            }
+        if (isInitialRender.current) {
+            isInitialRender.current = false;
             return;
         }
 
-        const handler = setTimeout(() => {
-            const shouldRunValidation = Object.keys(touchedFields.current).length > 0 || Object.keys(fieldErrors).length > 0;
-            if (shouldRunValidation) {
-                 validate();
-            }
-        }, 300);
-
-        return () => {
-            clearTimeout(handler);
-        };
-    }, [formData, validate, fieldErrors, isValid]);
+        const timer = setTimeout(validate, 300);
+        return () => clearTimeout(timer);
+    }, [formData, validate]);
 
     const handleFieldChange = useCallback((e) => {
         const { name } = e.target;
-        touchedFields.current = { ...touchedFields.current, [name]: true };
+        touchedFields.current[name] = true;
     }, []);
 
-    // Function to explicitly reset all validation states and touched fields
     const resetValidation = useCallback(() => {
         setFieldErrors({});
         setIsValid(false);
         touchedFields.current = {};
     }, []);
 
-
     return {
         fieldErrors,
-        isValid,
+        isValid, 
         validate,
-        setFieldErrors,
         handleFieldChange,
-        resetValidation // Added this for convenience
+        resetValidation
     };
 };
 
