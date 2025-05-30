@@ -1,23 +1,28 @@
 .sub-header {
-  height: 30vh; /* Adjust height as needed */
+  position: fixed;          /* Fix it to the top */
+  top: 0;
+  left: 0;
   width: 100%;
-  background-color:  #3686FF; /* Use bright blue as the background */
+  height: 20vh;             /* Fixed height */
+  background-color: #3686FF;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   text-align: center;
-  color: #fff; /* White text color */
-  display: flex; /* Use flexbox for centering */
-  flex-direction: column; /* Align items in a column */
-  justify-content: center; /* Center items vertically */
-  padding: 20px; /* Add padding for spacing */
-  
+  z-index: 1000;            /* Ensure it's above other elements */
+  padding: 30px 20px 5px 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional shadow for clarity */
 }
 
 .sub-header h1 {
-  margin: 0; /* Remove default margin */
-  font-size: 2rem; /* Adjust font size */
+  margin: 0;
+  font-size: 2rem;
+  padding: 0;
 }
 
 @media (max-width: 768px) {
   .sub-header h1 {
-    font-size: 1.5rem; /* Adjust for smaller screens */
+    font-size: 1.5rem;
   }
 }
