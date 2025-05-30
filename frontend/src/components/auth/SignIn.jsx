@@ -1,3 +1,4 @@
+// src/pages/auth/SignIn.jsx
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signInWithPopup } from "firebase/auth";
@@ -12,21 +13,36 @@ import styles from "./SignIn.module.css";
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const { user, setError: setAuthContextError } = useAuth();
-  const { formData, error: signInError, isSubmitting, handleChange, handleSubmit } = useSignIn();
+  // Destructure authError and clearAuthError from useAuth
+  const { user, authError, clearAuthError } = useAuth();
+  const { formData, error: localSignInError, isSubmitting, handleChange, handleSubmit } = useSignIn(); // Renamed error to localSignInError
   const externalProviders = getAllProviders();
 
   useEffect(() => {
-    if (user) navigate("/student/dashboard");
-  }, [user, navigate]);
+    if (user) {
+      // Clear any auth errors when user logs in successfully
+      console.log(user)
+      clearAuthError();
+      navigate("/student/dashboard");
+    }
+  }, [user, navigate, clearAuthError]); // Add clearAuthError to dependencies
+
+  // Clear auth error when component mounts or error changes (e.g., trying again)
+  useEffect(() => {
+    // You might want to clear authError when the form is interacted with,
+    // or just let the handleSubmit function clear it.
+    // For now, it's cleared before a new submission.
+    // If you want to clear it when the user types, add a dependency to formData.
+  }, []);
 
   const handleExternalSignIn = (providerName) => {
+    clearAuthError(); // Clear any previous errors
     const providerConfig = externalProviders.find(
       p => p.name.toLowerCase() === providerName.toLowerCase()
     );
 
     if (!providerConfig) {
-      setAuthContextError(`${providerName} sign-in is not configured`);
+      setAuthError(`${providerName} sign-in is not configured`); // Use setAuthError from context
       return;
     }
 
@@ -34,16 +50,23 @@ const SignIn = () => {
       case "signInWithPopup":
         signInWithPopup(auth, providerConfig.provider)
           .catch(err => {
-            setAuthContextError(err.message || `Failed to sign in with ${providerName}`);
+            // Set the error directly in the AuthContext
+            // Make sure to access setAuthError from useAuth hook
+            // In your SignIn component, you're destructuring it as `setAuthContextError`
+            // So, make sure setAuthContextError is provided by useAuth.
+            // Revert to using `setAuthError` as defined in AuthContext.jsx
+            setAuthError(err.message || `Failed to sign in with ${providerName}`);
           });
         break;
-        
+
       case "initiateLinkedInLogin":
         console.log("Implement LinkedIn login flow");
+        // You might want to set an error here as well if LinkedIn isn't implemented
+        setAuthError("LinkedIn login is not yet implemented.");
         break;
-        
+
       default:
-        setAuthContextError(`Unsupported method for ${providerName}`);
+        setAuthError(`Unsupported method for ${providerName}`);
     }
   };
 
@@ -79,8 +102,9 @@ const SignIn = () => {
         />
       </form>
 
-      {(signInError || user?.error) && (
-        <p className={styles.errorMessage}>{signInError || user.error}</p>
+      {/* Display errors from useSignIn (local form validation) or AuthContext (auth-specific) */}
+      {(localSignInError || authError) && (
+        <p className={styles.errorMessage}>{localSignInError || authError}</p>
       )}
 
       <div className={styles.forgotPassword}>
