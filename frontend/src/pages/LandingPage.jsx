@@ -1,10 +1,12 @@
 // Import Components
+import  { useEffect } from 'react';
 import Navbar from "../components/Navbar/Navbar";
 import TextBox from "../components/TextBox/TextBox";
 import Footer from "../components/Footer/Footer";
 import Contact from "../components/ContactComponent/ContactComponent";
 import About from "../components/AboutUsBox/AboutUsBox";
-import Team from "../components/Team/Team";
+// import Team from "../components/Team/Team";
+import { useLocation, useNavigate } from 'react-router-dom';
 import Cta from "../components/Cta/Cta";
 import Programs from "../components/Programs/Programs";
 import Feature from "../components/Features/Fearure";
@@ -24,6 +26,42 @@ import Feature from "../components/Features/Fearure";
  * - Footer
  */
 const LandingPage = () => {
+
+
+const location = useLocation();
+  const navigate = useNavigate();
+
+  // THIS IS THE CRUCIAL PART FOR `location.state.scrollTo`
+  useEffect(() => {
+    // Check if there's a 'scrollTo' ID in the location state
+    if (location.state && location.state.scrollTo) {
+      const { scrollTo } = location.state;
+      const targetElement = document.getElementById(scrollTo);
+
+      if (targetElement) {
+        // Add a small delay to ensure the DOM has fully rendered after navigation
+        // before attempting to scroll. This is especially important when navigating
+        // from a different route (e.g., /signup) back to the homepage.
+        setTimeout(() => {
+          targetElement.scrollIntoView({ behavior: 'smooth' });
+
+          // OPTIONAL: Clear the 'scrollTo' state to prevent re-scrolling
+          // if the user refreshes the page or navigates away and then back.
+          // This ensures a clean state and predictable scrolling behavior.
+          // navigate(location.pathname, { replace: true, state: {} });
+        }, 100);
+      } else {
+        console.warn(`App.jsx: Target section with ID "${scrollTo}" not found in the DOM.`);
+      }
+
+      // After attempting to scroll (or if element not found), clear the state to prevent
+      // re-scrolling on subsequent renders or refreshes that don't involve navigation.
+      // This is crucial for a clean user experience.
+      // Make sure this only happens if the state was truly set for scrolling.
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, location.pathname, navigate]); // Depend on location.state and pathname
+
   return (
     <>
       <Navbar />
