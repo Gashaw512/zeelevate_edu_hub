@@ -1,10 +1,7 @@
 // src/components/Navbar/Navbar.jsx
 import { useEffect, useState, useCallback } from "react";
-// import './Navbar.css'; // Make sure this import is correct
+import styles from './Navbar.module.css'; // <--- Changed to CSS Modules
 import logo from "/images/logo.png";
-// IMPORTANT: Use an actual menu icon for a hamburger, not menu-icon.png if it's a fixed image.
-// If menu-icon.png is your hamburger, that's fine. Otherwise, consider an SVG or FontAwesome icon.
-import menu_icon_img from "/images/menu-icon.png"; // Renamed to avoid conflict
 import { navLinks } from "../../data/navbarLinks";
 import { useScrollToSection } from "../../utils/scrollUtils";
 
@@ -83,10 +80,23 @@ const Navbar = () => {
     }
   }, []);
 
+  // Manage body scroll lock for mobile menu
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = ''; // Clean up on unmount
+    };
+  }, [isMobileMenuOpen]);
+
+
   return (
-    <nav className={`navbar ${isSticky ? "dark-nav" : "transparent-nav"}`}>
+    <nav className={`${styles.navbar} ${isSticky ? styles.darkNav : styles.transparentNav}`}> {/* Apply module classes */}
       <div
-        className="navbar-logo"
+        className={styles.navbarLogo} // Apply module class
         onClick={(e) => handleNavLinkClick("home", e)}
         role="button"
         tabIndex="0"
@@ -98,18 +108,17 @@ const Navbar = () => {
           }
         }}
       >
-        <img src={logo} alt="Zeelevate Company Logo" />
+        <img src={logo} alt="Zeelevate Company Logo" className={styles.logoImg} /> {/* Apply module class */}
       </div>
 
       <ul
-        // THIS IS THE CRUCIAL CHANGE: Conditional class for mobile menu display
-        className={`navbar-links ${
-          isMobileMenuOpen ? "show-mobile-menu" : "hide-mobile-menu"
+        className={`${styles.navbarNav} ${ // Apply module class
+          isMobileMenuOpen ? styles.showMobileMenu : styles.hideMobileMenu
         }`}
       >
         {/* Render static navigation links using the new NavItem component */}
         {navLinks.map((link) => (
-          <li key={link.label}>
+          <li key={link.label} className={styles.navItem}> {/* Apply module class */}
             <NavItem
               label={link.label}
               id={link.id}
@@ -126,7 +135,7 @@ const Navbar = () => {
 
       {/* Use FontAwesome icons for a more professional and flexible menu icon */}
       <div
-        className="menu-icon"
+        className={styles.menuIcon} // Apply module class
         onClick={toggleMobileMenu}
         role="button"
         aria-label="Toggle mobile navigation menu"

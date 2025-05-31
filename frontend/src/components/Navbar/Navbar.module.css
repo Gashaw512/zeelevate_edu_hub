@@ -1,0 +1,450 @@
+/* src/components/Navbar/Navbar.module.css */
+
+/* --- CSS Variables (Ensure these are imported or globally available) --- */
+/*
+If these are defined in a global styles file or shared context,
+you might not need to redefine them here.
+For module isolation, they are included.
+*/
+:root {
+  /* Primary Brand Colors */
+  --primary-blue: #3686FF;
+  --primary-blue-dark: #265EC1;
+  --primary-blue-light: #7CAEFF;
+
+  /* Interaction Colors */
+  --hover-blue: #2c73e8;
+  --active-blue: #265ec1;
+
+  /* Accent colors */
+  --accent-cyan: #00D9FF; /* Bright cyan for highlights & interactive elements */
+
+  /* Background Colors */
+  --background-light: #FFFFFF;
+  --background-muted: #F7F9FC;
+  --background-dark: #1E293B; /* Dark slate blue-gray for general dark backgrounds */
+  --background-dark-alt: #2c3e50; /* Slightly lighter for dropdowns or overlays */
+
+  /* Text Colors */
+  --text-dark: #222222; /* For text on light backgrounds */
+  --text-muted: #666666;
+  --text-light: #FFFFFF; /* For text on dark backgrounds */
+  --text-light-alt: #F0F0F0; /* Slightly off-white for secondary text on dark backgrounds */
+
+  /* Border Colors */
+  --border-light: #D1D5DB;
+
+  /* Supporting Accent Colors */
+  --soft-indigo: #4F46E5;
+  --indigo-light: #E0E7FF;
+}
+
+
+/* --- Navbar Container Styles --- */
+.navbar {
+  width: 100%;
+  color: var(--text-light);
+  padding: 0.7rem 2rem; /* Reduced vertical padding, slightly more horizontal */
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease; /* Smooth transition for padding too */
+  z-index: 1000; /* High z-index to ensure it's always on top */
+  box-sizing: border-box; /* Include padding in element's total width */
+}
+
+/* --- Logo Styles --- */
+.logoImg { /* Targeted specific class name for logo img */
+  height: 38px; /* Slightly smaller logo for compactness */
+  transition: transform 0.2s ease;
+}
+
+.logoImg:hover {
+  transform: scale(1.08); /* More noticeable hover */
+}
+
+/* --- Nav List (ul) Styles --- */
+.navbarNav { /* Renamed for clarity with CSS Modules */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* --- Nav List Item (li) Styles --- */
+.navItem { /* Renamed for clarity with CSS Modules */
+  margin: 0 16px; /* Slightly tighter spacing */
+  font-size: 0.95rem; /* Slightly smaller font size */
+  font-weight: 500;
+}
+
+/* --- Main Nav Link (from NavItem) Styles --- */
+/* NavItem handles the actual link, so these styles might apply if NavItem renders a simple <a> */
+.navItem > a { /* Target the anchor directly if NavItem doesn't wrap it differently */
+  text-decoration: none;
+  color: var(--text-light);
+  position: relative;
+  transition: color 0.3s ease;
+  padding: 4px 0; /* Minimized vertical padding */
+  display: block;
+  font-weight: 500; /* Consistent font weight */
+}
+
+/* Pseudo-element for the underline effect on main navigation links */
+.navItem > a::after {
+  content: '';
+  position: absolute;
+  bottom: -3px; /* Position slightly below text for clean look */
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent-cyan);
+  transition: width 0.3s ease;
+}
+
+/* Hover and Focus states for main navigation links */
+.navItem > a:hover,
+.navItem > a:focus {
+  color: var(--accent-cyan);
+  outline: none;
+}
+
+/* Expand the underline on hover/focus for main navigation links */
+.navItem > a:hover::after,
+.navItem > a:focus::after {
+  width: 100%;
+}
+
+/* --- Auth Navigation Link ("Sign In" Button) Styles --- */
+/* AuthNavigation component usually contains this, but for direct styling: */
+.authLink { /* Assuming AuthNavigation renders this with a class like 'authLink' */
+  text-decoration: none;
+  color: var(--text-light);
+  background-color: transparent;
+  border: 1px solid var(--text-light-alt); /* Softer border color */
+  padding: 8px 20px; /* Compact button size */
+  border-radius: 25px; /* Slightly less rounded */
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  margin-left: 18px;
+}
+
+.authLink:hover,
+.authLink:focus {
+  color: var(--primary-blue-dark); /* Text color changes for contrast */
+  background-color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+  transform: translateY(-2px); /* Subtle lift */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); /* Professional shadow */
+  outline: none;
+}
+
+/* Auth links should not have the ::after underline effect */
+.authLink::after {
+  content: none !important; /* Important to override NavItem's general link style */
+}
+
+/* --- Navbar Background Colors --- */
+.transparentNav {
+  background-color: transparent;
+}
+
+.darkNav {
+  background-color: var(--primary-blue); /* Solid primary blue for sticky */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35); /* Deeper shadow for sticky */
+  padding: 0.6rem 2rem; /* Slightly reduced padding when sticky for more compact feel */
+}
+
+/* --- Mobile Menu Icon --- */
+.menuIcon {
+  display: none; /* Hidden by default on desktop */
+  font-size: 1.8rem; /* Optimized size */
+  color: var(--text-light);
+  cursor: pointer;
+  z-index: 1001; /* Ensure icon is above everything */
+  transition: color 0.3s ease;
+}
+
+.menuIcon:hover {
+  color: var(--accent-cyan);
+}
+
+/* --- Profile Dropdown Styles (Assuming AuthNavigation handles this) --- */
+/* If AuthNavigation renders a profile dropdown, ensure its classes match these */
+.profileDropdown {
+  position: relative;
+  cursor: pointer;
+  margin-left: 18px;
+}
+
+.profileAvatar {
+  width: 40px; /* Compact avatar size */
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.profileAvatar:hover,
+.profileAvatar:focus {
+  border-color: var(--accent-cyan);
+}
+
+.profileAvatarIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--background-muted); /* Using a more theme-consistent grey */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px; /* Icon size inside avatar */
+  color: var(--text-dark);
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.profileAvatarIcon:hover,
+.profileAvatarIcon:focus {
+  border-color: var(--accent-cyan);
+}
+
+.dropdownMenu {
+  position: absolute;
+  right: 0;
+  top: 50px; /* Position below avatar */
+  background-color: var(--background-dark-alt);
+  list-style: none;
+  padding: 0.5rem 0; /* Compact padding */
+  margin: 0;
+  min-width: 160px; /* Optimized width */
+  box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+  z-index: 1000;
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dropdownMenu li {
+  padding: 10px 15px; /* Compact item padding */
+  color: var(--text-light-alt);
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Tighter gap */
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
+  font-size: 0.9rem; /* Smaller font for dropdown items */
+}
+
+.dropdownMenu li:hover {
+  background-color: var(--primary-blue);
+  color: var(--text-light);
+}
+
+
+/* --- Media Queries (Highly Responsive & Compact) --- */
+
+@media (max-width: 1000px) { /* Larger tablets */
+  .logoImg {
+    height: 35px; /* Slightly smaller logo */
+  }
+
+  .navItem {
+    margin: 0 12px; /* Tighter spacing */
+    font-size: 0.9rem;
+  }
+
+  .navItem > a {
+    font-size: 0.9rem; /* Adjusted link font size */
+  }
+
+  .authLink {
+    padding: 7px 18px;
+    font-size: 0.9rem;
+    margin-left: 12px;
+  }
+}
+
+@media (max-width: 840px) { /* Tablets and Mobile: Menu becomes active */
+  .navbar {
+    padding: 0.6rem 1.5rem; /* Reduced padding for mobile */
+    justify-content: space-between;
+  }
+
+  .logoImg {
+    height: 32px; /* Smaller logo for mobile */
+  }
+
+  .menuIcon {
+    display: block; /* Show menu icon */
+    position: fixed; /* Fixed position relative to viewport */
+    top: 0.6rem; /* Aligned with navbar padding */
+    right: 1.5rem; /* Aligned with navbar padding */
+    font-size: 1.7rem; /* Optimized size */
+    z-index: 1002; /* Above the menu itself */
+  }
+
+  .navbarNav { /* Mobile menu overlay */
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 240px; /* Optimized mobile menu width */
+    background: var(--primary-blue-dark); /* Darker blue for side menu */
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 4rem 1.5rem 1.5rem; /* More top padding to clear menu icon */
+    box-shadow: -8px 0 20px rgba(0, 0, 0, 0.4);
+    transition: transform 0.4s ease-in-out;
+    z-index: 1000; /* Below the menu icon */
+    overflow-y: auto;
+    border-left: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+  }
+
+  .navItem {
+    display: block;
+    margin: 0.4rem 0; /* Reduced vertical margin for compactness */
+    width: 100%; /* Full width within the menu */
+  }
+
+  .navItem > a {
+    color: var(--text-light-alt);
+    padding: 0.5rem 0;
+    font-size: 1rem; /* Slightly larger in mobile menu for readability */
+  }
+
+  .navItem > a::after {
+    background: var(--accent-cyan);
+    bottom: -1px;
+  }
+
+  .authLink {
+    margin-left: 0;
+    margin-top: 1.2rem; /* Reduced space */
+    display: block;
+    width: fit-content; /* Adjust to content width */
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    padding: 0.7rem 1.5rem; /* Smaller button */
+    font-size: 0.95rem;
+  }
+
+  .authLink:hover,
+  .authLink:focus {
+    color: var(--text-light);
+    background-color: var(--accent-cyan);
+  }
+
+  .hideMobileMenu {
+    transform: translateX(100%);
+  }
+
+  .showMobileMenu {
+    transform: translateX(0);
+  }
+
+  .profileDropdown {
+    margin-left: 0;
+    margin-top: 1rem;
+    align-self: flex-start; /* Align with other menu items */
+  }
+
+  .profileAvatar, .profileAvatarIcon {
+    width: 36px; /* Smaller avatar for mobile */
+    height: 36px;
+    font-size: 20px;
+  }
+  .dropdownMenu { /* Ensure dropdown itself adjusts */
+    top: 45px; /* Adjust position relative to smaller avatar */
+    min-width: 140px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 580px) { /* Smaller phones */
+  .navbar {
+    padding: 0.5rem 1rem;
+  }
+
+  .logoImg {
+    height: 30px;
+  }
+
+  .menuIcon {
+    font-size: 1.5rem;
+    top: 0.5rem;
+    right: 1rem;
+  }
+
+  .navbarNav {
+    width: 200px; /* Even narrower mobile menu */
+    padding: 3.5rem 1rem 1rem;
+  }
+
+  .navItem > a {
+    font-size: 0.95rem;
+  }
+
+  .authLink {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 360px) { /* Extra small devices */
+  .navbar {
+    padding: 0.4rem 0.8rem;
+  }
+
+  .logoImg {
+    height: 28px;
+  }
+
+  .menuIcon {
+    font-size: 1.3rem;
+    top: 0.4rem;
+    right: 0.8rem;
+  }
+
+  .navbarNav {
+    width: 180px; /* Minimum width for menu */
+    padding: 3rem 0.8rem 0.8rem;
+  }
+
+  .navItem {
+    margin: 0.3rem 0;
+  }
+
+  .navItem > a {
+    font-size: 0.88rem;
+    padding: 0.4rem 0;
+  }
+
+  .authLink {
+    font-size: 0.78rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .profileAvatar, .profileAvatarIcon {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+  }
+  .dropdownMenu {
+    min-width: 120px;
+    font-size: 0.8rem;
+  }
+}
