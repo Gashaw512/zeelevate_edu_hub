@@ -1,0 +1,122 @@
+/* src/layouts/auth/AuthLayout.module.css */
+
+/* --- Centralized Design Tokens (Variables) --- */
+/* Ideally, these should be imported from a global stylesheet or a dedicated theme file.
+   For this example, they are included here for completeness and context. */
+:root {
+  --zeelevate-primary-blue: #3686FF;
+  --zeelevate-blue-dark: #2A6DCB;
+  --zeelevate-blue-light: #5BA0FF;
+
+  --zeelevate-text-dark: #1e293b;
+  --zeelevate-text-muted: #64748b;
+  --zeelevate-text-light: #fff;
+
+  --zeelevate-background-light: #fff;       /* White background for the form box/card */
+  --zeelevate-background-page: #f0f4f8;     /* Light gray/blue for the overall page background */
+  --zeelevate-background-soft: #edf2f7;
+
+  --zeelevate-border-light: #e2e8f0;
+  --zeelevate-error-red: #e03131;
+  --zeelevate-error-red-rgb: 224, 49, 49;
+
+  --zeelevate-shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --zeelevate-shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --zeelevate-shadow-strong: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.authLayoutContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensures the layout takes the full viewport height */
+  background-color: var(--zeelevate-background-page);
+  box-sizing: border-box;
+}
+
+/* Main content area: responsible for centering the authFormBox */
+.authMainContent {
+  flex-grow: 1; /* Allows this section to take up available vertical space */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center;     /* Center vertically */
+  padding: 2.5rem 2rem;    /* 40px vertical, 32px horizontal padding around the form box */
+  box-sizing: border-box;
+}
+
+/* Modifier for wide layout, typically for multi-step forms like Program Selection */
+.authMainContentWide {
+  /* For wide layouts, we might want to align content to the top, not center */
+  align-items: flex-start;
+  padding: 1.5rem 2rem; /* Slightly less vertical padding for taller wide content */
+}
+
+/* The actual white box/card containing the form content */
+.authFormBox {
+  width: 100%; /* Take full available width of its parent */
+  max-width: 450px; /* Default narrow width for typical login/signup forms */
+  background-color: var(--zeelevate-background-light); /* White background for the card */
+  padding: 2.5rem 2rem; /* 40px top/bottom, 32px left/right padding inside the box */
+  border-radius: 0.75rem; /* 12px border-radius for rounded corners */
+  box-shadow: var(--zeelevate-shadow-medium); /* Soft, medium shadow for depth */
+  text-align: center; /* Center align text elements within the box */
+  transition: max-width 0.3s ease-in-out, padding 0.3s ease-in-out; /* Smooth transitions for width change */
+  box-sizing: border-box; /* Include padding in the element's total width and height */
+}
+
+/* Modifier for the wide form box */
+.authMainContentWide .authFormBox {
+  max-width: 1200px; /* Significantly wider for program selection */
+  padding: 2.5rem; /* Even padding all around for wide content */
+  box-shadow: var(--zeelevate-shadow-strong); /* Stronger shadow for the wider box */
+}
+
+.welcomeText {
+  font-size: 2.25rem; /* 36px - Larger, bolder title */
+  margin-bottom: 0.75rem; /* 12px space below title */
+  color: var(--zeelevate-text-dark); /* Dark text color */
+  font-weight: 700; /* Extra bold */
+}
+
+.authInstruction {
+  font-size: 1.05rem; /* Slightly larger instruction text */
+  margin-bottom: 2.5rem; /* 40px space below instruction and before form fields */
+  color: var(--zeelevate-text-muted); /* Muted text color */
+  line-height: 1.6; /* Improved readability for long instructions */
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 1200px) {
+  .authMainContentWide .authFormBox {
+    max-width: 90%; /* Use percentage for fluid width on medium-large screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .authMainContent,
+  .authMainContentWide {
+    padding: 1.5rem 1rem; /* Reduced padding for smaller screens */
+  }
+  .authFormBox,
+  .authMainContentWide .authFormBox {
+    max-width: 95%; /* Make container fluid on smaller screens */
+    padding: 1.5rem 1rem; /* Adjusted padding inside the form box */
+  }
+  .welcomeText {
+    font-size: 1.75rem; /* Adjust font size for smaller screens */
+  }
+  .authInstruction {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .authMainContent,
+  .authMainContentWide {
+    padding: 1rem 0.75rem; /* Further reduced padding for very small screens */
+  }
+  .authFormBox,
+  .authMainContentWide .authFormBox {
+    padding: 1rem 0.75rem; /* Adjusted padding inside the form box */
+  }
+}

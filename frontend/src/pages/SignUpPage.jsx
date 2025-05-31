@@ -1,15 +1,9 @@
-import Subheader from "../components/Subheader/Subheader";
-// import SignUp from "../components/auth/SignUp";
-import SignUp from "../components/auth/signup/SignUp";
-import Footer from "../components/Footer/Footer";
+
+import SignUp from "../components/auth/signup/SignUp"; 
 
 const SignUpPage = () => {
   return (
-    <>
-      {/* <Subheader header="About Us" /> */}
       <SignUp />
-      <Footer />
-    </>
   );
 };
 

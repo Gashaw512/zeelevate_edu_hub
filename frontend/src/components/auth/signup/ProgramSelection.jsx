@@ -7,12 +7,12 @@ const ProgramSelection = ({
   selectedProgramIds,
   onProgramSelect,
   calculateTotalPrice, // Keep for backward compatibility
-  totalPrice // New prop
+  totalPrice, // New prop
 }) => {
-
-  const computedTotal = typeof calculateTotalPrice === 'function' 
-    ? calculateTotalPrice() 
-    : totalPrice;
+  const computedTotal =
+    typeof calculateTotalPrice === "function"
+      ? calculateTotalPrice()
+      : totalPrice;
 
   const handleCheckboxClick = (e, programId) => {
     e.stopPropagation();
@@ -21,19 +21,23 @@ const ProgramSelection = ({
 
   return (
     <div className={styles.programSelectionSection}>
-      <h3 className={styles.sectionTitle}>Step 1: Choose Your Program Modules</h3>
+      <h3 className={styles.sectionTitle}>
+        Step 1: Choose Your Program Modules
+      </h3>
       <p className={styles.sectionDescription}>
         Select the programs that best fit your learning goals.
       </p>
 
       <div className={styles.programCardsContainer}>
-        {programs.map(program => {
+        {programs.map((program) => {
           const isSelected = selectedProgramIds.includes(program.id);
-          
+
           return (
             <div
               key={program.id}
-              className={`${styles.programCard} ${isSelected ? styles.selected : ''}`}
+              className={`${styles.programCard} ${
+                isSelected ? styles.selected : ""
+              }`}
               onClick={() => onProgramSelect(program.id)}
               tabIndex="0"
               role="checkbox"
@@ -48,10 +52,16 @@ const ProgramSelection = ({
                     onChange={(e) => handleCheckboxClick(e, program.id)}
                     className={styles.visuallyHidden}
                   />
-                  <span className={styles.checkboxIndicator} aria-hidden="true" />
+                  <span
+                    className={styles.checkboxIndicator}
+                    aria-hidden="true"
+                  />
                 </div>
 
-                <label htmlFor={program.id} className={styles.programTitleLabel}>
+                <label
+                  htmlFor={program.id}
+                  className={styles.programTitleLabel}
+                >
                   <h4 className={styles.programName}>{program.name}</h4>
                 </label>
               </div>
@@ -64,7 +74,7 @@ const ProgramSelection = ({
                 <div className={styles.programCoursesIncluded}>
                   <h5>What's Included:</h5>
                   <ul>
-                    {program.courses.map(course => (
+                    {program.courses.map((course) => (
                       <li key={course.id}>{course.name}</li>
                     ))}
                   </ul>
@@ -88,8 +98,8 @@ const ProgramSelection = ({
         })}
       </div>
 
-       <TotalSummary price={computedTotal} />
-      
+      <TotalSummary price={computedTotal} />
+
       <ViewAllCoursesLink />
     </div>
   );
@@ -118,31 +128,39 @@ const TotalSummary = ({ price }) => (
 );
 
 TotalSummary.propTypes = {
-  price: PropTypes.number.isRequired
+  price: PropTypes.number.isRequired,
 };
 
-const ViewAllCoursesLink = () => (
-  <div className={styles.viewAllCoursesContainer}>
-    <p className={styles.viewCoursesText}>
-      Want to see a full breakdown of each program's content?
-    </p>
-    <Link to="/courses" className={styles.viewAllCoursesLink}>
-      View All Courses & Details
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className={styles.linkArrow}
+
+
+const ViewAllCoursesLink = () => {
+
+  return (
+    <div className={styles.viewAllCoursesContainer}>
+      <p className={styles.viewCoursesText}>
+        Want to see a full breakdown of each program's content?
+      </p>
+      <Link
+        to={{ pathname: "/", state: { scrollTo: "service" } }}
+        className={styles.viewAllCoursesLink}
       >
-        <polyline points="12 5 19 12 12 19" />
-        <line x1="19" y1="12" x2="5" y2="12" />
-      </svg>
-    </Link>
-  </div>
-);
+        View All Courses & Details
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={styles.linkArrow}
+        >
+          <polyline points="12 5 19 12 12 19" />
+          <line x1="19" y1="12" x2="5" y2="12" />
+        </svg>
+      </Link>
+    </div>
+  );
+};
 
 // Prop type definitions
 ProgramSelection.propTypes = {

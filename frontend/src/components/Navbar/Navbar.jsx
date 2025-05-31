@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import styles from './Navbar.module.css';
 import logo from "/images/logo.png";
 import { navLinks } from "../../data/navbarLinks";
-import { useScrollToSection } from "../../utils/scrollUtils"; // Ensure this is correctly implemented
+import { useScrollToSection } from "../../hooks/useScrollToSection"; // Ensure this is correctly implemented
 import { useLocation } from "react-router-dom"; // Import useLocation for conditional checks
 
 // New, more modular imports

@@ -88,8 +88,10 @@ const SignIn = () => {
 
   return (
     <AuthLayout
-      title="Welcome Back!"
-      instruction="Log in to Zeelevate Academy to continue your learning journey"
+      title="Welcome Back!" // Specific title for Sign In
+      instruction="Please sign in to access your account." // Specific instruction
+      navLinkTo="/signup" // Optional: Link to Sign Up
+      navLinkLabel="Create an Account" // Label for the Sign Up link
     >
       <form onSubmit={handleSubmit} className={styles.signInForm}>
         <AuthForm

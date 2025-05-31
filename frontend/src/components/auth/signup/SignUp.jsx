@@ -141,15 +141,24 @@ const SignUp = () => {
     );
   }, []);
 
+  // Determine AuthLayout title and instruction based on current step
+  const layoutTitle =
+    currentStep === 1 ? "Enroll in Programs" : "Account Details";
+  const layoutInstruction =
+    currentStep === 1
+      ? "Select the program modules that best fit your learning goals."
+      : "Provide your personal and account details to complete your enrollment.";
+
+  // Determine AuthLayout wide status
+  const isLayoutWide = currentStep === 1 || 2; // Program selection is wide, account details is narrow
+
   return (
     <AuthLayout
-      title="Enroll in Programs"
-      instruction={
-        currentStep === 1
-          ? "Select your program modules."
-          : "Provide your details to begin your learning journey."
-      }
-      isWide={currentStep === 1}
+       title={layoutTitle} // Use the dynamic title
+      instruction={layoutInstruction} // Use the dynamic instruction
+      isWide={isLayoutWide}
+      navLinkTo="/signin"
+      navLinkLabel="Already have an account? Sign In"
     >
       <form
         onSubmit={(e) => e.preventDefault()}

@@ -6,7 +6,7 @@ import styles from './Footer.module.css';
 import { FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram, FaHeart, FaChevronUp } from 'react-icons/fa';
 import logo from "/images/logo.png";
 import { navLinks } from '../../data/navbarLinks'; 
-import { useScrollToSection } from "../../utils/scrollUtils"; 
+import { useScrollToSection } from "../../hooks/useScrollToSection"; 
 import NavItem from '../Common/NavItem'; 
 
 /**
