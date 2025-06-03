@@ -1,33 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaCheckCircle, FaSpinner, FaExclamationTriangle } from 'react-icons/fa';
-import { db } from '../firebase/firestore';
-import { collection, setDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { auth } from '../firebase/auth';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 export default function PaymentSuccess() {
   const location = useLocation();
   const navigate = useNavigate();
   const [status, setStatus] = useState('verifying');
   const [error, setError] = useState(null);
-  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     const completeRegistration = async () => {
       const params = new URLSearchParams(location.search);
-      const firstname = decodeURIComponent(params.get('firstname') || '');
-      const lastname = decodeURIComponent(params.get('lastname') || '');
-      const email = decodeURIComponent(params.get('email') || '');
-      const password = decodeURIComponent(params.get('password') || '');
-      const amount = parseFloat(params.get('amount') || 0);
-      const course = decodeURIComponent(params.get('course') || '');
-      const role = decodeURIComponent(params.get('role') || 'student');
-      const courseId = params.get('courseId') || 'default';
-      const orderId = params.get('orderId');
+      const token = params.get('token');
 
-      if (!orderId || !email || !password) {
-        setError('Missing required registration information.');
+      if (!token) {
+        setError('Missing registration token.');
         setStatus('error');
         return;
       }
@@ -35,39 +24,27 @@ export default function PaymentSuccess() {
       try {
         setStatus('registering');
 
-        // Register user
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const { uid } = userCredential.user;
-
-        // Save to Firestore using uid
-        await setDoc(doc(db, 'users', uid), {
-          firstname,
-          lastname,
-          email,
-          course,
-          courseId,
-          amount,
-          orderId,
-          createdAt: serverTimestamp(),
+        // 🔁 Call backend to complete registration with token
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/register-user`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
         });
 
-        setUserData({
-          firstname,
-          lastname,
-          email,
-          course,
-          amount,
-          userId: uid,
-        });
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || 'Registration failed on server.');
+        }
+
+        const { email, password } = await response.json();
+
+        // ✅ Auto login
+        await signInWithEmailAndPassword(auth, email, password);
 
         setStatus('success');
       } catch (err) {
-        console.error('Registration error:', err);
-        if (err.code === 'auth/email-already-in-use') {
-          setError('This email is already registered. Try logging in instead.');
-        } else {
-          setError(err.message);
-        }
+        console.error('Registration/Login error:', err);
+        setError(err.message || 'Something went wrong.');
         setStatus('error');
       }
     };
@@ -78,7 +55,7 @@ export default function PaymentSuccess() {
   useEffect(() => {
     if (status === 'success') {
       const timer = setTimeout(() => {
-        navigate('/student/dashboard'); // change to '/login' if that's more appropriate
+        navigate('/student/dashboard');
       }, 3000);
       return () => clearTimeout(timer);
     }
@@ -90,19 +67,19 @@ export default function PaymentSuccess() {
         <>
           <FaSpinner className="animate-spin text-blue-500 text-4xl mb-4" />
           <p className="text-lg">
-            {status === 'verifying' ? 'Verifying payment...' : 'Registering user...'}
+            {status === 'verifying' ? 'Verifying payment...' : 'Registering and logging in...'}
           </p>
         </>
       ) : status === 'success' ? (
         <>
           <FaCheckCircle className="text-green-500 text-4xl mb-4" />
-          <p className="text-xl font-semibold mb-2">Registration Successful!</p>
+          <p className="text-xl font-semibold mb-2">Registration Complete!</p>
           <p className="text-sm text-gray-600">Redirecting to your dashboard...</p>
         </>
       ) : (
         <>
           <FaExclamationTriangle className="text-red-500 text-4xl mb-4" />
-          <p className="text-xl font-semibold mb-2">Registration Failed</p>
+          <p className="text-xl font-semibold mb-2">Something went wrong</p>
           <p className="text-sm text-gray-600">{error}</p>
         </>
       )}
@@ -110,4 +87,4 @@ export default function PaymentSuccess() {
   );
 }
 
-export const PaymentSuccessPage = PaymentSuccess; // For consistency with your routing structure
+export const PaymentSuccessPage = PaymentSuccess;

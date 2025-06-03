@@ -19,7 +19,7 @@ const SignIn = () => {
   const externalProviders = getAllProviders();
 
   useEffect(() => {
-    if (user) {
+      if (user) {
       // Clear any auth errors when user logs in successfully
       console.log(user)
       clearAuthError();
