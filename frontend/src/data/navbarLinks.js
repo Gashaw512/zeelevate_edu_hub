@@ -2,37 +2,45 @@
 import { faRightFromBracket, faUser } from '@fortawesome/free-solid-svg-icons';
 
 // ---
-// Navigation Links for the main Navbar (Static, non-auth related)
-// Used by: NavItem.jsx (via Navbar.jsx)
+// Navigation Links for the main Navbar & Footer
 // ---
 export const navLinks = [
   {
-    id: "home", // For react-scroll
+    id: "home", // ID for scroll, and will be the 'path' for the hook if type is 'scroll'
     label: 'Home',
-    linkProps: { smooth: true, offset: 0, duration: 500 },
+    type: 'scroll', // Explicitly define type
+    linkProps: { smooth: true, offset: 0, duration: 500 }, // react-scroll props
   },
   {
     id: 'about',
     label: 'About Us',
+    type: 'scroll', // Explicitly define type
     linkProps: { smooth: true, offset: -260, duration: 500 },
   },
   {
     id: 'service',
     label: 'Courses',
+    type: 'scroll', // Explicitly define type
     linkProps: { smooth: true, offset: -150, duration: 500 },
   },
   {
     id: 'team',
     label: 'Team',
+    type: 'scroll', // Explicitly define type
     linkProps: { smooth: true, offset: -260, duration: 500 },
   },
   {
     id: 'contact',
     label: 'Contact',
+    type: 'scroll', // Explicitly define type
     linkProps: { smooth: true, offset: -260, duration: 500 },
   },
-  // 'Sign In' is intentionally omitted here as its rendering is dynamic
-  // based on authentication state, handled by AuthNavigation.jsx.
+  // Example of a route link (if you had one in your static nav)
+  // {
+  //   label: 'Blog',
+  //   to: '/blog', // Route path for React Router
+  //   type: 'route', // Explicitly define type
+  // },
 ];
 
 // ---

@@ -1,14 +1,13 @@
-// src/pages/auth/SignIn.jsx
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signInWithPopup } from "firebase/auth";
-import { auth } from "../../firebase/auth";
-import { useAuth } from "../../context/AuthContext";
-import { getAllProviders } from "../../data/externalAuthProviderConfig";
-import useSignIn from "../../hooks/useSignIn";
-import AuthLayout from "../layouts/auth/AuthLayout";
-import AuthForm from "../common/AuthForm";
-import SocialAuthButtons from "../common/SocialAuthButton";
+import { auth } from "../../../firebase/auth";
+import { useAuth } from "../../../context/AuthContext";
+import { getAllProviders } from "../../../data/externalAuthProviderConfig";
+import useSignIn from "../../../hooks/useSignIn";
+import AuthLayout from "../../layouts/auth/AuthLayout";
+import AuthForm from "../../common/AuthForm";
+import SocialAuthButtons from "../../common/SocialAuthButton";
 import styles from "./SignIn.module.css";
 
 const SignIn = () => {
@@ -89,8 +88,10 @@ const SignIn = () => {
 
   return (
     <AuthLayout
-      title="Welcome Back!"
-      instruction="Log in to Zeelevate Academy to continue your learning journey"
+      title="Welcome Back!" // Specific title for Sign In
+      instruction="Please sign in to access your account." // Specific instruction
+      navLinkTo="/signup" // Optional: Link to Sign Up
+      navLinkLabel="Create an Account" // Label for the Sign Up link
     >
       <form onSubmit={handleSubmit} className={styles.signInForm}>
         <AuthForm

@@ -1,13 +1,16 @@
 // Import Components
+import  { useEffect } from 'react';
 import Navbar from "../components/Navbar/Navbar";
 import TextBox from "../components/TextBox/TextBox";
 import Footer from "../components/Footer/Footer";
 import Contact from "../components/ContactComponent/ContactComponent";
 import About from "../components/AboutUsBox/AboutUsBox";
-import Team from "../components/Team/Team";
+// import Team from "../components/Team/Team";
+import { useLocation, useNavigate } from 'react-router-dom';
 import Cta from "../components/Cta/Cta";
 import Programs from "../components/Programs/Programs";
 import Feature from "../components/Features/Fearure";
+import { useScrollToSection } from '../hooks/useScrollToSection';
 
 /**
  * LandingPage Component
@@ -24,6 +27,14 @@ import Feature from "../components/Features/Fearure";
  * - Footer
  */
 const LandingPage = () => {
+
+   useScrollToSection(); // This auto-scrolls on mount if location.state.scrollTo exists
+
+
+
+  // THIS IS THE CRUCIAL PART FOR `location.state.scrollTo`
+
+
   return (
     <>
       <Navbar />

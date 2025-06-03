@@ -1,17 +1,15 @@
 // src/components/Navbar/Navbar.jsx
 import { useEffect, useState, useCallback } from "react";
-// import './Navbar.css'; // Make sure this import is correct
+import styles from './Navbar.module.css';
 import logo from "/images/logo.png";
-// IMPORTANT: Use an actual menu icon for a hamburger, not menu-icon.png if it's a fixed image.
-// If menu-icon.png is your hamburger, that's fine. Otherwise, consider an SVG or FontAwesome icon.
-import menu_icon_img from "/images/menu-icon.png"; // Renamed to avoid conflict
 import { navLinks } from "../../data/navbarLinks";
-import { useScrollToSection } from "../../utils/scrollUtils";
+import { useScrollToSection } from "../../hooks/useScrollToSection"; // Ensure this is correctly implemented
+import { useLocation } from "react-router-dom"; // Import useLocation for conditional checks
 
 // New, more modular imports
-import NavItem from "./NavItem";
+import NavItem from "../common/NavItem";
 import AuthNavigation from "./AuthNavigation";
-import { FaBars, FaTimes } from "react-icons/fa"; // Import icons for menu toggle
+import { FaBars, FaTimes } from "react-icons/fa";
 
 /**
  * Navbar Component
@@ -25,8 +23,11 @@ import { FaBars, FaTimes } from "react-icons/fa"; // Import icons for menu toggl
 const Navbar = () => {
   const [isSticky, setIsSticky] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation(); // Get current route information
 
-  const { handleNavLinkClick } = useScrollToSection();
+  // The useScrollToSection hook should provide a handler that knows how to
+  // scroll OR navigate to the homepage and then scroll.
+  const { handleNavLinkClick: scrollToSectionOrNavigate } = useScrollToSection();
 
   /**
    * Toggles the visibility of the mobile navigation menu.
@@ -46,18 +47,41 @@ const Navbar = () => {
     setIsMobileMenuOpen(false);
   }, []);
 
-  // Handler for NavItem's onClick. It conditionally calls handleNavLinkClick
-  // for scroll links or simply closes the menu for router links.
-  const handleNavItemClick = useCallback(
-    (id, e) => {
-      if (id) {
-        handleNavLinkClick(id, e, closeMobileMenu); // Pass e for scroll behavior
-      } else {
-        window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to top for Home or fallback
+  /**
+   * Handles clicks on any NavItem within the Navbar.
+   * This function now correctly receives all parameters from NavItem.
+   *
+   * @param {Event} event - The native DOM click event.
+   * @param {string} id - The HTML ID of the section to scroll to (for 'scroll' links).
+   * @param {string} to - The URL path (for 'route' links).
+   * @param {string} type - 'route' or 'scroll'.
+   */
+  const handleNavbarItemClick = useCallback(
+    (event, id, to, type) => {
+      // Prevent default behavior only for scroll links, as RouterLink handles its own.
+      // react-scroll's ScrollLink typically handles preventDefault internally for smooth scroll.
+      if (type === 'scroll') {
+          event.preventDefault(); // Keep this for consistency or if react-scroll ever acts up.
+      }
+
+      // If it's a route link, directly navigate and close menu
+      if (type === 'route') {
+        scrollToSectionOrNavigate(event, id, to, type); // Use the scroll utility to handle navigation
         closeMobileMenu();
+      } else if (type === 'scroll') {
+        // For scroll links:
+        // If we are NOT on the homepage, navigate to the homepage with the hash.
+        // The `useScrollToSection` hook will then pick up this hash and scroll.
+        if (location.pathname !== '/') {
+            scrollToSectionOrNavigate(event, id, to, type); // This will navigate to '/#id'
+        } else {
+            // If already on the homepage, directly scroll using the utility
+            scrollToSectionOrNavigate(event, id, to, type);
+        }
+        closeMobileMenu(); // Always close menu after click
       }
     },
-    [handleNavLinkClick, closeMobileMenu]
+    [scrollToSectionOrNavigate, closeMobileMenu, location.pathname]
   );
 
   // Effect hook to manage the sticky navbar behavior
@@ -71,62 +95,76 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Effect to prevent body scrolling when mobile menu is open
+  // Ensure body scroll lock for mobile menu (existing, keep as is)
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
+
+  // Handle initial scroll on page load if a hash exists (existing, keep as is)
   useEffect(() => {
     const hash = window.location.hash;
     if (hash) {
       const id = hash.replace("#", "");
       const el = document.getElementById(id);
       if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
+        setTimeout(() => { // Small delay to ensure component renders
+          el.scrollIntoView({ behavior: "smooth" });
+        }, 100);
       }
     }
-  }, []);
+  }, [location.hash]); // Listen to location.hash changes for robustness
 
   return (
-    <nav className={`navbar ${isSticky ? "dark-nav" : "transparent-nav"}`}>
+    <nav className={`${styles.navbar} ${isSticky ? styles.darkNav : styles.transparentNav}`}>
       <div
-        className="navbar-logo"
-        onClick={(e) => handleNavLinkClick("home", e)}
+        className={styles.navbarLogo}
+        // When clicking the logo, navigate to home and scroll to top
+        onClick={(e) => handleNavbarItemClick(e, "home", "/", "route")} // Treat logo as a route to home
         role="button"
         tabIndex="0"
         aria-label="Scroll to home section"
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            handleNavLinkClick("home", e);
+            handleNavbarItemClick(e, "home", "/", "route");
           }
         }}
       >
-        <img src={logo} alt="Zeelevate Company Logo" />
+        <img src={logo} alt="Zeelevate Company Logo" className={styles.logoImg} />
       </div>
 
       <ul
-        // THIS IS THE CRUCIAL CHANGE: Conditional class for mobile menu display
-        className={`navbar-links ${
-          isMobileMenuOpen ? "show-mobile-menu" : "hide-mobile-menu"
+        className={`${styles.navbarNav} ${
+          isMobileMenuOpen ? styles.showMobileMenu : styles.hideMobileMenu
         }`}
       >
         {/* Render static navigation links using the new NavItem component */}
         {navLinks.map((link) => (
-          <li key={link.label}>
+          <li key={link.label} className={styles.navItem}>
             <NavItem
               label={link.label}
               id={link.id}
               to={link.to}
+              type={link.type} 
               linkProps={link.linkProps}
-              onClickHandler={handleNavItemClick}
+              onClickHandler={handleNavbarItemClick} /* Pass the updated handler */
             />
           </li>
         ))}
 
-        {/* Render authentication-related UI using the dedicated AuthNavigation component */}
+        {/* Render authentication-related UI */}
         <AuthNavigation onLinkClick={closeMobileMenu} />
       </ul>
 
-      {/* Use FontAwesome icons for a more professional and flexible menu icon */}
       <div
-        className="menu-icon"
+        className={styles.menuIcon}
         onClick={toggleMobileMenu}
         role="button"
         aria-label="Toggle mobile navigation menu"
@@ -139,14 +177,13 @@ const Navbar = () => {
         }}
       >
         {isMobileMenuOpen ? <FaTimes /> : <FaBars />}{" "}
-        {/* Show X icon when open, Bars when closed */}
       </div>
     </nav>
   );
 };
 
 Navbar.propTypes = {
-  // No direct props for Navbar in this current setup, but good practice to keep.
+  // No direct props for Navbar in this current setup.
 };
 
 export default Navbar;

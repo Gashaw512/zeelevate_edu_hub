@@ -1,260 +1,215 @@
-// pages/SignUp/SignUp.jsx
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useSearchParams, useNavigate, useParams } from "react-router-dom";
-import axios from 'axios'; // Import axios
-
+import useEnrollmentAndPayment from "../../../hooks/useEnrollmentAndPayment";
 import ProgramSelection from "./ProgramSelection";
 import AccountDetailsForm from "./AccountDetailsForm";
 import FormNavigation from "./FormNavigation";
-
 import AuthLayout from "../../layouts/auth/AuthLayout";
 import SocialAuthButtons from "../../common/SocialAuthButton";
 import { getAllProviders } from "../../../data/externalAuthProviderConfig";
 import { MOCK_PROGRAMS } from "../../../data/mockPrograms";
-
 import styles from "./SignUp.module.css";
 
 const SignUp = () => {
-    const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
-    const { programType } = useParams();
-    const externalProviders = getAllProviders();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { programType } = useParams();
+  const externalProviders = getAllProviders();
+  const accountDetailsFormRef = useRef();
 
-    const [currentStep, setCurrentStep] = useState(1);
-    const [selectedProgramIds, setSelectedProgramIds] = useState([]);
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        phoneNumber: '',
-        password: '',
-        confirmPassword: '',
-    });
-    const [globalError, setGlobalError] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [triggerAccountDetailsValidation, setTriggerAccountDetailsValidation] = useState(false);
+  // Form state
+  const [currentStep, setCurrentStep] = useState(1);
+  const [selectedProgramIds, setSelectedProgramIds] = useState([]);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [globalError, setGlobalError] = useState("");
 
-    const accountDetailsFieldsConfig = [
-        { name: 'name', label: 'Full Name', type: 'text', required: true },
-        { name: 'email', label: 'Email Address', type: 'email', required: true },
-        { name: 'phoneNumber', 'label': 'Phone Number', type: 'tel', required: true },
-        { name: 'password', label: 'Password', type: 'password', required: true },
-        { name: 'confirmPassword', label: 'Confirm Password', type: 'password', required: true },
-    ];
+  // Payment hook
+  const {
+    initiatePayment,
+    isLoading: paymentLoading,
+    error: paymentError,
+  } = useEnrollmentAndPayment();
 
-    const validateSignUpFormData = useCallback(() => {
-        let errors = {};
-        let currentFormIsValid = true;
+  // Program selection from URL
+  useEffect(() => {
+    const programIdFromUrl = searchParams.get("programId");
+    let matchedProgram = null;
 
-        accountDetailsFieldsConfig.forEach(field => {
-            if (field.required && !formData[field.name]) {
-                errors[field.name] = `${field.label} is required.`;
-                currentFormIsValid = false;
-            }
-        });
+    if (programType) {
+      matchedProgram = MOCK_PROGRAMS.find((p) => p.id.startsWith(programType));
+    } else if (programIdFromUrl) {
+      matchedProgram = MOCK_PROGRAMS.find((p) => p.id === programIdFromUrl);
+    }
 
-        if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-            errors.email = 'Invalid email format.';
-            currentFormIsValid = false;
-        }
-        if (formData.password && formData.password.length < 6) {
-            errors.password = 'Password must be at least 6 characters.';
-            currentFormIsValid = false;
-        }
-        if (formData.password && formData.confirmPassword && formData.password !== formData.confirmPassword) {
-            errors.confirmPassword = 'Passwords do not match.';
-            currentFormIsValid = false;
-        }
-        return currentFormIsValid;
-    }, [formData, accountDetailsFieldsConfig]);
+    if (matchedProgram && !selectedProgramIds.includes(matchedProgram.id)) {
+      setSelectedProgramIds([matchedProgram.id]);
+      if (programType) setCurrentStep(2);
+    }
+  }, [searchParams, selectedProgramIds, programType]);
 
+  //   Total Price calculator
+  const totalPrice = useMemo(
+    () =>
+      selectedProgramIds.reduce((total, id) => {
+        const program = MOCK_PROGRAMS.find((p) => p.id === id);
+        return total + (program?.fixedPrice || 0);
+      }, 0),
+    [selectedProgramIds]
+  );
 
-    useEffect(() => {
-        const programIdFromUrl = searchParams.get('programId');
-
-        if (programType) {
-            const match = MOCK_PROGRAMS.find(p => p.id.startsWith(programType));
-            if (match && !selectedProgramIds.includes(match.id)) {
-                setSelectedProgramIds([match.id]);
-                setCurrentStep(2);
-            }
-        } else if (programIdFromUrl) {
-            const exists = MOCK_PROGRAMS.some(p => p.id === programIdFromUrl);
-            if (exists && !selectedProgramIds.includes(programIdFromUrl)) {
-                setSelectedProgramIds([programIdFromUrl]);
-            }
-        }
-    }, [searchParams, selectedProgramIds, programType]);
-
-    const calculateTotalPrice = useCallback(() =>
-        selectedProgramIds.reduce((total, id) => {
-            const program = MOCK_PROGRAMS.find(p => p.id === id);
-            return total + (program?.fixedPrice || 0);
-        }, 0),
-        [selectedProgramIds]
+  // Handlers
+  const handleProgramSelection = useCallback((programId) => {
+    setSelectedProgramIds((prev) =>
+      prev.includes(programId)
+        ? prev.filter((id) => id !== programId)
+        : [programId]
     );
+    setGlobalError("");
+  }, []);
 
-    const handleProgramSelection = useCallback((programId) => {
-        setSelectedProgramIds(prev =>
-            prev.includes(programId) ? prev.filter(id => id !== programId) : [programId]
-        );
-        setGlobalError('');
-    }, []);
+  const handleChange = useCallback(({ target: { name, value } }) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setGlobalError("");
+  }, []);
 
-    const handleChange = useCallback(({ target: { name, value } }) => {
-        setFormData(prev => ({ ...prev, [name]: value }));
-        setGlobalError('');
-        setTriggerAccountDetailsValidation(false);
-    }, []);
+  const handleNextStep = useCallback(
+    (e) => {
+      e.preventDefault();
+      setGlobalError("");
 
-    const handleNextStep = useCallback((e) => {
-        e.preventDefault();
-        setGlobalError('');
+      if (currentStep === 1 && selectedProgramIds.length === 0) {
+        setGlobalError("Please select at least one program module to proceed.");
+        return;
+      }
+      setCurrentStep(2);
+    },
+    [currentStep, selectedProgramIds]
+  );
 
-        if (currentStep === 1) {
-            if (selectedProgramIds.length === 0) {
-                setGlobalError('Please select at least one program module to proceed.');
-                return;
-            }
-            setCurrentStep(2);
-        }
-    }, [currentStep, selectedProgramIds]);
-
-    const handlePreviousStep = useCallback(() => {
-        setGlobalError('');
-        setTriggerAccountDetailsValidation(false);
-        programType ? navigate('/') : setCurrentStep(prev => Math.max(1, prev - 1));
-    }, [programType, navigate]);
+  const handlePreviousStep = useCallback(() => {
+    setGlobalError("");
+    programType ? navigate("/") : setCurrentStep(1);
+  }, [programType, navigate]);
 
   const handleSubmitAccountDetails = useCallback(async () => {
-    console.log("handleSubmitAccountDetails called!"); 
-    setGlobalError('');
-    setIsSubmitting(true);
+    setGlobalError("");
 
-    setTriggerAccountDetailsValidation(true);
+    // Validate form via ref
+    const isValid = accountDetailsFormRef.current?.triggerFormValidation();
+    if (!isValid) return;
 
-    const finalCheckIsValid = validateSignUpFormData();
-    console.log("Validation result:", finalCheckIsValid); 
+    // Prepare data
+    const firstCourse = MOCK_PROGRAMS.find(
+      (p) => p.id === selectedProgramIds[0]
+    );
+    const totalPrice = selectedProgramIds.reduce((total, id) => {
+      const program = MOCK_PROGRAMS.find((p) => p.id === id);
+      return total + (program?.fixedPrice || 0);
+    }, 0);
 
-    if (!finalCheckIsValid) {
-        setGlobalError('Please correct the highlighted fields in your account details to proceed.');
-        setIsSubmitting(false);
-        setTimeout(() => setTriggerAccountDetailsValidation(false), 0);
-        return;
-    }
+    const nameParts = formData.name.split(" ");
+    const customerDetails = {
+      firstName: nameParts[0] || "",
+      lastName: nameParts.slice(1).join(" ") || "",
+      email: formData.email,
+      phoneNumber: formData.phoneNumber,
+      authPassword: formData.password,
+    };
 
-    const firstCourse = MOCK_PROGRAMS.find(p => p.id === selectedProgramIds[0]);
-    const totalPrice = calculateTotalPrice();
-
-    const nameParts = formData.name.split(' ');
-    const firstName = nameParts[0] || '';
-    const lastName = nameParts.slice(1).join(' ') || '';
-
-    console.log("Data to send to backend:", { // Add this
-        courseType: firstCourse ? firstCourse.id : '',
-        customerDetails: {
-            firstName,
-            lastName,
-            email: formData.email,
-            authPassword: formData.password,
-        },
-        courseDetails: {
-            title: firstCourse ? firstCourse.name : 'Selected Program',
-            price: totalPrice,
-        }
-    });
+    const courseDetails = {
+      title: firstCourse?.name || "Selected Program",
+      price: totalPrice,
+      courseType: firstCourse?.id || "default",
+    };
 
     try {
-        const response = await axios.post('http://localhost:3001/create-payment', {
-            courseType: firstCourse ? firstCourse.id : '',
-            customerDetails: {
-                firstName,
-                lastName,
-                email: formData.email,
-                authPassword: formData.password,
-            },
-            courseDetails: {
-                title: firstCourse ? firstCourse.name : 'Selected Program',
-                price: totalPrice,
-            }
-        });
-
-        console.log("Backend response:", response.data); 
-
-        if (response.data.success && response.data.paymentUrl) {
-            console.log("Redirecting to:", response.data.paymentUrl); 
-            window.location.href = response.data.paymentUrl;
-        } else {
-            setGlobalError(response.data.message || 'Payment link creation failed.');
-            console.log("Payment link creation failed or success is false."); 
-        }
+      await initiatePayment({ customerDetails, courseDetails });
     } catch (err) {
-        console.error('Payment error caught in frontend:', err); 
-        if (err.response && err.response.data && err.response.data.message) {
-            setGlobalError(`Failed to initiate payment: ${err.response.data.message}`);
-        } else {
-            setGlobalError('Failed to initiate payment. Please try again later.');
-        }
-    } finally {
-        setIsSubmitting(false);
-        setTimeout(() => setTriggerAccountDetailsValidation(false), 0);
+      console.error("Payment initiation error:", err);
     }
-}, [formData, selectedProgramIds, calculateTotalPrice, validateSignUpFormData]);
+  }, [formData, selectedProgramIds, initiatePayment]);
 
-    const handleSocialAuthIntent = useCallback((providerName) => {
-        setGlobalError("For payment-first flow, social sign-in needs backend coordination to avoid pre-payment registration.");
-    }, []);
-
-    return (
-        <AuthLayout
-            title="Enroll in Programs"
-            instruction={currentStep === 1 ? "Select your program modules." : "Provide your details to begin your learning journey."}
-            isWide={currentStep === 1}
-        >
-            <form onSubmit={e => e.preventDefault()} className={styles.enrollmentForm}>
-                {currentStep === 1 && (
-                    <ProgramSelection
-                        programs={MOCK_PROGRAMS}
-                        selectedProgramIds={selectedProgramIds}
-                        onProgramSelect={handleProgramSelection}
-                        calculateTotalPrice={calculateTotalPrice}
-                    />
-                )}
-
-                {currentStep === 2 && (
-                    <AccountDetailsForm
-                        formData={formData}
-                        onFormChange={handleChange}
-                        isSubmitting={isSubmitting}
-                        triggerValidation={triggerAccountDetailsValidation}
-                    />
-                )}
-
-                {globalError && <p className={styles.errorMessage}>{globalError}</p>}
-
-                <FormNavigation
-                    currentStep={currentStep}
-                    isSubmitting={isSubmitting}
-                    onPreviousStep={handlePreviousStep}
-                    onNextStep={handleNextStep}
-                    onFinalSubmit={handleSubmitAccountDetails}
-                    selectedProgramIdsLength={selectedProgramIds.length}
-                />
-            </form>
-
-            <p className={styles.signUpPrompt}>
-                Already have an account? <a href="/signin" className={styles.link}>Sign In</a>
-            </p>
-
-            <div className={styles.divider}>
-                <span className={styles.dividerText}>OR</span>
-            </div>
-
-            <SocialAuthButtons
-                providers={externalProviders}
-                onSignIn={handleSocialAuthIntent}
-            />
-        </AuthLayout>
+  const handleSocialAuthIntent = useCallback((providerName) => {
+    setGlobalError(
+      `${providerName} registration requires payment-first flow. Please use email/password or contact support.`
     );
+  }, []);
+
+  // Determine AuthLayout title and instruction based on current step
+  const layoutTitle =
+    currentStep === 1 ? "Enroll in Programs" : "Account Details";
+  const layoutInstruction =
+    currentStep === 1
+      ? "Select the program modules that best fit your learning goals."
+      : "Provide your personal and account details to complete your enrollment.";
+
+  // Determine AuthLayout wide status
+  const isLayoutWide = currentStep === 1 || 2; // Program selection is wide, account details is narrow
+
+  return (
+    <AuthLayout
+       title={layoutTitle} // Use the dynamic title
+      instruction={layoutInstruction} // Use the dynamic instruction
+      isWide={isLayoutWide}
+      navLinkTo="/signin"
+      navLinkLabel="Already have an account? Sign In"
+    >
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        className={styles.enrollmentForm}
+      >
+        {currentStep === 1 && (
+          <ProgramSelection
+            programs={MOCK_PROGRAMS}
+            selectedProgramIds={selectedProgramIds}
+            onProgramSelect={handleProgramSelection}
+            totalPrice={totalPrice} // Pass calculated total instead of function
+          />
+        )}
+
+        {currentStep === 2 && (
+          <AccountDetailsForm
+            ref={accountDetailsFormRef}
+            formData={formData}
+            onFormChange={handleChange}
+            isLoading={paymentLoading}
+          />
+        )}
+
+        {globalError && <p className={styles.errorMessage}>{globalError}</p>}
+        <FormNavigation
+          currentStep={currentStep}
+          isSubmitting={paymentLoading}
+          onPreviousStep={handlePreviousStep}
+          onNextStep={handleNextStep}
+          onFinalSubmit={handleSubmitAccountDetails}
+          selectedProgramIdsLength={selectedProgramIds.length}
+        />
+      </form>
+
+      <p className={styles.signUpPrompt}>
+        Already have an account?{" "}
+        <a href="/signin" className={styles.link}>
+          Sign In
+        </a>
+      </p>
+
+      <div className={styles.divider}>
+        <span className={styles.dividerText}>OR</span>
+      </div>
+
+      <SocialAuthButtons
+        providers={externalProviders}
+        onSignIn={handleSocialAuthIntent}
+      />
+    </AuthLayout>
+  );
 };
 
 export default SignUp;

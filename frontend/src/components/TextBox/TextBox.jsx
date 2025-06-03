@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import styles from "./TextBox.module.css"; // Correctly import CSS Modules
-import { useScrollToSection } from "../../utils/scrollUtils";
+import { useScrollToSection } from "../../hooks/useScrollToSection";
 
 /**
  * Renders a prominent hero section for the landing page,
