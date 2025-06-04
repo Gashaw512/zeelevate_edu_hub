@@ -22,12 +22,12 @@ async function createPaymentLink(data) {
     throw new Error('Email is already registered');
   } catch (err) {
     if (err.code !== 'auth/user-not-found') {
-      throw err; // Rethrow if other error
+      throw err; // Rethrow unexpected errors
     }
-    // Otherwise, user doesn't exist — continue
+    // Email not found, continue
   }
 
-  // ✅ 2. Save minimal data in pending_registrations
+  // ✅ 2. Save pending registration
   await db.collection('pending_registrations').doc(token).set({
     customerDetails: {
       firstName,
@@ -68,32 +68,4 @@ async function createPaymentLink(data) {
   };
 }
 
-async function addCourse(courseData) {
-  const {
-    courseTitle,
-    courseDetails,
-    price,
-    registrationDeadline,
-    classStartDate,
-    classLink,
-    classDuration
-  } = courseData;
-
-  const id = crypto.randomUUID();
-
-  const courseRef = await db.collection('courses').doc(id);
-  await courseRef.set({
-    courseId: id,
-    courseTitle,
-    courseDetails,
-    price,
-    registrationDeadline,
-    classStartDate,
-    classLink,
-    classDuration
-  });
-
-  return id;
-}
-
-module.exports = { createPaymentLink, addCourse };
+module.exports = { createPaymentLink };
