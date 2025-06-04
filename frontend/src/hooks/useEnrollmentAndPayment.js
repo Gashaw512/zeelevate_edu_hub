@@ -9,12 +9,13 @@ const useEnrollmentAndPayment = () => {
   const [error, setError] = useState(null);
 
   const initiatePayment = useCallback(async (payload) => {
+    console.log(payload)
     setIsLoading(true);
     setError(null);
     
     try {
       const response = await axios.post(
-        'http://localhost:3001/create-payment', 
+        'http://localhost:3001/api/payments/create-payment', 
         payload,
         { timeout: 10000 }
       );

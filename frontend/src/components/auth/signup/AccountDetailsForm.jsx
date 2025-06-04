@@ -6,7 +6,8 @@ import useFormValidation from '../../../hooks/useFormValidation';
 
 const AccountDetailsForm = forwardRef(({ formData, onFormChange, isSubmitting }, ref) => {
     const enrollmentFieldsConfig = [
-        { name: 'name', label: 'Full Name', type: 'text', required: true },
+        { name: 'fName', label: 'First Name', type: 'text', required: true },
+        { name: 'lName', label: 'Last Name', type: 'text', required: true },
         { name: 'email', label: 'Email Address', type: 'email', required: true },
         { name: 'phoneNumber', label: 'Phone Number', type: 'tel', required: true },
         { name: 'password', label: 'Password', type: 'password', required: true },
@@ -56,7 +57,7 @@ AccountDetailsForm.displayName = 'AccountDetailsForm';
 AccountDetailsForm.propTypes = {
     formData: PropTypes.object.isRequired,
     onFormChange: PropTypes.func.isRequired,
-    isSubmitting: PropTypes.bool.isRequired,
+    isSubmitting: PropTypes.bool,
 };
 
 export default AccountDetailsForm;

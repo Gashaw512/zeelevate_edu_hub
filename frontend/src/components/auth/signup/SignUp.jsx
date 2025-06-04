@@ -21,7 +21,8 @@ const SignUp = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedProgramIds, setSelectedProgramIds] = useState([]);
   const [formData, setFormData] = useState({
-    name: "",
+    fName: "",
+    lName: "",
     email: "",
     phoneNumber: "",
     password: "",
@@ -113,22 +114,22 @@ const SignUp = () => {
       return total + (program?.fixedPrice || 0);
     }, 0);
 
-    const nameParts = formData.name.split(" ");
+    // const nameParts = formData.name.split(" ");
     const customerDetails = {
-      firstName: nameParts[0] || "",
-      lastName: nameParts.slice(1).join(" ") || "",
+      firstName: formData.fName,
+      lastName: formData.lName,
       email: formData.email,
       phoneNumber: formData.phoneNumber,
-      authPassword: formData.password,
+      password: formData.password,
     };
 
     const courseDetails = {
       title: firstCourse?.name || "Selected Program",
       price: totalPrice,
-      courseType: firstCourse?.id || "default",
+      courseId: "b8d649fb-e13e-4aba-a95e-f8e3bdaea57c",
     };
-
     try {
+      
       await initiatePayment({ customerDetails, courseDetails });
     } catch (err) {
       console.error("Payment initiation error:", err);
@@ -150,11 +151,13 @@ const SignUp = () => {
       : "Provide your personal and account details to complete your enrollment.";
 
   // Determine AuthLayout wide status
-  const isLayoutWide = currentStep === 1 || 2; // Program selection is wide, account details is narrow
+  // const isLayoutWide = currentStep === 1 || 2; // Program selection is wide, account details is narrow
+  const isLayoutWide = currentStep === 1 || currentStep === 2;
+
 
   return (
     <AuthLayout
-       title={layoutTitle} // Use the dynamic title
+      title={layoutTitle} // Use the dynamic title
       instruction={layoutInstruction} // Use the dynamic instruction
       isWide={isLayoutWide}
       navLinkTo="/signin"

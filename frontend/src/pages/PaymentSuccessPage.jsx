@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaCheckCircle, FaSpinner, FaExclamationTriangle } from 'react-icons/fa';
 import { auth } from '../firebase/auth';
@@ -25,7 +25,7 @@ export default function PaymentSuccess() {
         setStatus('registering');
 
         // 🔁 Call backend to complete registration with token
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/register-user`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/register-user`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token }),

@@ -1,5 +1,4 @@
 // components/forms/FormNavigation/FormNavigation.jsx
-import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './FormNavigation.module.css';
 
