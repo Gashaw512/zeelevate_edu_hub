@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import  { useState, useEffect, useCallback } from 'react';
 import { Bell, Menu, Loader } from 'lucide-react'; // Import Loader icon for loading state
 import PropTypes from 'prop-types';
 import styles from './Header.module.css';
 import { db } from '../../firebase/firestore'; // Your Firebase Firestore instance
+import useClickOutside from '../../hooks/useClickOutside';
 import {
   collection,
   query,
@@ -22,6 +23,8 @@ const Header = ({ toggleSidebar, user }) => {
   const [notificationsLoading, setNotificationsLoading] = useState(true);
   const [notificationsError, setNotificationsError] = useState(null);
 
+ 
+
   // Derive unread count from the state
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -33,6 +36,10 @@ const Header = ({ toggleSidebar, user }) => {
     setShowNotifications(prev => !prev);
     // Optionally, if dropdown is opened, you might want to mark all currently visible as read
     // or fetch more if using pagination. For simplicity, we just toggle visibility.
+  }, []);
+
+    const closeNotifications = useCallback(() => {
+    setShowNotifications(false);
   }, []);
 
   /**
@@ -143,6 +150,9 @@ const Header = ({ toggleSidebar, user }) => {
     }
   }, [user]);
 
+
+   const dropdownRef = useClickOutside(closeNotifications, showNotifications);
+
   // Determine the display name for the user greeting
   const userName =
     user?.displayName?.split(' ')[0] ||
@@ -176,7 +186,7 @@ const Header = ({ toggleSidebar, user }) => {
         </button>
 
         {showNotifications && (
-          <div className={styles.notificationsDropdown}>
+          <div  ref={dropdownRef}  className={styles.notificationsDropdown}>
             <div className={styles.dropdownHeader}>
               <h3 className={styles.dropdownTitle}>Notifications</h3>
             </div>
