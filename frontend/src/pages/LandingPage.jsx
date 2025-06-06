@@ -12,7 +12,7 @@ import Programs from "../components/Programs/Programs";
 import Feature from "../components/Features/Fearure";
 import { useScrollToSection } from '../hooks/useScrollToSection';
 import AddProgram from '../components/AdminDashboar/AddProgram';
-
+import SendNotification from '../components/AdminDashboar/SendNotification';
 /**
  * LandingPage Component
  *
@@ -78,6 +78,13 @@ const LandingPage = () => {
            <section id="contacts" className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <AddProgram />
+        </div>
+      </section>
+
+
+           <section id="contacts" className="py-20 bg-white">
+        <div className="container mx-auto px-6">
+          <SendNotification/>
         </div>
       </section>
 
