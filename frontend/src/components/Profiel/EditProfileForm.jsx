@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { getAuth, updateProfile } from 'firebase/auth';
 import styles from '../../pages/studentDashboard/Profile.module.css';
 import { Check, X, Save } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 const EditProfileForm = ({ user, onSuccess, onCancel }) => {
   const [displayName, setDisplayName] = useState('');
@@ -10,6 +11,7 @@ const EditProfileForm = ({ user, onSuccess, onCancel }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  const { refreshUser } = useAuth();
 
   useEffect(() => {
     if (user) {
@@ -44,6 +46,8 @@ const EditProfileForm = ({ user, onSuccess, onCancel }) => {
         displayName: displayName.trim(),
         photoURL: photoURL.trim() || null,
       });
+
+      await refreshUser(); // 👈 this line updates your app context
 
       setSuccessMessage('Profile updated successfully!');
       setTimeout(() => {

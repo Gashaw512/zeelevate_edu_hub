@@ -43,13 +43,13 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-const login = async (email, password) => {
+  const login = async (email, password) => {
     setAuthError(null); // Clear previous errors before attempting login
     try {
       await signInWithEmailAndPassword(auth, email, password);
       // If successful, onAuthStateChanged will trigger and handle user state
     } catch (error) {
-      console.error('Login error:', error); 
+      console.error('Login error:', error);
 
       const errorCode = error.code;
       let errorMessage = 'Login failed. Please check your credentials.'; // Default message
@@ -80,13 +80,43 @@ const login = async (email, password) => {
     }
   };
 
+
+  const refreshUser = async () => {
+    if (auth.currentUser) {
+      await auth.currentUser.reload();
+      const firebaseUser = auth.currentUser;
+
+      try {
+        const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+        if (userDoc.exists()) {
+          setUser({ ...firebaseUser, ...userDoc.data() });
+        } else {
+          setUser(firebaseUser);
+        }
+      } catch (dbError) {
+        console.error('Error refreshing user document:', dbError);
+        setUser(firebaseUser); // fallback
+      }
+    }
+  };
+
+
   // Function to manually clear auth errors if needed from other components
   const clearAuthError = () => {
     setAuthError(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, authError, setAuthError, login, logout, clearAuthError }}>
+    <AuthContext.Provider value={{
+      user,
+      loading,
+      authError,
+      setAuthError,
+      login,
+      logout,
+      clearAuthError,
+      refreshUser,
+    }}>
       {!loading && children}
     </AuthContext.Provider>
   );
