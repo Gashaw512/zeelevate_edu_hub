@@ -1,0 +1,147 @@
+/* src/components/Admin/AddProgram.module.css */
+
+.adminContainer {
+  max-width: 800px;
+  margin: 4rem auto;
+  padding: 2.5rem;
+  background-color: var(--background-light);
+  border-radius: 1.5rem;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1),
+              0 5px 10px rgba(0, 0, 0, 0.05);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border: 1px solid var(--border-light);
+}
+
+.adminHeading {
+  font-size: 2.5rem;
+  color: var(--primary-blue-dark);
+  text-align: center;
+  margin-bottom: 2.5rem;
+  font-weight: 700;
+}
+
+.programForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Space between form groups */
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  font-size: 1.05rem;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.formGroup input[type="text"],
+.formGroup input[type="number"],
+.formGroup select,
+.formGroup textarea {
+  padding: 0.9rem 1.2rem;
+  border: 1px solid var(--border-light);
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  color: var(--text-dark);
+  background-color: var(--background-muted);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(54, 134, 255, 0.2); /* Soft focus ring */
+}
+
+.formGroup textarea {
+  resize: vertical; /* Allow vertical resizing */
+  min-height: 80px;
+}
+
+.inputHint {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.submitButton {
+  padding: 1.2rem 2rem;
+  background: linear-gradient(45deg, var(--primary-blue), var(--primary-blue-dark));
+  color: var(--text-light);
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  margin-top: 1.5rem;
+}
+
+.submitButton:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(45deg, var(--hover-blue), var(--primary-blue));
+}
+
+.submitButton:disabled {
+  background: var(--border-light);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.7;
+  box-shadow: none;
+  transform: none;
+}
+
+.message {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.message.success {
+  background-color: #e6ffe6; /* Light green */
+  color: #28a745; /* Dark green */
+  border: 1px solid #28a745;
+}
+
+.message.error {
+  background-color: #ffe6e6; /* Light red */
+  color: #dc3545; /* Dark red */
+  border: 1px solid #dc3545;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .adminContainer {
+    padding: 1.5rem;
+    margin: 2rem 1rem;
+    border-radius: 1rem;
+  }
+  .adminHeading {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+  .formRow {
+    grid-template-columns: 1fr; /* Stack columns on smaller screens */
+  }
+  .submitButton {
+    font-size: 1rem;
+    padding: 1rem 1.5rem;
+  }
+}

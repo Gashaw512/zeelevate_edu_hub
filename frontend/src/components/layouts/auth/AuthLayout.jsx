@@ -1,7 +1,7 @@
 // src/layouts/auth/AuthLayout.jsx
 import PropTypes from 'prop-types';
 import Footer from '../../Footer/Footer'; // Assuming your Footer is reusable
-import AuthHeader from '../../Auth/AuthHeader'; // Correct path to AuthHeader
+import AuthHeader from '../../auth/AuthHeader'; // Correct path to AuthHeader
 import styles from './AuthLayout.module.css'; // Your CSS Module for AuthLayout
 
 /**

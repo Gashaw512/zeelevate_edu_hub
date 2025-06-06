@@ -223,6 +223,8 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease; /* Smooth transitions */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Initial shadow */
   letter-spacing: 0.03em; /* Subtle letter spacing */
+  border: none; /* Ensure button has no default border */
+  cursor: pointer; /* Indicate it's clickable */
 }
 
 .enrollButton:hover {
@@ -231,12 +233,33 @@
   background: linear-gradient(45deg, var(--hover-blue), var(--active-blue)); /* Darker gradient on hover */
 }
 
+.enrollButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
 .buttonPrice {
   background: rgba(255, 255, 255, 0.2); /* Slightly more opaque white for better contrast */
   padding: 0.3rem 0.8rem; /* More padding */
   border-radius: 50px;
   font-size: 0.95rem; /* Slightly larger */
   font-weight: 600;
+}
+
+/* New style for disabled button */
+.disabledButton {
+  background: var(--border-light); /* Lighter, muted background for disabled state */
+  color: var(--text-muted); /* Muted text color */
+  cursor: not-allowed; /* Indicates non-clickable */
+  transform: none; /* No lift on hover */
+  box-shadow: none; /* No shadow on hover */
+  opacity: 0.7; /* Slightly transparent */
+  pointer-events: none; /* Prevents click events entirely */
+  justify-content: center; /* Center text when no price is displayed */
+}
+
+.disabledButton .buttonPrice {
+  display: none; /* Hide price badge when button is disabled */
 }
 
 /* --- Responsive Styles --- */
