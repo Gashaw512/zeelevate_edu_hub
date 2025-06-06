@@ -71,6 +71,13 @@ const ChangePasswordForm = ({ user, onSuccess, onCancel }) => {
     setError(null);
     setSuccessMessage(null);
 
+    if (!user || !user.email) {
+  setError("User is not logged in or missing email.");
+  setLoading(false);
+  return;
+}
+
+
     if (!currentPassword || !newPassword || !confirmNewPassword) {
       setError('All password fields are required.');
       setLoading(false);
