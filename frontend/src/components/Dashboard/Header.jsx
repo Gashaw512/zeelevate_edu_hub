@@ -1,4 +1,4 @@
-import  { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Bell, Menu, Loader } from 'lucide-react'; // Import Loader icon for loading state
 import PropTypes from 'prop-types';
 import styles from './Header.module.css';
@@ -23,7 +23,7 @@ const Header = ({ toggleSidebar, user }) => {
   const [notificationsLoading, setNotificationsLoading] = useState(true);
   const [notificationsError, setNotificationsError] = useState(null);
 
- 
+
 
   // Derive unread count from the state
   const unreadCount = notifications.filter(n => !n.read).length;
@@ -38,9 +38,11 @@ const Header = ({ toggleSidebar, user }) => {
     // or fetch more if using pagination. For simplicity, we just toggle visibility.
   }, []);
 
-    const closeNotifications = useCallback(() => {
+  const closeNotifications = useCallback(() => {
     setShowNotifications(false);
   }, []);
+
+  const dropdownRef = useClickOutside(closeNotifications, showNotifications);
 
   /**
    * Effect hook to set up a real-time Firestore listener for user-specific notifications.
@@ -151,7 +153,7 @@ const Header = ({ toggleSidebar, user }) => {
   }, [user]);
 
 
-   const dropdownRef = useClickOutside(closeNotifications, showNotifications);
+
 
   // Determine the display name for the user greeting
   const userName =
@@ -186,7 +188,7 @@ const Header = ({ toggleSidebar, user }) => {
         </button>
 
         {showNotifications && (
-          <div  ref={dropdownRef}  className={styles.notificationsDropdown}>
+          <div ref={dropdownRef} className={styles.notificationsDropdown}>
             <div className={styles.dropdownHeader}>
               <h3 className={styles.dropdownTitle}>Notifications</h3>
             </div>
@@ -205,11 +207,10 @@ const Header = ({ toggleSidebar, user }) => {
                 {notifications.map(notification => (
                   <li
                     key={notification.id} // Use Firestore doc ID as key
-                    className={`${styles.notificationItem} ${
-                      notification.read
+                    className={`${styles.notificationItem} ${notification.read
                         ? styles.notificationRead
                         : styles.notificationUnread
-                    }`}
+                      }`}
                   >
                     <p className={styles.notificationMessage}>
                       {notification.message}

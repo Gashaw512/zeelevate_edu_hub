@@ -369,3 +369,24 @@
     padding: 1rem;
   }
 }
+
+
+.passwordInputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.eyeIcon {
+  position: absolute;
+  right: 1rem;
+  cursor: pointer;
+  color: #888;
+}
+
+.passwordStrength {
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+}
