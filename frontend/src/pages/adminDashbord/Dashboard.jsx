@@ -1,5 +1,16 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import './Dashboard.css';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { getIdToken } from "firebase/auth";
+import { auth } from "../../firebase/auth"; // adjust path as needed
+import {
+  PieChart, Pie, Cell,
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer
+} from 'recharts';
+
+const COLORS = ['#8884d8', '#82ca9d'];
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -8,7 +19,8 @@ const Dashboard = () => {
     loading: true,
     error: ''
   });
-  const authToken = localStorage.getItem('token') || '';
+
+  //const authToken = localStorage.getItem('token') || '';
 
   useEffect(() => {
     fetchStats();
@@ -17,8 +29,13 @@ const Dashboard = () => {
   const fetchStats = async () => {
     try {
       setStats(prev => ({ ...prev, loading: true, error: '' }));
-      
-      // Fetch both courses and students in parallel
+
+          const currentUser = auth.currentUser;
+    if (!currentUser) throw new Error("User not authenticated");
+
+    // Get fresh token from Firebase
+    const authToken = await getIdToken(currentUser, true); 
+
       const [coursesResponse, studentsResponse] = await Promise.all([
         axios.get('http://localhost:3001/api/admin/courses', {
           headers: { Authorization: `Bearer ${authToken}` }
@@ -39,58 +56,110 @@ const Dashboard = () => {
         ...prev,
         loading: false,
         error: 'Failed to load dashboard data. Please try again.'
+        
       }));
       console.error('Error fetching dashboard stats:', err);
+      toast.error('Failed to fetch ');
+
     }
   };
 
+  const chartData = [
+    { name: 'Courses', value: stats.courses },
+    { name: 'Students', value: stats.students }
+  ];
+
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
-      
+
+    <div className="dashboard-container">
+       <ToastContainer 
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      <h1 className="dashboard-title">Admin Dashboard</h1>
+
       {stats.error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {stats.error}
-        </div>
+        <div className="error-box">{stats.error}</div>
       )}
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className={`p-6 rounded-lg shadow ${stats.loading ? 'bg-gray-100' : 'bg-blue-100'}`}>
-          <h3 className="text-lg font-semibold mb-2">Total Courses</h3>
+
+      <div className="stats-grid">
+        <div className={`stat-card ${stats.loading ? 'stat-loading' : 'stat-blue'}`}>
+          <h3 className="stat-title">Total Courses</h3>
           {stats.loading ? (
-            <div className="h-8 w-16 bg-gray-300 rounded animate-pulse"></div>
+            <div className="stat-value">...</div>
           ) : (
-            <p className="text-3xl font-bold">{stats.courses}</p>
+            <p className="stat-value">{stats.courses}</p>
           )}
         </div>
-        <div className={`p-6 rounded-lg shadow ${stats.loading ? 'bg-gray-100' : 'bg-green-100'}`}>
-          <h3 className="text-lg font-semibold mb-2">Total Students</h3>
+        <div className={`stat-card ${stats.loading ? 'stat-loading' : 'stat-green'}`}>
+          <h3 className="stat-title">Total Students</h3>
           {stats.loading ? (
-            <div className="h-8 w-16 bg-gray-300 rounded animate-pulse"></div>
+            <div className="stat-value">...</div>
           ) : (
-            <p className="text-3xl font-bold">{stats.students}</p>
+            <p className="stat-value">{stats.students}</p>
           )}
         </div>
       </div>
-      
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
-        <div className="flex flex-wrap gap-4">
-          <a
-            href="/admin/courses"
-            className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
-          >
+
+      {!stats.loading && (
+        <div className="chart-grid">
+          <div className="card">
+            <h2 className="card-title">Student vs Course Distribution</h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={chartData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) =>
+                    `${name} (${(percent * 100).toFixed(0)}%)`
+                  }
+                  outerRadius={100}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {chartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="card">
+            <h2 className="card-title">Bar Chart Overview</h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={chartData}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="value" fill="#82ca9d" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+
+      <div className="card">
+        <h2 className="card-title">Quick Actions</h2>
+        <div className="quick-actions">
+          <a href="/admin/courses" className="button button-blue">
             Manage Courses
           </a>
-          <a
-            href="/admin/students"
-            className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
-          >
+          <a href="/admin/students" className="button button-green">
             View All Students
           </a>
           <button
             onClick={fetchStats}
-            className="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700"
+            className="button button-gray"
             disabled={stats.loading}
           >
             {stats.loading ? 'Refreshing...' : 'Refresh Data'}

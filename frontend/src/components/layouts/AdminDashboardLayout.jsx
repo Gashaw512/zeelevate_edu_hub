@@ -1,42 +1,62 @@
-import { Link, Outlet } from 'react-router-dom';
+import { useState, useCallback } from 'react';
+import { Outlet, Navigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import Sidebar from '../Dashboard/Sidebar';
+import Header from '../Dashboard/Header';
+import styles from './StudentDashboard.module.css';
 
 const AdminDashboardLayout = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { user, loading, logout } = useAuth();
+  
+  const toggleSidebar = useCallback(() => {
+    setIsSidebarOpen(prev => !prev);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingText}>Loading dashboard...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/signin" replace />;
+  }
+
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="w-64 bg-blue-800 text-white p-4">
-        <h1 className="text-2xl font-bold mb-8">Admin Dashboard</h1>
-        <nav>
-          <ul className="space-y-2">
-            <li>
-              <Link to="/admin/dashboard" className="block py-2 px-4 rounded hover:bg-blue-700">
-                Dashboard
-              </Link>
-            </li>
-            <li>
-              <Link to="/admin/courses" className="block py-2 px-4 rounded hover:bg-blue-700">
-                Manage Courses
-              </Link>
-            </li>
-            <li>
-              <Link to="/admin/students" className="block py-2 px-4 rounded hover:bg-blue-700">
-                View Students
-              </Link>
-            </li>
-            <li>
-              <button className="block py-2 px-4 rounded hover:bg-blue-700 w-full text-left">
-                Logout
-              </button>
-            </li>
-          </ul>
-        </nav>
+    <div className={styles.dashboardWrapper}>
+      {isSidebarOpen && (
+        <div
+          className={`${styles.sidebarBackdrop} ${styles.sidebarBackdropVisible}`}
+          onClick={toggleSidebar}
+        />
+      )}
+
+      <div
+        className={`${styles.sidebar} ${
+          isSidebarOpen ? styles.sidebarOpen : ''
+        }`}
+      >
+        <Sidebar
+          isOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+          user={user}
+          logout={logout}
+          role="admin"
+        />
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 overflow-auto">
-        <div className="p-6">
+      <div className={styles.contentWrapper}>
+        <Header 
+          toggleSidebar={toggleSidebar} 
+          user={user}
+          role="admin"
+        />
+        <main className={styles.mainContent}>
           <Outlet />
-        </div>
+        </main>
       </div>
     </div>
   );

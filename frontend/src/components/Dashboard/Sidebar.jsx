@@ -1,16 +1,27 @@
+// src/components/Sidebar/Sidebar.jsx
 import { Link, useLocation } from 'react-router-dom';
-import { Home, BookOpen, User, Settings, LogOut, X } from 'lucide-react';
+import { Home, BookOpen, User, Settings, LogOut, X, Users, Bookmark, BarChart } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
-const Sidebar = ({ isOpen, toggleSidebar, user, logout }) => {
+const Sidebar = ({ isOpen, toggleSidebar, user, logout, role = 'student' }) => {
   const location = useLocation();
 
-  const navItems = [
+  const studentNavItems = [
     { name: 'Dashboard', icon: Home, path: '/student/dashboard' },
     { name: 'My Courses', icon: BookOpen, path: '/student/dashboard/courses' },
     { name: 'Profile', icon: User, path: '/student/dashboard/profile' },
     { name: 'Settings', icon: Settings, path: '/student/dashboard/settings' },
   ];
+
+  const adminNavItems = [
+    { name: 'Dashboard', icon: Home, path: '/admin/dashboard' },
+    { name: 'Courses', icon: BookOpen, path: '/admin/courses' },
+    { name: 'Students', icon: Users, path: '/admin/students' },
+    { name: 'Profile', icon: User, path: '/admin/profile' },
+    { name: 'Settings', icon: Settings, path: '/admin/settings' },
+  ];
+
+  const navItems = role === 'admin' ? adminNavItems : studentNavItems;
 
   return (
     <>
@@ -22,7 +33,9 @@ const Sidebar = ({ isOpen, toggleSidebar, user, logout }) => {
 
       <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ''}`}>
         <div className={styles.sidebarHeader}>
-          <h2 className={styles.sidebarTitle}>Student Panel</h2>
+          <h2 className={styles.sidebarTitle}>
+            {role === 'admin' ? 'Admin Panel' : 'Student Panel'}
+          </h2>
           <button
             className={styles.sidebarCloseBtn}
             onClick={toggleSidebar}
@@ -61,7 +74,9 @@ const Sidebar = ({ isOpen, toggleSidebar, user, logout }) => {
               />
               <div>
                 <p className={styles.userName}>{user.name || user.email}</p>
-                <p className={styles.userRole}>{user.role || 'Student'}</p>
+                <p className={styles.userRole}>
+                  {role === 'admin' ? 'Administrator' : 'Student'}
+                </p>
               </div>
             </div>
           )}

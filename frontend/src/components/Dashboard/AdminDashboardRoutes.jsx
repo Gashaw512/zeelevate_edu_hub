@@ -3,6 +3,7 @@ import Courses from '../../pages/adminDashbord/Courses';
 import NotFoundPage from '../../pages/NotFoundPage'; 
 import Dashboard from '../../pages/adminDashbord/Dashboard';
 import Students from '../../pages/adminDashbord/Students';
+import Profile from '../../pages/studentDashboard/Profile';
 
 const AdminDashboardRoutes = () => {
   // const { user } = useAuth(); // If individual dashboard pages use useAuth, this isn't strictly necessary here.
@@ -16,6 +17,8 @@ const AdminDashboardRoutes = () => {
       <Route path="dashboard" element={<Dashboard />} />
       <Route path="courses" element={<Courses />} />
       <Route path="students" element={<Students />} />
+      <Route path="profile" element={<Profile />} />
+
 
   
       <Route path="*" element={<NotFoundPage />} /> {/* Render your general 404 page for sub-routes */}
