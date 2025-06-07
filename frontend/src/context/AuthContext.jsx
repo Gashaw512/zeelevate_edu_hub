@@ -14,6 +14,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(null); // <--- Add this state for auth errors
 
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
@@ -73,6 +74,7 @@ const login = async (email, password) => {
     try {
       await signOut(auth);
       setUser(null);
+       localStorage.removeItem('token');
     } catch (error) {
       console.error('Logout error:', error);
       setAuthError("Failed to log out. Please try again.");

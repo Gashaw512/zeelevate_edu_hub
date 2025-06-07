@@ -14,11 +14,11 @@ import PaymentSuccessPage from "../pages/PaymentSuccessPage";
 // Dashboard Layouts
 import PrivateRoute from "../components/auth/PrivateRoute";
 import StudentDashboardLayout from "../components/layouts/StudentDashboardLayout"; // Renamed for clarity
-// import AdminDashboardLayout from "../components/layouts/AdminDashboardLayout"; 
+import AdminDashboardLayout from "../components/layouts/AdminDashboardLayout"; 
 
 // Dashboard Specific Content Routes (nested within layouts)
 import StudentDashboardRoutes from "../components/Dashboard/StudentDashboardRoutes";
-// import AdminDashboardRoutes from "../components/Dashboard/AdminDashboardRoutes"; 
+ import AdminDashboardRoutes from "../components/Dashboard/AdminDashboardRoutes"; 
 
 // Error Pages
 import NotFoundPage from "../pages/NotFoundPage";
@@ -77,18 +77,19 @@ const AppRoutes = () => {
         Admin Dashboard Group (Example for future expansion)
         ========================================
       */}
-      {/*
+      
       <Route
-        path="/admin/dashboard/*"
+        path="/admin/*"
         element={
           <PrivateRoute allowedRoles={["admin"]}>
             <AdminDashboardLayout />
           </PrivateRoute>
+          //<AdminDashboardLayout />
         }
       >
         <Route path="*" element={<AdminDashboardRoutes />} />
       </Route>
-      */}
+     
 
       {/* ========================================
         Error Handling Routes

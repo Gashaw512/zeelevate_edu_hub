@@ -20,9 +20,14 @@ const SignIn = () => {
   useEffect(() => {
       if (user) {
       // Clear any auth errors when user logs in successfully
-      console.log(user)
+      console.log(user.accessToken)
+      localStorage.setItem('token', user.accessToken); // Store token in localStorage
       clearAuthError();
-      navigate("/student/dashboard");
+      if (user.role === "student") {
+        navigate("/student/dashboard");
+      } else if (user.role === "admin") {
+        navigate("/admin/dashboard");
+      }
     }
   }, [user, navigate, clearAuthError]); // Add clearAuthError to dependencies
 
