@@ -1,6 +1,17 @@
 // src/data/founders.js (No changes needed, but confirming structure)
 export const founders = [
+   {
+    name: "Sami",
+    // role: "CFO",
+    bio: ["Sami believes that equipping young people with real-world skills is the key to empowering their future. His journey into tech education and digital empowerment started with a deep curiosity for how things work—and a desire to help others grow through learning.", "Currently working at U.S. Bank as a software engineer, Sam combines his professional experience with a passion for mentorship and community impact. With a background in software development and a strong foundation in digital literacy education, he brings both technical expertise and practical insight into the evolving world of technology.", "Sami is especially passionate about making tech approachable for youth and adults. Whether it’s building apps, navigating online tools, or exploring careers in tech, he’s committed to helping the next generation gain confidence, creativity, and the skills they need for lifelong success."],
+    image: "/images/Sam.JPG",
+    social: {
+      linkedin: "https://linkedin.com/in/alicejohnson_example",
+      // twitter: "", // You could add twitter: "" or just omit the key entirely
+    }
+  },
   {
+    
     name: "Beza",
     // role: "CEO & Co-Founder", // Your comment here, make sure you uncomment or provide a role if desired
     bio: ["Beza believes that understanding money is one of the most important life skills a young person can develop. His passion for personal finance began early and has only grown stronger through his academic background and career in corporate finance. Now, he’s on a mission to make financial literacy engaging, relatable, and accessible for teens.","With real-world experience in corporate finance, Beza brings more than just textbook knowledge; he brings practical insight into how money works in everyday life. From budgeting and saving to investing and understanding credit, he’s dedicated to helping teens build smart financial habits that will serve them for a lifetime."],
@@ -20,14 +31,5 @@ export const founders = [
       twitter: "", // If no Twitter link, an empty string is okay with current conditional rendering
     }
   },
-  {
-    name: "Sami",
-    // role: "CFO",
-    bio: ["Sami believes that equipping young people with real-world skills is the key to empowering their future. His journey into tech education and digital empowerment started with a deep curiosity for how things work—and a desire to help others grow through learning.", "Currently working at U.S. Bank as a software engineer, Sam combines his professional experience with a passion for mentorship and community impact. With a background in software development and a strong foundation in digital literacy education, he brings both technical expertise and practical insight into the evolving world of technology.", "Sami is especially passionate about making tech approachable for youth and adults. Whether it’s building apps, navigating online tools, or exploring careers in tech, he’s committed to helping the next generation gain confidence, creativity, and the skills they need for lifelong success."],
-    image: "/images/Sam.JPG",
-    social: {
-      linkedin: "https://linkedin.com/in/alicejohnson_example",
-      // twitter: "", // You could add twitter: "" or just omit the key entirely
-    }
-  },
+ 
 ];

@@ -7,7 +7,7 @@ import { FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram, FaHeart, FaChevronUp
 import logo from "/images/logo.png";
 import { navLinks } from '../../data/navbarLinks'; 
 import { useScrollToSection } from "../../hooks/useScrollToSection"; 
-import NavItem from '../Common/NavItem'; 
+import NavItem from '../common/NavItem'; 
 
 /**
  * Footer Component
