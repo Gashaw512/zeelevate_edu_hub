@@ -16,7 +16,7 @@ import {
   writeBatch, // For efficient 'clear all' operation
 } from 'firebase/firestore';
 
-const Header = ({ toggleSidebar, user }) => {
+const Header = ({ toggleSidebar, user, role = 'student' }) => {
   // State for notifications and their UI status
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -160,6 +160,7 @@ const Header = ({ toggleSidebar, user }) => {
     user?.displayName?.split(' ')[0] ||
     user?.email?.split('@')[0] ||
     'Guest'; // Fallback to 'Guest' if no user info
+    const roleTitle = role === 'admin' ? 'Admin' : 'Student';
 
   return (
     <header className={styles.headerContainer}>
@@ -171,7 +172,10 @@ const Header = ({ toggleSidebar, user }) => {
         >
           <Menu size={24} />
         </button>
-        <h1 className={styles.greeting}>Welcome, {userName}!</h1>
+        <div>
+          <h1 className={styles.greeting}>Welcome, {userName}!</h1>
+          <p className={styles.roleBadge}>{roleTitle}</p>
+        </div>
       </div>
 
       <div className={styles.notificationsWrapper}>
