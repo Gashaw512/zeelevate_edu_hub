@@ -15,6 +15,7 @@ async function createPaymentLink(data) {
   } = customerDetails;
 
   const customerName = `${firstName} ${lastName}`;
+  const courseId = courseDetails.courseId;
 
   // ✅ 1. Check if email is already registered
   try {
@@ -27,7 +28,20 @@ async function createPaymentLink(data) {
     // Email not found, continue
   }
 
-  // ✅ 2. Save pending registration
+  // ✅ 2. Fetch course details from Firestore
+  const courseDoc = await db.collection('courses').doc(courseId).get();
+  if (!courseDoc.exists) {
+    throw new Error('Course not found');
+  }
+
+  const courseData = courseDoc.data();
+  const { courseTitle, price } = courseData;
+
+  if (!courseTitle || !price) {
+    throw new Error('Course data is incomplete');
+  }
+
+  // ✅ 3. Save pending registration
   await db.collection('pending_registrations').doc(token).set({
     customerDetails: {
       firstName,
@@ -36,17 +50,18 @@ async function createPaymentLink(data) {
       authPassword: password,
       phone: phoneNumber || ''
     },
-    courseId: courseDetails.courseId,
+    courseId,
     createdAt: admin.firestore.FieldValue.serverTimestamp()
   });
 
-  // ✅ 3. Create Square payment link
+  // 4. Create Square payment link
   const response = await square.checkoutApi.createPaymentLink({
     idempotencyKey: crypto.randomUUID(),
     quickPay: {
-      name: courseDetails.title.substring(0, 50),
+      name: courseTitle.substring(0, 50),
+      description: `Enrollment for ${courseTitle}`,
       priceMoney: {
-        amount: Math.round(Number(courseDetails.price) * 100),
+        amount: Math.round(Number(price) * 100),
         currency: 'USD'
       },
       locationId: process.env.SQUARE_LOCATION_ID
@@ -57,9 +72,7 @@ async function createPaymentLink(data) {
         buyerEmail: email,
         buyerFullName: customerName
       }
-    },
-    paymentLinkType: 'DIRECT',
-    description: `Enrollment for ${courseDetails.title}`
+    }
   });
 
   return {
