@@ -93,7 +93,7 @@ const AppRoutes = () => {
 
       {/* ========================================
         Error Handling Routes
-        ========================================
+        ================a========================
       */}
       <Route path="/unauthorized" element={<UnauthorizedPage />} /> {/*{Authorization:  For role-based access denied} */}
       <Route path="*" element={<NotFoundPage />} /> {/* Catch-all for any undefined paths */}

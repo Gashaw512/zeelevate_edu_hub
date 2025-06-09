@@ -16,12 +16,17 @@ const SignIn = () => {
   const { user, authError, clearAuthError } = useAuth();
   const { formData, error: localSignInError, isSubmitting, handleChange, handleSubmit } = useSignIn(); // Renamed error to localSignInError
   const externalProviders = getAllProviders();
+  const SESSION_TIMEOUT = 20 * 60 * 1000; // 30 minutes in milliseconds
+
 
   useEffect(() => {
       if (user) {
       // Clear any auth errors when user logs in successfully
       console.log(user.accessToken)
-      localStorage.setItem('token', user.accessToken); // Store token in localStorage
+          const tokenExpiry = new Date().getTime() + SESSION_TIMEOUT;
+         localStorage.setItem('tokenExpiry', tokenExpiry.toString());
+          localStorage.setItem('token', user.accessToken); // Store token in localStorage
+
       clearAuthError();
       if (user.role === "student") {
         navigate("/student/dashboard");

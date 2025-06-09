@@ -87,7 +87,7 @@ router.use(authenticate);
 router.use(requireAdmin);
 
 // List all courses
-router.get('/get-course', async (req, res) => {
+router.get('/courses', async (req, res) => {
   try {
     const snapshot = await db.collection('courses').get();
     const courses = snapshot.docs.map(doc => doc.data());
