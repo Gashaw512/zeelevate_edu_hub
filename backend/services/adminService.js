@@ -14,7 +14,8 @@ async function addCourse(courseData) {
     registrationDeadline,
     classStartDate,
     classLink,
-    classDuration
+    classDuration,
+    status = 'active' // default to 'active' if not provided
   } = courseData;
 
   const id = crypto.randomUUID();
@@ -28,11 +29,13 @@ async function addCourse(courseData) {
     registrationDeadline,
     classStartDate,
     classLink,
-    classDuration
+    classDuration,
+    status
   });
 
   return id;
 }
+
 
 async function updateCourse(courseId, updatedData) {
   const ref = db.collection('courses').doc(courseId);
