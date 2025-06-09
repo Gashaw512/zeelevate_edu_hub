@@ -32,11 +32,71 @@ router.post('/create-admin', async (req, res) => {
   }
 });
 
-// 🔐 Protect all routes below this line
+// List all courses (public view, no classLink)
+router.get('/public/courses', async (req, res) => {
+  try {
+    const snapshot = await db.collection('courses').get();
+
+    const courses = snapshot.docs.map(doc => {
+      const { classLink, ...rest } = doc.data(); // Remove classLink
+      return rest;
+    });
+
+    res.json({ success: true, courses });
+  } catch (err) {
+    console.error('Get Courses Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Public: Get a single course by title
+router.post('/course-by-title', async (req, res) => {
+  try {
+    const { courseTitle } = req.body;
+
+    if (!courseTitle) {
+      return res.status(400).json({ error: 'courseTitle is required' });
+    }
+
+    const snapshot = await db.collection('courses')
+      .where('courseTitle', '==', courseTitle)
+      .limit(1)
+      .get();
+
+    if (snapshot.empty) {
+      return res.status(404).json({ error: 'Course not found' });
+    }
+
+    const doc = snapshot.docs[0];
+    const data = doc.data();
+
+    res.json({
+      success: true,
+      courseTitle: data.courseTitle,
+      courseId: data.courseId
+    });
+  } catch (err) {
+    console.error('Get Course By Title Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// Protect all routes below this line
 router.use(authenticate);
 router.use(requireAdmin);
 
-/** ========== COURSE ROUTES ========== **/
+// List all courses
+router.get('/get-course', async (req, res) => {
+  try {
+    const snapshot = await db.collection('courses').get();
+    const courses = snapshot.docs.map(doc => doc.data());
+    res.json({ success: true, courses });
+  } catch (err) {
+    console.error('Get Courses Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // ➕ Add a course
 router.post('/add-course', async (req, res) => {
@@ -71,7 +131,7 @@ router.post('/add-course', async (req, res) => {
   }
 });
 
-// 📝 Update a course
+// Update a course
 router.put('/courses/:id', async (req, res) => {
   try {
     const courseId = req.params.id;
@@ -85,7 +145,7 @@ router.put('/courses/:id', async (req, res) => {
   }
 });
 
-// ❌ Delete a course
+// Delete a course
 router.delete('/courses/:id', async (req, res) => {
   try {
     const courseId = req.params.id;
@@ -98,21 +158,7 @@ router.delete('/courses/:id', async (req, res) => {
   }
 });
 
-// 📄 List all courses
-router.get('/courses', async (req, res) => {
-  try {
-    const snapshot = await db.collection('courses').get();
-    const courses = snapshot.docs.map(doc => doc.data());
-    res.json({ success: true, courses });
-  } catch (err) {
-    console.error('Get Courses Error:', err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-/** ========== STUDENT ROUTES ========== **/
-
-// 📄 Get students and their subcollection enrollments
+// Get students and their subcollection enrollments
 router.get('/students', async (req, res) => {
   try {
     const studentsSnap = await db.collection('students').get();

@@ -126,7 +126,7 @@ const SignUp = () => {
     const courseDetails = {
       title: firstCourse?.name || "Selected Program",
       price: totalPrice,
-      courseId: "b8d649fb-e13e-4aba-a95e-f8e3bdaea57c",
+      courseId: "0217eb8e-c1fa-4c69-a41e-f8fa5c009716",
     };
     try {
       
