@@ -224,7 +224,7 @@
 }
 
 .Toastify__toast--success {
-  background-color: #4caf50;
+  background-color: #dfebe0;
 }
 
 .Toastify__toast--error {
@@ -275,4 +275,19 @@
 button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* Uneven two-column grid */
+.form-grid.two-column-uneven {
+  display: grid;
+  grid-template-columns: 70% 30%;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .form-grid.two-column-uneven {
+    grid-template-columns: 1fr;
+  }
 }
