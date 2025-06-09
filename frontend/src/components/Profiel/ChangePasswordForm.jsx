@@ -1,6 +1,4 @@
-// src/components/Profile/ChangePasswordForm.jsx
-
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import PropTypes from 'prop-types';
 import styles from '../../pages/studentDashboard/Profile.module.css';
 import {
@@ -12,8 +10,7 @@ import {
   AlertCircle,
   ShieldCheck
 } from 'lucide-react';
-// import { EmailAuthProvider } from 'firebase/auth';
-// import { reauthenticateWithCredential, EmailAuthProvider, updatePassword } from 'firebase/auth';
+
 import { getAuth, reauthenticateWithCredential, EmailAuthProvider, updatePassword } from 'firebase/auth';
 
 
@@ -48,7 +45,7 @@ const currentUser = auth.currentUser;
   };
 
   const handleFirebaseError = (err) => {
-    console.error("Firebase error:", err);
+    // console.error("Firebase error:", err);
     let errorMessage = 'An error occurred. Please try again.';
 
     if (err.code) {
@@ -111,7 +108,6 @@ const currentUser = auth.currentUser;
       const credential = EmailAuthProvider.credential(user.email, currentPassword);
       await reauthenticateWithCredential(currentUser, credential);
 
-
     } catch (err) {
       handleFirebaseError(err);
       setLoading(false);
@@ -120,8 +116,6 @@ const currentUser = auth.currentUser;
 
     try {
       await updatePassword(currentUser, newPassword);
-
-
       setSuccessMessage('Password changed successfully!');
       setCurrentPassword('');
       setNewPassword('');
