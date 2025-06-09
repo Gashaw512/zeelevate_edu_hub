@@ -15,7 +15,8 @@ const Courses = () => {
     registrationDeadline: '',
     classStartDate: '',
     classDuration: '',
-    classLink: ''
+    classLink: '',
+    status: 'active' // default status
   });
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -56,7 +57,8 @@ const Courses = () => {
         registrationDeadline: course.registrationDeadline || '',
         classStartDate: course.classStartDate || '',
         classDuration: course.classDuration || '',
-        classLink: course.classLink || ''
+        classLink: course.classLink || '',
+        status: course.status || 'active'
       })));
       
       setError('');
@@ -89,14 +91,14 @@ const Courses = () => {
           formData,
           { headers: { Authorization: `Bearer ${authToken}` } }
         );
-        toast.success('Course updated successfully!');
+        toast.info('Course updated successfully!');
       } else {
         await axios.post(
           'http://localhost:3001/api/admin/add-course',
           formData,
           { headers: { Authorization: `Bearer ${authToken}` } }
         );
-        toast.success('Course added successfully!');
+        toast.info('Course added successfully!');
       }
       
       setFormData({
@@ -106,7 +108,8 @@ const Courses = () => {
         registrationDeadline: '',
         classStartDate: '',
         classDuration: '',
-        classLink: ''
+        classLink: '',
+        status: 'active' // reset to default
       });
       setEditingId(null);
       fetchCourses();
@@ -128,7 +131,8 @@ const Courses = () => {
       registrationDeadline: course.registrationDeadline,
       classStartDate: course.classStartDate,
       classDuration: course.classDuration,
-      classLink: course.classLink
+      classLink: course.classLink,
+      status: course.status || 'active' 
     });
     setEditingId(course.id);
     // Scroll to form
@@ -148,7 +152,7 @@ const Courses = () => {
       await axios.delete(`http://localhost:3001/api/admin/courses/${courseToDelete.id}`, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
-      toast.success('Course deleted successfully');
+      toast.info('Course deleted successfully');
       fetchCourses();
     } catch (err) {
       const errorMsg = 'Failed to delete course. Please try again.';
@@ -296,18 +300,33 @@ const Courses = () => {
             </div>
           </div>
           
-          <div className="form-group">
-            <label className="form-label">Class Link</label>
-            <input
-              type="url"
-              name="classLink"
-              value={formData.classLink}
-              onChange={handleInputChange}
-              className="form-input"
-              required
-            />
+          <div className="form-grid two-column-uneven">
+            <div className="form-group">
+              <label className="form-label">Class Link</label>
+              <input
+                type="url"
+                name="classLink"
+                value={formData.classLink}
+                onChange={handleInputChange}
+                className="form-input"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Status</label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleInputChange}
+                className="form-input"
+                required
+              >
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
           </div>
-          
           <div className="form-actions">
             <button
               type="submit"
@@ -355,6 +374,7 @@ const Courses = () => {
                 <tr>
                   <th>Title</th>
                   <th>Price</th>
+                  <th>Status</th>
                   <th>Start Date</th>
                   <th>Duration</th>
                   <th>Actions</th>
@@ -365,6 +385,11 @@ const Courses = () => {
                   <tr key={course.id}>
                     <td>{course.courseTitle || 'Untitled'}</td>
                     <td>{course.price ? `$${course.price}` : 'Free'}</td>
+                    <td>
+                      <span className={`status-badge ${course.status === 'active' ? 'active' : 'inactive'}`}>
+                        {course.status || 'active'}
+                      </span>
+                    </td>
                     <td>{course.classStartDate || 'Not set'}</td>
                     <td>{course.classDuration ? `${course.classDuration} days` : 'Not set'}</td>
                     <td className="action-buttons">
