@@ -13,7 +13,8 @@ import {
   ShieldCheck
 } from 'lucide-react';
 // import { EmailAuthProvider } from 'firebase/auth';
-import { reauthenticateWithCredential, EmailAuthProvider, updatePassword } from 'firebase/auth';
+// import { reauthenticateWithCredential, EmailAuthProvider, updatePassword } from 'firebase/auth';
+import { getAuth, reauthenticateWithCredential, EmailAuthProvider, updatePassword } from 'firebase/auth';
 
 
 const getPasswordStrength = (password) => {
@@ -37,6 +38,10 @@ const ChangePasswordForm = ({ user, onSuccess, onCancel }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+
+
+const auth = getAuth();
+const currentUser = auth.currentUser;
 
   const togglePasswordVisibility = () => {
     setShowPasswords((prev) => !prev);
@@ -104,7 +109,8 @@ const ChangePasswordForm = ({ user, onSuccess, onCancel }) => {
 
     try {
       const credential = EmailAuthProvider.credential(user.email, currentPassword);
-      await reauthenticateWithCredential(user, credential);
+      await reauthenticateWithCredential(currentUser, credential);
+
 
     } catch (err) {
       handleFirebaseError(err);
@@ -113,7 +119,8 @@ const ChangePasswordForm = ({ user, onSuccess, onCancel }) => {
     }
 
     try {
-      await updatePassword(user, newPassword);
+      await updatePassword(currentUser, newPassword);
+
 
       setSuccessMessage('Password changed successfully!');
       setCurrentPassword('');

@@ -1,13 +1,12 @@
 // src/pages/PaymentSuccess.jsx
 
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 
 import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
-// Import the CSS module
 import styles from './PaymentSuccess.module.css';
 
 /**
