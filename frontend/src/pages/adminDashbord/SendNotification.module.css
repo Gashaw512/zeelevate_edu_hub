@@ -186,3 +186,41 @@
     padding: 1rem;
   }
 }
+
+.requiredIndicator {
+  color: var(--error-red); /* Red asterisk for required fields */
+  margin-left: 0.25rem;
+}
+
+.errorMessageText {
+  color: var(--error-red); /* Red text for error messages */
+  font-size: var(--font-size-small); /* Smaller font for errors */
+  margin-top: 0.4rem;
+  padding-left: 0.2rem; /* Indent slightly */
+}
+
+/* Add these rules to your existing SendNotification.module.css */
+
+/* Error state for inputs (e.g., red border/shadow) */
+.inputError {
+  border-color: var(--error-red) !important; /* Use your --error-red variable */
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2) !important; /* A red focus ring, using the RGB for --error-red if possible */
+}
+
+/* Spinner for loading state on the button */
+.spinner {
+  border: 3px solid rgba(255, 255, 255, 0.3); /* Lighter white border */
+  border-top: 3px solid #fff; /* Solid white top border for animation */
+  border-radius: 50%;
+  width: 1.25rem; /* Match font size for alignment */
+  height: 1.25rem;
+  animation: spin 1s linear infinite; /* Apply the spin animation */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* You already have .errorMessageText defined, which is great! */
+/* And .requiredIndicator is also defined. */

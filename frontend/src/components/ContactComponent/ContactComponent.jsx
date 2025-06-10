@@ -12,11 +12,6 @@ const ContactComponent = () => {
           Have questions about our courses, partnerships, or anything else? We're here to help!
           Fill out the form below or reach out to us using the contact details provided.
         </p>
-
-// In any component
-<div className="bg-blue-500 text-white p-4 rounded-lg">
-  Tailwind Test - This should be blue with white text
-</div>
         <div className="contact-row"> {/* Changed class for consistency */}
           <div className="contact-info-col"> {/* Changed class for clarity */}
             <div className="info-item">

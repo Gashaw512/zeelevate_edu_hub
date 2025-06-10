@@ -1,9 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Bell, Menu, Loader } from 'lucide-react'; // Import Loader icon for loading state
 import PropTypes from 'prop-types';
-import styles from './Header.module.css';
+import styles from './Header.module.css'; // Import the new CSS module
 import { db } from '../../firebase/firestore'; // Your Firebase Firestore instance
-import useClickOutside from '../../hooks/useClickOutside';
+import useClickOutside from '../../hooks/useClickOutside'; // Assuming this hook exists
 import {
   collection,
   query,
@@ -23,8 +23,6 @@ const Header = ({ toggleSidebar, user, role = 'student' }) => {
   const [notificationsLoading, setNotificationsLoading] = useState(true);
   const [notificationsError, setNotificationsError] = useState(null);
 
-
-
   // Derive unread count from the state
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -43,6 +41,30 @@ const Header = ({ toggleSidebar, user, role = 'student' }) => {
   }, []);
 
   const dropdownRef = useClickOutside(closeNotifications, showNotifications);
+
+  /**
+   * Helper function to format Firestore Timestamps
+   * @param {firebase.firestore.Timestamp} timestamp
+   * @returns {string} Formatted date string
+   */
+  const formatTimestamp = (timestamp) => {
+    if (!timestamp || !timestamp.toDate) return 'N/A';
+    const date = timestamp.toDate();
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - date.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } else if (diffDays === 1) {
+      return 'Yesterday';
+    } else if (diffDays < 7) {
+      return date.toLocaleDateString([], { weekday: 'short' });
+    } else {
+      return date.toLocaleDateString();
+    }
+  };
+
 
   /**
    * Effect hook to set up a real-time Firestore listener for user-specific notifications.
@@ -136,7 +158,8 @@ const Header = ({ toggleSidebar, user, role = 'student' }) => {
     );
 
     try {
-      const snapshot = await (await userNotificationsQuery.get()); // Get current state of user's notifications
+      // Fetch the documents to delete. It's crucial to get a snapshot *before* deleting.
+      const snapshot = await (await userNotificationsQuery.get());
       const batch = writeBatch(db); // Create a new batch
 
       // Add delete operations for each notification document to the batch
@@ -153,14 +176,13 @@ const Header = ({ toggleSidebar, user, role = 'student' }) => {
   }, [user]);
 
 
-
-
   // Determine the display name for the user greeting
   const userName =
     user?.displayName?.split(' ')[0] ||
     user?.email?.split('@')[0] ||
     'Guest'; // Fallback to 'Guest' if no user info
-    const roleTitle = role === 'admin' ? 'Admin' : 'Student';
+    const roleTitle = role === 'admin' ? 'Admin' : 'Student'; // Assuming 'role' can be 'admin' or 'student'
+
 
   return (
     <header className={styles.headerContainer}>
@@ -182,28 +204,38 @@ const Header = ({ toggleSidebar, user, role = 'student' }) => {
         <button
           onClick={toggleNotifications}
           className={styles.notificationsButton}
-          aria-label="Notifications"
+          aria-label={unreadCount > 0 ? `You have ${unreadCount} unread notifications` : "Notifications"}
+          aria-expanded={showNotifications}
+          aria-controls="notifications-dropdown-menu"
         >
           <Bell size={24} className={styles.bellIcon} />
           {/* Only show badge if there are unread notifications */}
           {unreadCount > 0 && (
-            <span className={styles.unreadBadge}>{unreadCount}</span>
+            <span className={styles.unreadBadge} aria-live="polite" aria-atomic="true">
+              {unreadCount}
+            </span>
           )}
         </button>
 
         {showNotifications && (
-          <div ref={dropdownRef} className={styles.notificationsDropdown}>
+          <div
+            ref={dropdownRef}
+            className={styles.notificationsDropdown}
+            id="notifications-dropdown-menu"
+            role="menu" // Indicates this is a menu for accessibility
+            aria-labelledby="notifications-button" // Links to the button that opened it
+          >
             <div className={styles.dropdownHeader}>
               <h3 className={styles.dropdownTitle}>Notifications</h3>
             </div>
 
             {/* Conditional rendering for notifications content */}
             {notificationsLoading ? (
-              <div className={styles.notificationStatus}>
-                <Loader size={20} className={styles.spinner} /> Loading...
+              <div className={styles.notificationStatus} role="status">
+                <Loader size={20} className={styles.spinner} aria-hidden="true" /> Loading notifications...
               </div>
             ) : notificationsError ? (
-              <div className={`${styles.notificationStatus} ${styles.errorStatus}`}>
+              <div className={`${styles.notificationStatus} ${styles.errorStatus}`} role="alert">
                 {notificationsError}
               </div>
             ) : notifications.length > 0 ? (
@@ -215,14 +247,22 @@ const Header = ({ toggleSidebar, user, role = 'student' }) => {
                         ? styles.notificationRead
                         : styles.notificationUnread
                       }`}
+                      role="menuitem" // Each list item is a menu item
                   >
                     <p className={styles.notificationMessage}>
                       {notification.message}
                     </p>
+                    {/* Display Timestamp */}
+                    {notification.timestamp && (
+                      <span className={styles.notificationTimestamp}>
+                        {formatTimestamp(notification.timestamp)}
+                      </span>
+                    )}
                     {!notification.read && (
                       <button
                         onClick={() => markAsRead(notification.id)}
                         className={styles.markReadBtn}
+                        aria-label={`Mark notification "${notification.message.substring(0, 30)}..." as read`}
                       >
                         Mark as Read
                       </button>
@@ -231,15 +271,15 @@ const Header = ({ toggleSidebar, user, role = 'student' }) => {
                 ))}
               </ul>
             ) : (
-              <p className={styles.noNotifications}>No new notifications.</p>
+              <p className={styles.noNotifications} role="status">No new notifications.</p>
             )}
 
             <div className={styles.clearAllContainer}>
               <button
                 onClick={clearAllNotifications}
                 className={styles.clearAllBtn}
-                // Disable clear all if no notifications or still loading/error
                 disabled={notifications.length === 0 || notificationsLoading || notificationsError}
+                aria-label="Clear all notifications"
               >
                 Clear All
               </button>
@@ -259,6 +299,7 @@ Header.propTypes = {
     displayName: PropTypes.string,
     email: PropTypes.string,
   }),
+  role: PropTypes.oneOf(['student', 'admin']), // Optional role prop
 };
 
 export default Header;
