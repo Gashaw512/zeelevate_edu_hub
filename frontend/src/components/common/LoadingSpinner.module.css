@@ -29,7 +29,7 @@
 .spinnerMessage {
   font-size: 1.25rem; /* text-xl equivalent */
   font-weight: 500; /* font-medium equivalent */
-  color: #4b5563; /* text-gray-700 equivalent */
+  color: hsl(215, 84%, 48%); /* text-gray-700 equivalent */
   text-align: center;
   line-height: 1.4; /* Better readability */
 }

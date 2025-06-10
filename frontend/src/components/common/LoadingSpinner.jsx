@@ -10,7 +10,7 @@ import styles from './LoadingSpinner.module.css';
  * @param {object} props
  * @param {string} [props.message='Processing your request...'] - The message to display below the spinner.
  */
-const LoadingSpinner = ({ message = 'Processing your request...' }) => {
+const LoadingSpinner = ({ message = 'Loading...' }) => {
   return (
     <div className={styles.spinnerContainer}>
       <FaSpinner className={styles.spinnerIcon} />
