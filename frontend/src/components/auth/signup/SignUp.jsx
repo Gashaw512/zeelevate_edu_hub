@@ -314,10 +314,10 @@ const SignUp = () => {
         <span className={styles.dividerText}>OR</span>
       </div>
 
-      <SocialAuthButtons
+      {/* <SocialAuthButtons
         providers={externalProviders}
         onSignIn={handleSocialAuthIntent}
-      />
+      /> */}
     </AuthLayout>
   );
 };

@@ -128,12 +128,12 @@ const SignIn = () => {
         <span className={styles.dividerText}>OR</span>
       </div>
 
-      <div className={styles.socialAuthSection}>
+      {/* <div className={styles.socialAuthSection}>
         <SocialAuthButtons
           providers={externalProviders}
           onSignIn={handleExternalSignIn}
         />
-      </div>
+      </div> */}
 
       <div className={styles.signUp}>
         <p>
