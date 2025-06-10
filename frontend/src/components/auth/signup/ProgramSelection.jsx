@@ -89,7 +89,7 @@ const ProgramSelection = ({
                 <span className={styles.programPriceLabel}>Program Price:</span>
                 {/* Access program.fixedPrice as mapped from price in SignUp */}
                 <span className={styles.programPriceAmount}>
-                  ${program.fixedPrice.toFixed(2)}
+                  {/* ${program.fixedPrice.toFixed(2)} */}
                 </span>
               </div>
 

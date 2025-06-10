@@ -41,6 +41,7 @@ const Programs = () => {
           id: course.courseId || course._id, // Prefer courseId, fallback to _id
           title: course.courseTitle || course.title || 'Untitled Course',
           price: course.price || 0, 
+          status: course.status || 'active', // Default to 'available' if not specified
           
           fullPrice: 0, // Not in API response for a single course
           badge: null,  // Not in API response
@@ -49,7 +50,7 @@ const Programs = () => {
           
           features: [], // Not in API response
           
-          status: 'available', // Assuming available for display
+          // status: 'available', 
         }));
 
         setPrograms(transformedPrograms);
@@ -66,25 +67,21 @@ const Programs = () => {
 
   const getButtonContent = (programStatus, programPrice) => {
     switch (programStatus) {
-      case 'available':
+      case 'active':
         return (
           <>
             Start Learning Now
             <span className={styles.buttonPrice}>${programPrice}/mo</span>
           </>
         );
-      case 'unavailable':
+      case 'inactive':
         return "Courses Coming Soon";
-      case 'full':
-        return "Program Full";
-      case 'beta':
-        return "Join Beta Waitlist";
       default:
         return "Learn More";
     }
   };
 
-  const isLinkActive = (programStatus) => programStatus === 'available' || programStatus === 'beta';
+  const isLinkActive = (programStatus) => programStatus === 'active' || programStatus === 'beta';
 
   if (loading) {
     return (
