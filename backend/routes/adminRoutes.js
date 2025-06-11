@@ -1,6 +1,10 @@
 const express = require('express');
 const { db, admin } = require('../config/firebase-admin');
 const { authenticate, requireAdmin } = require('../middlewares/authMiddleware');
+const {
+  sendCourseNotification,
+  sendGlobalNotification
+} = require('../services/adminService');
 
 const router = express.Router();
 
@@ -194,6 +198,103 @@ router.get('/students', async (req, res) => {
     res.json({ success: true, students });
   } catch (err) {
     console.error('Get Students Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post('/send-notification', async (req, res) => {
+  try {
+    const { message, recipientId, isGlobal, courseId } = req.body;
+    const senderId = req.user.uid;
+
+    if (!message) {
+      return res.status(400).json({ error: 'Message is required' });
+    }
+
+    if (isGlobal) {
+      const result = await sendGlobalNotification(message, senderId);
+      return res.json({ 
+        success: true, 
+        message: `Global notification sent to ${result.count} students`
+      });
+    } else if (courseId) {
+      // Existing course notification logic
+      const result = await sendCourseNotification(courseId, message, senderId);
+      return res.json({ 
+        success: true, 
+        message: `Notification sent to ${result.count} students in course`
+      });
+    } else if (recipientId) {
+  // Handle individual notification(s)
+  if (Array.isArray(recipientId)) {
+        // Multiple recipients
+        const batch = db.batch();
+        const notificationsRef = db.collection('notifications');
+        const timestamp = admin.firestore.FieldValue.serverTimestamp();
+
+        recipientId.forEach(uid => {
+          // Verify each recipient is a valid student
+          batch.set(notificationsRef.doc(), {
+            message,
+            senderId,
+            recipientId: uid,
+            type: 'individual',
+            createdAt: timestamp,
+            read: false
+          });
+        });
+
+        await batch.commit();
+        return res.json({ 
+          success: true, 
+          message: `Notification sent to ${recipientId.length} recipients`
+        });
+      } else {
+        // Single recipient
+        // First verify the recipient exists
+        const recipientRef = db.collection('students').doc(recipientId);
+        const recipientSnap = await recipientRef.get();
+        
+        if (!recipientSnap.exists) {
+          return res.status(404).json({ error: 'Recipient not found' });
+        }
+
+        await db.collection('notifications').add({
+          message,
+          senderId,
+          recipientId,
+          type: 'individual',
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          read: false
+        });
+        return res.json({ success: true, message: 'Notification sent' });
+      }
+    } else {
+      return res.status(400).json({ error: 'Invalid recipient specification' });
+    }
+  } catch (err) {
+    console.error('Send Notification Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get all sent notifications (for admin dashboard)
+router.get('/sent-notifications', async (req, res) => {
+  try {
+    const snapshot = await db.collection('notifications')
+      .where('senderId', '==', req.user.uid)
+      .orderBy('createdAt', 'desc')
+      .get();
+
+    const notifications = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      createdAt: doc.data().createdAt.toDate() // Convert Firestore timestamp to JS Date
+    }));
+
+    res.json({ success: true, notifications });
+  } catch (err) {
+    console.error('Get Sent Notifications Error:', err);
     res.status(500).json({ error: err.message });
   }
 });
