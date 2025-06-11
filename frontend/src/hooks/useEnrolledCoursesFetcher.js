@@ -1,3 +1,4 @@
+// src/hooks/useEnrolledCoursesFetcher.js
 import { useState, useEffect, useCallback } from 'react';
 
 const useEnrolledCoursesFetcher = (userId) => {
@@ -9,6 +10,7 @@ const useEnrolledCoursesFetcher = (userId) => {
 
     const fetchEnrollments = useCallback(async () => {
         if (!userId) {
+            console.warn("useEnrolledCoursesFetcher: No user ID available. Skipping fetch.");
             setEnrolledCourses([]);
             setLoadingEnrollments(false);
             setEnrollmentsError(null);
@@ -17,9 +19,9 @@ const useEnrolledCoursesFetcher = (userId) => {
 
         setLoadingEnrollments(true);
         setEnrollmentsError(null); // Clear previous errors
+        console.log(`Fetching enrollments for user: ${userId} from ${BACKEND_API_URL}/api/users/get-enrollments`);
 
         try {
-            // --- IMPORTANT: Implement your actual API call here ---
             const response = await fetch(`${BACKEND_API_URL}/api/users/get-enrollments`, {
                 method: 'POST', // Or 'GET'
                 headers: {
@@ -43,12 +45,27 @@ const useEnrolledCoursesFetcher = (userId) => {
             }
 
             const data = await response.json();
+            console.log("Fetched enrollments data:", data);
             if (data && Array.isArray(data.enrollments)) {
-                // --- CRITICAL FIX: Ensure 'status' is always present, default to 'unknown' ---
-                const formattedEnrollments = data.enrollments.map(course => ({
-                    ...course,
-                    status: course.status || 'unknown' // Default to 'unknown' if status is missing
-                }));
+                const formattedEnrollments = data.enrollments.map(course => {
+                    return {
+                        id: course.id,
+                        imageUrl: course.imageUrl || '',
+                        title: course.course_title || 'Untitled Course',
+                        instructor: course.instructor || 'Unknown Instructor', // Assuming 'instructor' field exists or needs a default
+                        progress: typeof course.progress === 'number' ? course.progress : 0,
+                        status: course.status || 'Not Started',
+                        // FIX: Map 'classLink' from API to 'teachableLink' prop for CourseCard
+                        teachableLink: course.classLink || '#', // <--- This is the key change!
+                        // Include any other properties you want to keep or use from the API response
+                        classDuration: course.classDuration,
+                        classLink: course.classLink, // Keep the original for completeness if needed elsewhere
+                        classStartDate: course.classStartDate,
+                        courseDetails: course.courseDetails,
+                        course_id: course.course_id,
+                        expiry: course.expiry,
+                    };
+                });
                 setEnrolledCourses(formattedEnrollments);
             } else {
                 console.warn('API returned unexpected data structure for enrollments:', data);
@@ -67,7 +84,12 @@ const useEnrolledCoursesFetcher = (userId) => {
         fetchEnrollments();
     }, [fetchEnrollments]);
 
-    return { enrolledCourses, loadingEnrollments, enrollmentsError, refetchEnrollments: fetchEnrollments };
+    return {
+        enrolledCourses,
+        loadingEnrolledCourses: loadingEnrollments,
+        enrolledCoursesError: enrollmentsError,
+        refetchEnrolledCourses: fetchEnrollments
+    };
 };
 
 export default useEnrolledCoursesFetcher;

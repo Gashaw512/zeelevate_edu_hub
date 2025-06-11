@@ -16,7 +16,7 @@ export const MOCK_PROGRAMS = [
     id: 'adult-programs',
     name: 'Adult Programs',
     shortDescription: 'Advanced skills and career development for professionals.',
-    fixedPrice: 280.00,
+    price: 280.00,
     courses: [
       { id: 'adult-financial-lit', name: 'Financial Literacy for Adults' },
       { id: 'adult-college-prep', name: 'Career & College Readiness' },

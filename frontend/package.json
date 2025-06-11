@@ -19,6 +19,7 @@
     "@material-tailwind/react": "^2.1.10",
     "@remix-run/router": "^1.23.0",
     "axios": "^1.9.0",
+    "date-fns": "^4.1.0",
     "firebase": "^11.7.1",
     "fontawesome": "^5.6.3",
     "lucide-react": "^0.511.0",

@@ -1,5 +1,5 @@
-// This new context will house your useEnrolledCoursesFetcher hook and provide its data to consuming components.
-import  { createContext, useContext } from 'react';
+// src/context/EnrolledCoursesContext.js
+import { createContext, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useAuth } from './AuthContext'; // Assuming AuthContext is defined here
 import useEnrolledCoursesFetcher from '../hooks/useEnrolledCoursesFetcher';
@@ -21,19 +21,21 @@ export const EnrolledCoursesProvider = ({ children }) => {
   const { user } = useAuth(); // Get user from AuthContext
 
   // Use your existing hook here. It handles fetching and memoization internally.
+  // CRITICAL FIX: Destructure the ALREADY RENAMED props from useEnrolledCoursesFetcher
   const {
     enrolledCourses,
-    loadingEnrollments,
-    enrollmentsError,
-    refetchEnrollments // Expose refetch if components might need to trigger a refresh
+    loadingEnrolledCourses, // <-- Destructure the already renamed prop
+    enrolledCoursesError,   // <-- Destructure the already renamed prop
+    refetchEnrolledCourses  // <-- Destructure the already renamed prop
   } = useEnrolledCoursesFetcher(user?.uid);
 
   // The value provided to consumers
+  // Now, simply pass the destructured values directly
   const value = {
     enrolledCourses,
-    loadingEnrolledCourses: loadingEnrollments, // Renamed for clarity in consumption
-    enrolledCoursesError: enrollmentsError,     // Renamed for clarity in consumption
-    refetchEnrolledCourses: refetchEnrollments
+    loadingEnrolledCourses, // Use directly
+    enrolledCoursesError,   // Use directly
+    refetchEnrolledCourses
   };
 
   return (

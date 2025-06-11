@@ -1,25 +1,24 @@
 // src/components/DashboardHome/DashboardHome.jsx
-import React, { useMemo } from 'react';
+import  { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useEnrolledCourses } from '../../context/EnrolledCoursesContext'; // New import for the context hook
+import { useEnrolledCourses } from '../../context/EnrolledCoursesContext';
 import useNotifications from '../../hooks/useNotifications';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
-// Icons
+// Icons from Lucide React
 import { BookOpen, Bell, User, ChevronRight, Settings, GraduationCap, XCircle, Clock } from 'lucide-react';
 
 // CSS Modules
 import styles from './DashboardHome.module.css';
 
 const DashboardHome = () => {
-    const { user, loading: authLoading } = useAuth(); // Still need user from AuthContext for notifications and username
-    // --- Get enrolled courses data from the context ---
+    const { user, loading: authLoading } = useAuth();
     const {
         enrolledCourses,
-        loadingEnrolledCourses, // Use the renamed prop from context
-        enrolledCoursesError,   // Use the renamed prop from context
-        refetchEnrolledCourses  // If you need to trigger a re-fetch, use this
+        loadingEnrolledCourses,
+        enrolledCoursesError,
+        refetchEnrolledCourses
     } = useEnrolledCourses();
 
     const { notifications, loading: notificationsLoading, error: notificationsError } = useNotifications(user?.uid);
@@ -32,11 +31,12 @@ const DashboardHome = () => {
     const userName = user?.displayName || user?.email?.split('@')[0] || 'Student';
 
     const activeCourses = useMemo(() => {
+    
         return enrolledCourses.filter(course => course.status === 'active');
     }, [enrolledCourses]);
 
     // --- Loading State (combined from all sources) ---
-    if (authLoading || loadingEnrolledCourses || notificationsLoading) { // Use loadingEnrolledCourses here
+    if (authLoading || loadingEnrolledCourses || notificationsLoading) {
         return (
             <div className={styles.fullPageStatusContainer}>
                 <LoadingSpinner message="Loading your dashboard..." />
@@ -45,22 +45,21 @@ const DashboardHome = () => {
     }
 
     // --- Error State (combined from all sources) ---
-    if (notificationsError || enrolledCoursesError) { // Use enrolledCoursesError here
+    if (notificationsError || enrolledCoursesError) {
         return (
             <div className={styles.errorContainer}>
                 <XCircle size={48} className={styles.errorIcon} />
                 <h2 className={styles.errorHeading}>Oops! Something Went Wrong.</h2>
-                {notificationsError && <p className={styles.errorText}>Notifications: {notificationsError}</p>}
-                {enrolledCoursesError && <p className={styles.errorText}>Courses: {enrolledCoursesError}</p>}
-                <p className={styles.errorText}>We couldn't load all parts of your dashboard.</p>
-                <button onClick={refetchEnrolledCourses} className={styles.retryButton}> {/* Use refetchEnrolledCourses */}
+                {notificationsError && <p className={styles.errorText}>Notifications: {notificationsError.message || notificationsError}</p>}
+                {enrolledCoursesError && <p className={styles.errorText}>Courses: {enrolledCoursesError.message || enrolledCoursesError}</p>}
+                <p className={styles.errorText}>We couldn't load all parts of your dashboard. Please try again.</p>
+                <button onClick={refetchEnrolledCourses} className={styles.retryButton}>
                     Retry
                 </button>
             </div>
         );
     }
 
-    // ... (rest of your DashboardHome component remains the same) ...
     return (
         <div className={styles.dashboardContainer}>
             {/* Welcome Section */}
@@ -113,7 +112,7 @@ const DashboardHome = () => {
                 {/* Unread Notifications Card */}
                 <div className={styles.dashboardCard}>
                     <div className={styles.cardHeader}>
-                        <Bell className={styles.cardIconIndigo} size={32} />
+                        <Bell className={styles.cardIconAccent} size={32} />
                         <h2 className={styles.cardTitle}>Notifications</h2>
                     </div>
                     <p className={styles.cardValue}>{unreadNotificationsCount}</p>
@@ -134,7 +133,7 @@ const DashboardHome = () => {
                         {enrolledCourses.slice(0, 3).map(course => (
                             <div key={course.id} className={styles.activityItem}>
                                 <span className={styles.activityCourseTitle}>{course.title}</span>
-                                <span className={`${styles.activityStatus} ${styles[course.status]}`}>
+                                <span className={`${styles.activityStatus} ${styles[course.status || 'unknown']}`}>
                                     {course.status ? (course.status.charAt(0).toUpperCase() + course.status.slice(1)) : 'N/A'}
                                 </span>
                                 <Link to={`/student/dashboard/courses/${course.id}`} className={styles.activityLink}>

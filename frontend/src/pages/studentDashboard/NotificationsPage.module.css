@@ -1,0 +1,435 @@
+
+.notificationsPageContainer {
+  padding: 2.5rem;
+  background-color: var(--background-muted); 
+  min-height: calc(100vh - 4rem); 
+  border-radius: 1rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; 
+  color: var(--text-dark);
+  font-family: 'Inter', sans-serif;
+}
+
+/* --- Page Header --- */
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem; 
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.pageTitle {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--primary-blue-dark);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.pageTitleIcon {
+  color: var(--primary-blue);
+}
+
+.actionsGroup {
+  display: flex;
+  gap: 0.75rem; 
+  flex-wrap: wrap;
+}
+
+.actionButton {
+  background-color: var(--primary-blue);
+  color: var(--text-light);
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.actionButton:hover:not(:disabled) {
+  background-color: var(--hover-blue);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.actionButton:disabled {
+  background-color: var(--cool-gray);
+  cursor: not-allowed;
+  opacity: 0.7;
+  box-shadow: none;
+}
+
+.dangerButton {
+  background-color: #EF4444; /* Using a vibrant red for danger, from my previous suggestion */
+}
+
+.dangerButton:hover:not(:disabled) {
+  background-color: #DC2626; /* Darker red on hover */
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* --- Filter Tabs --- */
+.filterTabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 0.5rem;
+}
+
+.filterTab {
+  background-color: transparent;
+  border: none;
+  padding: 0.75rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  position: relative; /* For the active indicator */
+}
+
+.filterTab:hover:not(.activeTab) {
+  background-color: var(--background-muted); /* Light background on hover */
+  color: var(--text-dark);
+}
+
+.filterTab.activeTab {
+  color: var(--primary-blue);
+  background-color: var(--background-light);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-bottom: 3px solid var(--primary-blue); /* Active tab indicator */
+  padding-bottom: calc(0.75rem - 3px); /* Adjust padding for border */
+}
+
+/* --- Notification List --- */
+.notificationList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem; /* Spacing between notification items */
+  background-color: var(--background-light);
+  border-radius: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  padding: 1.5rem;
+}
+
+.notificationItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.2rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-light);
+  transition: all 0.2s ease;
+}
+
+.notificationItem.unread {
+  background-color: var(--background-muted); /* Slightly different background for unread */
+  border-left: 5px solid var(--primary-blue); /* Stronger accent for unread */
+  padding-left: calc(1.2rem - 5px); /* Adjust padding for border */
+}
+
+.notificationItem.unread:hover {
+  background-color: var(--primary-blue-light); /* Lighter blue on hover for unread */
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.notificationItem.read {
+  background-color: var(--background-light);
+  color: var(--text-muted);
+}
+
+.notificationItem.read:hover {
+  background-color: var(--background-muted);
+}
+
+.notificationContent {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Important for flex items */
+  margin-right: 1rem;
+}
+
+.notificationMessage {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  margin: 0;
+  word-wrap: break-word;
+  color: inherit; /* Ensure message color adapts to read/unread */
+}
+
+.notificationTimestamp {
+  font-size: 0.78rem;
+  color: var(--text-muted); /* Muted timestamp */
+  margin-top: 0.4rem;
+}
+
+.itemActions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0; /* Prevent actions from shrinking */
+}
+
+.itemActionButton {
+  background-color: var(--background-light);
+  border: 1px solid var(--border-light);
+  color: var(--text-muted);
+  border-radius: 0.5rem;
+  padding: 0.6rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.itemActionButton:hover {
+  background-color: var(--background-muted);
+  color: var(--primary-blue);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.markReadButton {
+  color: var(--primary-blue); /* Specific color for mark as read */
+}
+
+.markReadButton:hover {
+  background-color: var(--primary-blue-light);
+}
+
+.deleteButton {
+  color: #EF4444; /* Specific color for delete */
+}
+
+.deleteButton:hover {
+  background-color: rgba(239, 68, 68, 0.1); /* Light red background on hover */
+}
+
+/* --- Empty State / Status Container (reused styles) --- */
+.fullPageStatusContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh; /* Adjust height for content area */
+  background-color: var(--background-light);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  color: var(--text-dark);
+  text-align: center;
+}
+
+.errorContainer {
+  composes: fullPageStatusContainer;
+  background-color: var(--danger-red);
+  color: var(--text-light);
+  box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+}
+
+.errorIcon {
+  color: var(--text-light);
+  margin-bottom: 1.2rem;
+}
+
+.errorHeading {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text-light);
+}
+
+.errorText {
+  color: var(--text-light-alt);
+  text-align: center;
+  max-width: 600px;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  margin-top: 1.5rem;
+}
+
+/* --- Empty State for Notifications List --- */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background-color: var(--background-muted);
+  border-radius: 0.75rem;
+  border: 1px dashed var(--border-light);
+  text-align: center;
+}
+
+.emptyStateIcon {
+  color: var(--cool-gray);
+  margin-bottom: 1rem;
+}
+
+.emptyStateText {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 767px) {
+  .notificationsPageContainer {
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .pageTitle {
+    font-size: 1.8rem;
+    width: 100%; /* Take full width */
+  }
+
+  .actionsGroup {
+    width: 100%;
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 0.75rem;
+  }
+
+  .actionButton {
+    width: 100%; /* Full width buttons when stacked */
+    justify-content: center;
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .filterTabs {
+    flex-direction: column; /* Stack filter tabs */
+    gap: 0.75rem;
+    padding-bottom: 0; /* Remove bottom padding as border is handled by tab item */
+    border-bottom: none; /* Remove section border */
+  }
+
+  .filterTab {
+    width: 100%;
+    text-align: center;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border-light); /* Add border to each tab */
+  }
+  .filterTab:last-child {
+    border-bottom: none; /* No border on last tab */
+  }
+
+  .filterTab.activeTab {
+    border-bottom: 3px solid var(--primary-blue); /* Active tab indicator still applies */
+    padding-bottom: calc(0.6rem - 3px);
+  }
+
+  .notificationList {
+    padding: 1rem;
+  }
+
+  .notificationItem {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.8rem 1rem;
+  }
+
+  .notificationItem.unread {
+    padding-left: calc(1rem - 5px); /* Adjust for border */
+  }
+
+  .notificationContent {
+    margin-right: 0;
+    margin-bottom: 0.8rem; /* Space before actions when stacked */
+  }
+
+  .notificationMessage {
+    font-size: 0.9rem;
+  }
+
+  .notificationTimestamp {
+    font-size: 0.7rem;
+  }
+
+  .itemActions {
+    width: 100%; /* Make action buttons take full width */
+    justify-content: space-around; /* Distribute actions evenly */
+  }
+
+  .itemActionButton {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .notificationsPageContainer {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .pageTitle {
+    font-size: 1.5rem;
+  }
+
+  .actionButton {
+    font-size: 0.85rem;
+    padding: 0.7rem 0.8rem;
+  }
+
+  .filterTab {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.8rem;
+  }
+
+  .notificationList {
+    padding: 0.8rem;
+  }
+
+  .notificationItem {
+    padding: 0.7rem 0.8rem;
+  }
+
+  .notificationItem.unread {
+    padding-left: calc(0.8rem - 5px);
+  }
+
+  .emptyState {
+    padding: 2rem;
+  }
+
+  .emptyStateIcon {
+    font-size: 40px;
+  }
+
+  .emptyStateText {
+    font-size: 1rem;
+  }
+}
