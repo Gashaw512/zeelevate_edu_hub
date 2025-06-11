@@ -74,4 +74,76 @@ async function getEnrollmentsByUID(uid) {
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 }
 
-module.exports = { registerUserAndEnroll, getEnrollmentsByUID };
+async function getStudentNotifications(userId) {
+  const [individualSnap, globalSnap] = await Promise.all([
+    db.collection('notifications')
+      .where('recipientId', '==', userId)
+      .orderBy('createdAt', 'desc')
+      .get(),
+    db.collection('notifications')
+      .where('isGlobal', '==', true)
+      .orderBy('createdAt', 'desc')
+      .get()
+  ]);
+
+  return [
+    ...individualSnap.docs.map(doc => ({ 
+      id: doc.id, 
+      ...doc.data(),
+      createdAt: doc.data().createdAt.toDate()
+    })),
+    ...globalSnap.docs.map(doc => ({ 
+      id: doc.id, 
+      ...doc.data(),
+      createdAt: doc.data().createdAt.toDate()
+    }))
+  ].sort((a, b) => b.createdAt - a.createdAt);
+}
+
+async function markNotificationAsRead(notificationId, userId) {
+  const notificationRef = db.collection('notifications').doc(notificationId);
+  const notificationSnap = await notificationRef.get();
+  
+  if (!notificationSnap.exists) {
+    throw new Error('Notification not found');
+  }
+  
+  const notification = notificationSnap.data();
+  
+  if ((!notification.isGlobal && notification.recipientId !== userId)) {
+    throw new Error('Unauthorized to mark this notification as read');
+  }
+  
+  await notificationRef.update({ read: true });
+  return { success: true };
+}
+
+async function clearAllUserNotifications(userId) {
+  try {
+    // Get all notifications for this user
+    const notificationsRef = db.collection('notifications');
+    const querySnapshot = await notificationsRef
+      .where('recipientId', '==', userId)
+      .get();
+
+    // Batch delete all matching notifications
+    const batch = db.batch();
+    querySnapshot.forEach(doc => {
+      batch.delete(doc.ref);
+    });
+
+    await batch.commit();
+    return { success: true, count: querySnapshot.size };
+  } catch (err) {
+    console.error('Clear notifications error:', err);
+    throw err;
+  }
+}
+
+module.exports = { 
+  registerUserAndEnroll, 
+  getEnrollmentsByUID,
+  getStudentNotifications,
+  markNotificationAsRead,
+  clearAllUserNotifications
+};
