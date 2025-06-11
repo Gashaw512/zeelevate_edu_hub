@@ -44,19 +44,21 @@
     --danger-red: #dc3545; /* Original red for status messages */
 }
 
+/* Base styles for the dashboard container */
 .dashboardContainer {
-    padding: 2.5rem;
-    /* --- OPTION 1: Clean & Subtle --- */
+    padding: 2.5rem; /* Increased padding */
+    /* --- NEW BACKGROUND: Clean & Subtle --- */
     background-color: #FDFEFF; /* Very light blue-tinted white */
-    /* background: linear-gradient(to bottom right, #FDFEFF, #F7F9FC); /* Or a very subtle gradient */
+    /* If you prefer a very subtle gradient for this option: */
+    /* background: linear-gradient(to bottom right, #FDFEFF, #F7F9FC); */
     /* ---------------------------------- */
-    min-height: 100vh;
+    min-height: 100vh; /* Ensure it takes full viewport height */
     border-radius: 1rem;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); /* More pronounced shadow for depth */
     display: flex;
     flex-direction: column;
-    gap: 2.5rem;
-    font-family: 'Inter', sans-serif;
+    gap: 2.5rem; /* Consistent spacing between major sections */
+    font-family: 'Inter', sans-serif; /* Applied to the whole container */
     color: var(--text-dark);
 }
 
@@ -174,7 +176,7 @@
     flex-shrink: 0;
 }
 
-.cardIconOrange { /* NEW: Specific class for orange icons (e.g., for active courses) */
+.cardIconOrange { /* Specific class for orange icons (e.g., for active courses) */
     color: var(--vibrant-orange);
     margin-right: 1rem;
     flex-shrink: 0;
@@ -392,43 +394,27 @@
 }
 
 /* Loading and Error States */
-.statusContainer {
+.fullPageStatusContainer { /* New class for the spinner wrapper */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 80vh;
-    background-color: var(--background-muted);
+    min-height: 80vh; /* Takes most of the viewport height */
+    background-color: #FDFEFF; /* Matches the new dashboard background for seamless transition */
     padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 1rem; /* Consistent border radius */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow */
     color: var(--text-dark);
     font-family: 'Inter', sans-serif;
 }
 
-.spinner {
-    animation: spin 1s linear infinite;
-    border: 4px solid var(--border-medium);
-    border-top-color: var(--primary-blue);
-    border-radius: 50%;
-    width: 64px;
-    height: 64px;
-}
+/* The .spinner and @keyframes spin are removed as your custom component handles it */
+/* .statusText is also not needed here since your custom spinner has .spinnerMessage */
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.statusText {
-    margin-top: 1.5rem;
-    font-size: 1.25rem;
-    color: var(--text-muted);
-}
 
 .errorContainer {
-    composes: statusContainer;
-    background-color: var(--vibrant-red);
+    composes: fullPageStatusContainer; /* Inherit base styles from fullPageStatusContainer */
+    background-color: var(--danger-red); /* Use the specific danger red */
     color: var(--text-light);
     box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
 }
@@ -446,11 +432,13 @@
 }
 
 .errorText {
-    composes: statusText;
+    /* composes: statusText; */ /* Removed as statusText is now gone/handled by spinner */
     color: var(--text-light-alt);
     text-align: center;
     max-width: 600px;
     margin-bottom: 1.5rem;
+    font-size: 1.25rem; /* Explicitly set font size */
+    margin-top: 1.5rem; /* Add top margin like the old statusText */
 }
 
 .retryButton {
