@@ -1,10 +1,9 @@
-// hooks/useNotifications.js
 import { useState, useEffect, useCallback } from 'react';
 import {
   collection,
   query,
   where,
-  orderBy,
+  orderBy, // Keep orderBy
   limit,
   onSnapshot,
   updateDoc,
@@ -37,19 +36,20 @@ const useNotifications = (userId) => {
       console.warn("useNotifications: No user ID available for notification listener. Clearing notifications.");
       setNotifications([]);
       setLoading(false);
-      // Ensure any previous error is cleared if user logs out or id becomes null
       setError(null);
       return;
     }
 
     setLoading(true);
-    setError(null); // Clear previous errors on new listener setup
+    setError(null);
     console.log(`useNotifications: Setting up real-time listener for user: ${userId}`);
 
     const notificationsQuery = query(
       collection(db, 'notifications'),
-      where('recipientId', '==', userId), // *** CORRECTED THIS LINE ***
-      orderBy('timestamp', 'desc'),
+      where('recipientId', '==', userId),
+      // --- CHANGE START ---
+      orderBy('createdAt', 'desc'), // ORDER BY 'createdAt' instead of 'timestamp'
+      // --- CHANGE END ---
       limit(20)
     );
 
@@ -62,7 +62,7 @@ const useNotifications = (userId) => {
         }));
         setNotifications(fetchedNotifications);
         setLoading(false);
-        setError(null); // Clear error on successful fetch
+        setError(null);
         console.log(`useNotifications: Fetched ${fetchedNotifications.length} real-time notifications.`);
       },
       (err) => {
@@ -76,37 +76,36 @@ const useNotifications = (userId) => {
       console.log("useNotifications: Unsubscribing from real-time listener.");
       unsubscribe();
     };
-  }, [userId]); // Dependency array: re-run effect if userId changes
+  }, [userId]);
 
   const markAsRead = useCallback(async (id) => {
     if (!userId) {
       console.warn("useNotifications: " + MESSAGES.NO_USER_AUTH);
-      setError(MESSAGES.NO_USER_AUTH); // Set error for UI feedback
+      setError(MESSAGES.NO_USER_AUTH);
       return;
     }
     try {
       const notificationRef = doc(db, 'notifications', id);
       await updateDoc(notificationRef, { read: true });
       console.log(`useNotifications: Notification ${id} marked as read.`);
-      setError(null); // Clear any previous error
+      setError(null);
     } catch (err) {
       console.error("useNotifications: Error marking notification as read:", err);
       setError(MESSAGES.MARK_READ_ERROR);
     }
-  }, [userId]); // Dependency array: depends on userId
+  }, [userId]);
 
   const clearAllNotifications = useCallback(async () => {
     if (!userId) {
       console.warn("useNotifications: " + MESSAGES.NO_USER_AUTH);
-      setError(MESSAGES.NO_USER_AUTH); // Set error for UI feedback
+      setError(MESSAGES.NO_USER_AUTH);
       return;
     }
 
     setClearing(true);
-    setError(null); // Clear previous errors
+    setError(null);
 
     try {
-      // This query is already correct with 'recipientId'
       const userNotificationsQuery = query(
         collection(db, 'notifications'),
         where('recipientId', '==', userId),
@@ -121,14 +120,14 @@ const useNotifications = (userId) => {
 
       await batch.commit();
       console.log(`useNotifications: Cleared ${snapshot.docs.length} notifications for user ${userId}.`);
-      setError(null); // Clear error on successful clear
+      setError(null);
     } catch (err) {
       console.error("useNotifications: Error clearing all notifications:", err);
       setError(MESSAGES.CLEAR_ALL_ERROR);
     } finally {
       setClearing(false);
     }
-  }, [userId]); // Dependency array: depends on userId
+  }, [userId]);
 
   return {
     notifications,

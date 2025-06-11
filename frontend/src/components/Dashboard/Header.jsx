@@ -1,5 +1,5 @@
 // Header.jsx
-import  { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Bell, Menu, Loader, XCircle } from 'lucide-react';
 import PropTypes from 'prop-types';
 import styles from './Header.module.css';
@@ -31,30 +31,36 @@ const Header = ({ toggleSidebar, user, role = 'student' }) => {
 
   const dropdownRef = useClickOutside(closeNotifications, showNotifications);
 
-  // ... (formatNotificationTimestamp remains the same)
-  const formatNotificationTimestamp = useCallback((timestamp) => {
-     if (!timestamp || !timestamp.toDate) return 'N/A';
-     const date = timestamp.toDate();
-     const now = new Date();
+  // --- CHANGE START ---
+  // Modify formatNotificationTimestamp to parse a string date
+  const formatNotificationTimestamp = useCallback((timestampString) => {
+    if (!timestampString) return 'N/A'; // It's now a string, not an object with .toDate()
+    const date = new Date(timestampString); // Parse the ISO 8601 string into a Date object
+    const now = new Date();
 
-     const isToday = date.getDate() === now.getDate() && date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
-     const yesterday = new Date(now);
-     yesterday.setDate(now.getDate() - 1);
-     const isYesterday = date.getDate() === yesterday.getDate() && date.getMonth() === yesterday.getMonth() && date.getFullYear() === yesterday.getFullYear();
+    const isToday = date.getDate() === now.getDate() && date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    const isYesterday = date.getDate() === yesterday.getDate() && date.getMonth() === yesterday.getMonth() && date.getFullYear() === yesterday.getFullYear();
 
-     const diffTime = Math.abs(now.getTime() - date.getTime());
-     const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
+    const diffTime = Math.abs(now.getTime() - date.getTime());
+    const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
 
-     if (isToday) {
-       return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-     } else if (isYesterday) {
-       return 'Yesterday';
-     } else if (diffTime < sevenDaysInMs) {
-       return date.toLocaleDateString([], { weekday: 'short' });
-     } else {
-       return date.toLocaleDateString();
-     }
+    if (isNaN(date.getTime())) { // Check if date parsing was successful
+      return 'Invalid Date';
+    }
+
+    if (isToday) {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } else if (isYesterday) {
+      return 'Yesterday';
+    } else if (diffTime < sevenDaysInMs) {
+      return date.toLocaleDateString([], { weekday: 'short' });
+    } else {
+      return date.toLocaleDateString();
+    }
   }, []);
+  // --- CHANGE END ---
 
 
   const userName =
@@ -127,11 +133,14 @@ const Header = ({ toggleSidebar, user, role = 'student' }) => {
                     <p className={styles.notificationMessage}>
                       {notification.message}
                     </p>
-                    {notification.timestamp && (
+                    {/* --- CHANGE START --- */}
+                    {/* Use notification.createdAt here */}
+                    {notification.createdAt && (
                       <span className={styles.notificationTimestamp}>
-                        {formatNotificationTimestamp(notification.timestamp)}
+                        {formatNotificationTimestamp(notification.createdAt)}
                       </span>
                     )}
+                    {/* --- CHANGE END --- */}
                     {!notification.read && (
                       <button
                         onClick={() => markAsRead(notification.id)}
