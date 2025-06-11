@@ -1,95 +1,183 @@
-// Dashboard overview page.
+import React, { useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import useNotifications from '../../hooks/useNotifications';
+import useEnrolledCoursesFetcher from '../../hooks/useEnrolledCoursesFetcher'; // Use the refined hook
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { BookOpen, Home, BarChart2, Bell, User as UserIcon } from 'lucide-react'; // Renamed User to UserIcon to avoid conflict
-import { useAuth } from '../../context/AuthContext'; 
-import StatCard from '../../components/Dashboard/StatCard';
+// Icons
+import { BookOpen, Bell, User, ChevronRight, Settings, GraduationCap, XCircle, Clock } from 'lucide-react'; // Added Clock icon
+
+// CSS Modules
 import styles from './DashboardHome.module.css';
 
 const DashboardHome = () => {
-  // const { user } = useAuth(); // Get 'user' from your AuthContext
+    const { user, loading: authLoading } = useAuth();
+    const { notifications, loading: notificationsLoading, error: notificationsError } = useNotifications(user?.uid);
+    const { enrolledCourses, loadingEnrollments, enrollmentsError, refetchEnrollments } = useEnrolledCoursesFetcher(user?.uid);
 
+    // Calculate unread notifications count, memoized for performance
+    const unreadNotificationsCount = useMemo(() => {
+        if (notificationsLoading || notificationsError) return 0;
+        return notifications.filter(n => !n.read).length;
+    }, [notifications, notificationsLoading, notificationsError]);
 
-  // Remove these when the data come from firebase ....
-  const user = {
-    progress: {
-      totalCourses: 10,
-      completedCourses: 6,
-      hoursSpent: 45,
-      badgesEarned: 3,
-    },
-    recentActivity: [
-      { id: 1, type: 'course_completion', description: 'Completed React Basics course', date: '2025-05-25' },
-      { id: 2, type: 'quiz_pass', description: 'Passed HTML Quiz', date: '2025-05-24' },
-      { id: 3, type: 'new_enrollment', description: 'Enrolled in JavaScript Advanced course', date: '2025-05-23' },
-      { id: 4, type: 'student_feedback', description: 'Left feedback on Python Basics', date: '2025-05-22' },
-      { id: 5, type: 'course_creation', description: 'Created new course: CSS Mastery', date: '2025-05-20' },
-    ],
-  };
-  
+    // Determine user's display name, providing a fallback
+    // We'll use this for the dashboard's primary greeting.
+    const userName = user?.displayName || user?.email?.split('@')[0] || 'Student';
 
-  // Ensure user and its properties are available before rendering
-  if (!user || !user.progress || !user.recentActivity) {
+    // Filter active courses for "Continue Learning"
+    const activeCourses = useMemo(() => {
+        return enrolledCourses.filter(course => course.status === 'active');
+    }, [enrolledCourses]);
+
+    // --- Loading State ---
+    if (authLoading || notificationsLoading || loadingEnrollments) {
+        return (
+            <div className={styles.statusContainer}>
+                <div className={styles.spinner}></div>
+                <p className={styles.statusText}>Loading your dashboard...</p>
+            </div>
+        );
+    }
+
+    // --- Error State ---
+    if (notificationsError || enrollmentsError) {
+        return (
+            <div className={styles.errorContainer}>
+                <XCircle size={48} className={styles.errorIcon} />
+                <h2 className={styles.errorHeading}>Oops! Something Went Wrong.</h2>
+                {notificationsError && <p className={styles.errorText}>Notifications: {notificationsError}</p>}
+                {enrollmentsError && <p className={styles.errorText}>Courses: {enrollmentsError}</p>}
+                <p className={styles.errorText}>We couldn't load all parts of your dashboard.</p>
+                <button onClick={refetchEnrollments} className={styles.retryButton}>
+                    Retry
+                </button>
+            </div>
+        );
+    }
+
+    // --- Main Dashboard Content ---
     return (
-      <div className="flex justify-center items-center h-full text-gray-600">
-        Loading dashboard data...
-      </div>
+        <div className={styles.dashboardContainer}>
+            {/* Welcome Section - Make it more engaging/action-oriented */}
+            <div className={styles.welcomeSection}>
+                <h1 className={styles.welcomeHeading}>
+                    Ready to learn, <span className={styles.userNameHighlight}>{userName}</span>?
+                </h1>
+                <p className={styles.welcomeSubtitle}>
+                    Pick up where you left off or explore new opportunities.
+                </p>
+                {activeCourses.length > 0 && (
+                    <Link to={`/student/dashboard/courses/${activeCourses[0].id}`} className={styles.primaryActionButton}>
+                        <GraduationCap size={20} /> Continue Learning
+                    </Link>
+                )}
+            </div>
+
+            {/* Overview Cards */}
+            <div className={styles.cardsGrid}>
+                {/* Enrolled Courses Card */}
+                <div className={styles.dashboardCard}>
+                    <div className={styles.cardHeader}>
+                        <BookOpen className={styles.cardIconBlue} size={32} />
+                        <h2 className={styles.cardTitle}>My Courses</h2>
+                    </div>
+                    <p className={styles.cardValue}>{enrolledCourses.length}</p>
+                    <p className={styles.cardDescription}>
+                        {enrolledCourses.length === 1 ? 'course enrolled' : 'courses enrolled'}
+                    </p>
+                    <Link to="/student/dashboard/courses" className={styles.cardLink}>
+                        View All Courses <ChevronRight size={18} className={styles.linkIcon} />
+                    </Link>
+                </div>
+
+                {/* Active Courses Card (New) */}
+                <div className={styles.dashboardCard}>
+                    <div className={styles.cardHeader}>
+                        <Clock className={styles.cardIconOrange} size={32} /> {/* Using a new color for active */}
+                        <h2 className={styles.cardTitle}>In Progress</h2>
+                    </div>
+                    <p className={styles.cardValue}>{activeCourses.length}</p>
+                    <p className={styles.cardDescription}>
+                        {activeCourses.length === 1 ? 'course currently active' : 'courses currently active'}
+                    </p>
+                    <Link to="/student/dashboard/courses?filter=active" className={styles.cardLink}>
+                        Go to Active <ChevronRight size={18} className={styles.linkIcon} />
+                    </Link>
+                </div>
+
+                {/* Unread Notifications Card */}
+                <div className={styles.dashboardCard}>
+                    <div className={styles.cardHeader}>
+                        <Bell className={styles.cardIconIndigo} size={32} />
+                        <h2 className={styles.cardTitle}>Notifications</h2>
+                    </div>
+                    <p className={styles.cardValue}>{unreadNotificationsCount}</p>
+                    <p className={styles.cardDescription}>
+                        {unreadNotificationsCount === 1 ? 'unread message' : 'unread messages'}
+                    </p>
+                    <Link to="/student/dashboard/notifications" className={styles.cardLink}>
+                        Check Notifications <ChevronRight size={18} className={styles.linkIcon} />
+                    </Link>
+                </div>
+            </div>
+
+            {/* Latest Activity / Progress Section */}
+            <div className={styles.latestActivitySection}>
+                <h2 className={styles.latestActivityTitle}>Your Progress at a Glance</h2>
+                {enrolledCourses.length > 0 ? (
+                    <div className={styles.activityList}>
+                        {enrolledCourses.slice(0, 3).map(course => ( // Show up to 3 latest courses
+                            <div key={course.id} className={styles.activityItem}>
+                                <span className={styles.activityCourseTitle}>{course.title}</span>
+                                <span className={`${styles.activityStatus} ${styles[course.status]}`}>
+                                    {/* Safe access for status */}
+                                    {course.status ? (course.status.charAt(0).toUpperCase() + course.status.slice(1)) : 'N/A'}
+                                </span>
+                                <Link to={`/student/dashboard/courses/${course.id}`} className={styles.activityLink}>
+                                    Go to Course <ChevronRight size={16} />
+                                </Link>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className={styles.emptyState}>
+                        <p>You haven't enrolled in any courses yet. Start your learning journey today!</p>
+                        <Link to="/programs" className={styles.enrollNowButton}>Explore Programs</Link>
+                    </div>
+                )}
+            </div>
+
+            {/* Quick Links / Action Section (Optional: can be combined or left as is) */}
+            <div className={styles.quickActionsSection}>
+                <h2 className={styles.quickActionsTitle}>Quick Actions</h2>
+                <div className={styles.quickActionsGrid}>
+                    <Link
+                        to="/student/dashboard/courses"
+                        className={styles.quickActionLink}
+                    >
+                        <span><BookOpen size={20} className={styles.actionLinkIcon} /> Browse Courses</span>
+                        <ChevronRight size={20} />
+                    </Link>
+                    <Link
+                        to="/student/dashboard/profile"
+                        className={styles.quickActionLink}
+                    >
+                        <span><User size={20} className={styles.actionLinkIcon} /> Edit Profile</span>
+                        <ChevronRight size={20} />
+                    </Link>
+                    <Link
+                        to="/student/dashboard/settings"
+                        className={styles.quickActionLink}
+                    >
+                        <span><Settings size={20} className={styles.actionLinkIcon} /> Adjust Settings</span>
+                        <ChevronRight size={20} />
+                    </Link>
+                </div>
+            </div>
+
+        </div>
     );
-  }
-
-  const progressData = [
-    { name: 'Completed', value: user.progress.completedCourses || 0 },
-    { name: 'In Progress', value: (user.progress.totalCourses || 0) - (user.progress.completedCourses || 0) },
-  ];
-
-  return (
-    <div className={styles.container}>
-      <div className={styles.statGrid}>
-        <StatCard title="Total Courses" value={user.progress.totalCourses} icon={BookOpen} />
-        <StatCard title="Courses Completed" value={user.progress.completedCourses} icon={Home} />
-        <StatCard title="Hours Spent" value={user.progress.hoursSpent} icon={BarChart2} />
-        <StatCard title="Badges Earned" value={user.progress.badgesEarned} icon={Bell} />
-      </div>
-
-      <div className={styles.statGrid}>
-        {/* Chart */}
-        <div className={styles.card}>
-          <h3 className={styles.cardTitle}>Course Completion Overview</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={progressData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="value" fill="#6366F1" radius={[10, 10, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Activity */}
-        <div className={styles.card}>
-          <h3 className={styles.cardTitle}>Recent Activity</h3>
-          <ul className={styles.activityList}>
-            {user.recentActivity.map((activity) => (
-              <li key={activity.id} className={styles.activityItem}>
-                <div className={styles.iconWrapper}>
-                  {activity.type === 'course_completion' && <BookOpen size={20} className="text-green-500" />}
-                  {activity.type === 'quiz_pass' && <BarChart2 size={20} className="text-blue-500" />}
-                  {activity.type === 'new_enrollment' && <Home size={20} className="text-purple-500" />}
-                  {activity.type === 'course_creation' && <BookOpen size={20} className="text-yellow-500" />}
-                  {activity.type === 'student_feedback' && <UserIcon size={20} className="text-red-500" />}
-                </div>
-                <div>
-                  <p className={styles.activityText}>{activity.description}</p>
-                  <p className={styles.activityDate}>{activity.date}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
 };
 
 export default DashboardHome;
