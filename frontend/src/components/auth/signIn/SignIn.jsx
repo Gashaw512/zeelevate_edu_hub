@@ -1,27 +1,27 @@
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { signInWithPopup } from "firebase/auth";
-import { auth } from "../../../firebase/auth";
 import { useAuth } from "../../../context/AuthContext";
-import { getAllProviders } from "../../../data/externalAuthProviderConfig";
 import useSignIn from "../../../hooks/useSignIn";
 import AuthLayout from "../../layouts/auth/AuthLayout";
 import AuthForm from "../../common/AuthForm";
-import SocialAuthButtons from "../../common/SocialAuthButton";
 import styles from "./SignIn.module.css";
 
 const SignIn = () => {
   const navigate = useNavigate();
   // Destructure authError and clearAuthError from useAuth
   const { user, authError, clearAuthError } = useAuth();
-  const { formData, error: localSignInError, isSubmitting, handleChange, handleSubmit } = useSignIn(); // Renamed error to localSignInError
-  const externalProviders = getAllProviders();
+  const { formData, error: localSignInError, isSubmitting, handleChange, handleSubmit } = useSignIn(); 
+  const SESSION_TIMEOUT = 20 * 60 * 1000; // 30 minutes in milliseconds
+
 
   useEffect(() => {
       if (user) {
       // Clear any auth errors when user logs in successfully
       console.log(user.accessToken)
-      localStorage.setItem('token', user.accessToken); // Store token in localStorage
+          const tokenExpiry = new Date().getTime() + SESSION_TIMEOUT;
+         localStorage.setItem('tokenExpiry', tokenExpiry.toString());
+          localStorage.setItem('token', user.accessToken); // Store token in localStorage
+
       clearAuthError();
       if (user.role === "student") {
         navigate("/student/dashboard");
@@ -38,41 +38,6 @@ const SignIn = () => {
     // For now, it's cleared before a new submission.
     // If you want to clear it when the user types, add a dependency to formData.
   }, []);
-
-  const handleExternalSignIn = (providerName) => {
-    clearAuthError(); // Clear any previous errors
-    const providerConfig = externalProviders.find(
-      p => p.name.toLowerCase() === providerName.toLowerCase()
-    );
-
-    if (!providerConfig) {
-      setAuthError(`${providerName} sign-in is not configured`); // Use setAuthError from context
-      return;
-    }
-
-    switch (providerConfig.signInMethod) {
-      case "signInWithPopup":
-        signInWithPopup(auth, providerConfig.provider)
-          .catch(err => {
-            // Set the error directly in the AuthContext
-            // Make sure to access setAuthError from useAuth hook
-            // In your SignIn component, you're destructuring it as `setAuthContextError`
-            // So, make sure setAuthContextError is provided by useAuth.
-            // Revert to using `setAuthError` as defined in AuthContext.jsx
-            setAuthError(err.message || `Failed to sign in with ${providerName}`);
-          });
-        break;
-
-      case "initiateLinkedInLogin":
-        console.log("Implement LinkedIn login flow");
-        // You might want to set an error here as well if LinkedIn isn't implemented
-        setAuthError("LinkedIn login is not yet implemented.");
-        break;
-
-      default:
-        setAuthError(`Unsupported method for ${providerName}`);
-    }
-  };
 
   const fieldsConfig = [
     {
@@ -119,25 +84,6 @@ const SignIn = () => {
         </Link>
       </div>
 
-      <div className={styles.divider}>
-        <span className={styles.dividerText}>OR</span>
-      </div>
-
-      <div className={styles.socialAuthSection}>
-        <SocialAuthButtons
-          providers={externalProviders}
-          onSignIn={handleExternalSignIn}
-        />
-      </div>
-
-      <div className={styles.signUp}>
-        <p>
-          Don't have an account?{" "}
-          <Link to="/signup" className={`${styles.link} ${styles.primaryLink}`}>
-            Sign Up Now
-          </Link>
-        </p>
-      </div>
     </AuthLayout>
   );
 };

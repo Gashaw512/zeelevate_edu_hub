@@ -3,33 +3,23 @@ import { Link } from "react-router-dom";
 import styles from "./ProgramSelection.module.css";
 
 const ProgramSelection = ({
-  programs,
+  programs, 
   selectedProgramIds,
   onProgramSelect,
-  calculateTotalPrice, // Keep for backward compatibility
-  totalPrice, // New prop
+  totalPrice, 
 }) => {
-  const computedTotal =
-    typeof calculateTotalPrice === "function"
-      ? calculateTotalPrice()
-      : totalPrice;
+  
+  const computedTotal = totalPrice; 
 
   const handleCheckboxClick = (e, programId) => {
-    e.stopPropagation();
+    e.stopPropagation(); 
     onProgramSelect(programId);
   };
 
   return (
     <div className={styles.programSelectionSection}>
-      <h3 className={styles.sectionTitle}>
-        Step 1: Choose Your Program Modules
-      </h3>
-      <p className={styles.sectionDescription}>
-        Select the programs that best fit your learning goals.
-      </p>
-
       <div className={styles.programCardsContainer}>
-        {programs.map((program) => {
+        {programs.map((program) => { 
           const isSelected = selectedProgramIds.includes(program.id);
 
           return (
@@ -50,11 +40,11 @@ const ProgramSelection = ({
                     id={program.id}
                     checked={isSelected}
                     onChange={(e) => handleCheckboxClick(e, program.id)}
-                    className={styles.visuallyHidden}
+                    className={styles.visuallyHidden} // Hide actual checkbox, use custom indicator
                   />
                   <span
                     className={styles.checkboxIndicator}
-                    aria-hidden="true"
+                    aria-hidden="true" // Visually indicates selection
                   />
                 </div>
 
@@ -62,10 +52,12 @@ const ProgramSelection = ({
                   htmlFor={program.id}
                   className={styles.programTitleLabel}
                 >
-                  <h4 className={styles.programName}>{program.name}</h4>
+                  {/* Access program.name as it's mapped from courseTitle in SignUp */}
+                  <h4 className={styles.programName}>{program.name}</h4> 
                 </label>
               </div>
 
+              {/* Access program.shortDescription as mapped from courseDetails in SignUp */}
               <p className={styles.programShortDescription}>
                 {program.shortDescription}
               </p>
@@ -74,8 +66,11 @@ const ProgramSelection = ({
                 <div className={styles.programCoursesIncluded}>
                   <h5>What's Included:</h5>
                   <ul>
+                    {/* Access program.courses (which is an array of {id, name} objects from SignUp's mapping) */}
                     {program.courses.map((course) => (
-                      <li key={course.id}>{course.name}</li>
+                       /* Use course.id for key if available, else course.name */
+                      <li key={course.id || course.name}>{course.name}</li> 
+                     
                     ))}
                   </ul>
                 </div>
@@ -83,8 +78,9 @@ const ProgramSelection = ({
 
               <div className={styles.programCardFooter}>
                 <span className={styles.programPriceLabel}>Program Price:</span>
+                {/* Access program.fixedPrice as mapped from price in SignUp */}
                 <span className={styles.programPriceAmount}>
-                  ${program.fixedPrice.toFixed(2)}
+                   ${program.fixedPrice.toFixed(2)}
                 </span>
               </div>
 
@@ -105,7 +101,6 @@ const ProgramSelection = ({
   );
 };
 
-// Helper components for better organization
 const CheckIcon = () => (
   <svg
     className={styles.checkIcon}
@@ -131,10 +126,7 @@ TotalSummary.propTypes = {
   price: PropTypes.number.isRequired,
 };
 
-
-
 const ViewAllCoursesLink = () => {
-
   return (
     <div className={styles.viewAllCoursesContainer}>
       <p className={styles.viewCoursesText}>
@@ -162,17 +154,17 @@ const ViewAllCoursesLink = () => {
   );
 };
 
-// Prop type definitions
+
 ProgramSelection.propTypes = {
   programs: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      shortDescription: PropTypes.string.isRequired,
-      fixedPrice: PropTypes.number.isRequired,
-      courses: PropTypes.arrayOf(
+      id: PropTypes.string.isRequired,         
+      name: PropTypes.string.isRequired,          
+      shortDescription: PropTypes.string.isRequired, 
+      fixedPrice: PropTypes.number.isRequired,    
+      courses: PropTypes.arrayOf(                
         PropTypes.shape({
-          id: PropTypes.string.isRequired,
+          id: PropTypes.string, 
           name: PropTypes.string.isRequired,
         })
       ).isRequired,
@@ -180,8 +172,7 @@ ProgramSelection.propTypes = {
   ).isRequired,
   selectedProgramIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   onProgramSelect: PropTypes.func.isRequired,
-  calculateTotalPrice: PropTypes.func,
-  totalPrice: PropTypes.number,
+  totalPrice: PropTypes.number, // calculateTotalPrice prop is removed, totalPrice is passed directly
 };
 
 export default ProgramSelection;

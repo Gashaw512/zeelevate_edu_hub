@@ -1,0 +1,51 @@
+/* src/components/Common/LoadingSpinner.module.css */
+
+.spinnerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem; /* Consistent padding with card */
+  box-sizing: border-box; /* Include padding in element's total width and height */
+}
+
+.spinnerIcon {
+  font-size: 3.5rem; /* Large and prominent */
+  color: #3686FF; /* Primary blue color for attraction */
+  margin-bottom: 1rem; /* Space below the spinner */
+  animation: spin 1.2s linear infinite; /* Smoother, slightly slower spin */
+}
+
+/* Keyframe for the spin animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinnerMessage {
+  font-size: 1.25rem; /* text-xl equivalent */
+  font-weight: 500; /* font-medium equivalent */
+  color: hsl(215, 84%, 48%); /* text-gray-700 equivalent */
+  text-align: center;
+  line-height: 1.4; /* Better readability */
+}
+
+/* Optional: Add a subtle overlay or background if needed for full-page spinners */
+/*
+.fullScreenOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8); // Semi-transparent white
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; // Ensure it's on top
+}
+*/

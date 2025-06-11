@@ -1,6 +1,4 @@
-// src/components/Profile/ChangePasswordForm.jsx
-
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import PropTypes from 'prop-types';
 import styles from '../../pages/studentDashboard/Profile.module.css';
 import {
@@ -12,8 +10,8 @@ import {
   AlertCircle,
   ShieldCheck
 } from 'lucide-react';
-// import { EmailAuthProvider } from 'firebase/auth';
-import { reauthenticateWithCredential, EmailAuthProvider, updatePassword } from 'firebase/auth';
+
+import { getAuth, reauthenticateWithCredential, EmailAuthProvider, updatePassword } from 'firebase/auth';
 
 
 const getPasswordStrength = (password) => {
@@ -38,12 +36,16 @@ const ChangePasswordForm = ({ user, onSuccess, onCancel }) => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
+
+const auth = getAuth();
+const currentUser = auth.currentUser;
+
   const togglePasswordVisibility = () => {
     setShowPasswords((prev) => !prev);
   };
 
   const handleFirebaseError = (err) => {
-    console.error("Firebase error:", err);
+    // console.error("Firebase error:", err);
     let errorMessage = 'An error occurred. Please try again.';
 
     if (err.code) {
@@ -104,7 +106,7 @@ const ChangePasswordForm = ({ user, onSuccess, onCancel }) => {
 
     try {
       const credential = EmailAuthProvider.credential(user.email, currentPassword);
-      await reauthenticateWithCredential(user, credential);
+      await reauthenticateWithCredential(currentUser, credential);
 
     } catch (err) {
       handleFirebaseError(err);
@@ -113,8 +115,7 @@ const ChangePasswordForm = ({ user, onSuccess, onCancel }) => {
     }
 
     try {
-      await updatePassword(user, newPassword);
-
+      await updatePassword(currentUser, newPassword);
       setSuccessMessage('Password changed successfully!');
       setCurrentPassword('');
       setNewPassword('');

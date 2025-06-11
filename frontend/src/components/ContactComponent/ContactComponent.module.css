@@ -1,0 +1,345 @@
+/* src/components/ContactComponent/ContactComponent.module.css */
+
+/* Define variables for consistent styling if not already global */
+/* NOTE: For true global reusability across your app, these :root variables
+   should be in a global stylesheet (e.g., src/index.css or src/App.css) */
+:root {
+  --primary-blue: #3686ff;
+  --primary-blue-dark: #2a6ed4;
+  --text-dark: #1f2937;
+  --text-muted: #6b7280;
+  --background-light: #ffffff; /* White background for info/form */
+  --background-muted: #f9fafb; /* Light gray background for section */
+  --border-light: #e5e7eb;
+  --success-green: #28a745;
+  --error-red: #dc3545;
+  --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --accent-cyan: #00bcd4; /* Assuming this is your original 'accent-blue' for icons */
+  --cool-gray: #9ca3af; /* For placeholders */
+}
+
+/* --- Contact Section Styles --- */
+.contactSection { /* Renamed to camelCase for consistency with JS module import */
+  padding: 6rem 2rem;
+  background: var(--background-muted);
+  color: var(--text-dark);
+}
+
+.contactContainer { /* Renamed */
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.contactTitle { /* Renamed */
+  color: var(--primary-blue);
+  font-size: 3.2rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.contactDescription { /* Renamed */
+  color: var(--text-muted);
+  font-size: 1.15rem;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto 4rem;
+  text-align: center;
+}
+
+.contactRow { /* Renamed */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 3rem;
+}
+
+/* --- Contact Information Column --- */
+.contactInfoCol { /* Renamed */
+  flex: 1;
+  min-width: 300px;
+  background: var(--background-light);
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-light);
+}
+
+.infoItem { /* Renamed */
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 2.5rem;
+  gap: 1.2rem;
+}
+
+.infoItem:last-child {
+  margin-bottom: 0;
+}
+
+.contactIcon { /* Renamed */
+  font-size: 2.2rem;
+  color: var(--accent-cyan);
+  min-width: 2.2rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.2rem;
+}
+
+.infoItem h5 {
+  font-size: 1.3rem;
+  margin-bottom: 0.3rem;
+  color: var(--primary-blue-dark);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.infoItem p {
+  padding: 0;
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* --- Contact Form Column --- */
+.contactFormCol { /* Renamed */
+  flex: 1.5;
+  min-width: 350px;
+  background: var(--background-light);
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-light);
+}
+
+.contactForm { /* Renamed */
+  display: flex;
+  flex-direction: column;
+}
+
+.formInput, /* Renamed */
+.formTextarea { /* Renamed */
+  width: 100%;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.2rem;
+  outline: none;
+  border: 1px solid var(--border-light);
+  font-size: 1rem;
+  border-radius: 8px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  color: var(--text-dark);
+  background-color: var(--background-light);
+}
+
+.formInput::placeholder,
+.formTextarea::placeholder {
+  color: var(--cool-gray);
+  opacity: 0.8;
+}
+
+.formInput:focus,
+.formTextarea:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(54, 134, 255, 0.2);
+}
+
+.formTextarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* --- Input Error State --- */
+.inputError { /* No change needed, already present */
+  border-color: var(--error-red) !important;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2) !important;
+}
+
+/* --- Inline Error Message Text --- */
+.errorMessageText { /* No change needed, already present */
+  color: var(--error-red);
+  font-size: 0.85rem;
+  margin-top: -0.8rem;
+  margin-bottom: 1.2rem;
+  padding-left: 0.2rem;
+}
+
+/* --- Reusable CTA Button Styles (now local to this module) --- */
+.ctaButton { /* Renamed */
+  width: auto;
+  align-self: flex-start;
+  margin-top: 1rem;
+  /* Specific styling for your CTA buttons below */
+  padding: 0.85rem 1.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none; /* If used as a link */
+}
+
+.primaryCtaButton { /* Renamed */
+  background-color: var(--primary-blue);
+  color: #fff;
+  border: 1px solid var(--primary-blue);
+  box-shadow: 0 4px 10px rgba(54, 134, 255, 0.25);
+}
+
+.primaryCtaButton:hover:not(:disabled) {
+  background-color: var(--primary-blue-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(54, 134, 255, 0.35);
+}
+
+.primaryCtaButton:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(54, 134, 255, 0.2);
+}
+
+.ctaButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  background-color: var(--cool-gray); /* Muted gray for disabled */
+  box-shadow: none;
+}
+
+
+/* --- Response Messages (Success/Error) --- */
+.responseMessage { /* Renamed */
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  word-break: break-word;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.successMessage { /* Renamed */
+  background-color: #d4edda;
+  color: var(--success-green);
+  border: 1px solid #c3e6cb;
+}
+
+.errorMessage { /* Renamed */
+  background-color: #f8d7da;
+  color: var(--error-red);
+  border: 1px solid #f5c6cb;
+}
+
+
+/* --- Responsive Styles --- */
+@media (max-width: 992px) {
+  .contactSection {
+    padding: 2.8rem 1.5rem; /* Adjusted padding */
+  }
+  .contactTitle {
+    font-size: 2.8rem;
+  }
+  .contactDescription {
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+  }
+  .contactRow {
+    gap: 2rem;
+  }
+  .contactInfoCol,
+  .contactFormCol {
+    padding: 2rem;
+  }
+  .contactIcon {
+    font-size: 2rem;
+  }
+  .infoItem h5 {
+    font-size: 1.2rem;
+  }
+  .infoItem p {
+    font-size: 0.95rem;
+  }
+  .formInput,
+  .formTextarea {
+    padding: 0.9rem 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .contactSection {
+    padding: 4rem 1rem;
+  }
+  .contactTitle {
+    font-size: 2.4rem;
+    margin-bottom: 1.2rem;
+  }
+  .contactDescription {
+    font-size: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  .contactRow {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .contactInfoCol,
+  .contactFormCol {
+    min-width: unset;
+    flex: none;
+    width: 100%;
+  }
+  .infoItem {
+    margin-bottom: 2rem;
+  }
+  .contactIcon {
+    font-size: 1.8rem;
+  }
+  .infoItem h5 {
+    font-size: 1.1rem;
+  }
+  .infoItem p {
+    font-size: 0.9rem;
+  }
+  .formInput,
+  .formTextarea {
+    font-size: 0.95rem;
+  }
+  .ctaButton {
+    width: 100%;
+    align-self: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .contactTitle {
+    font-size: 2rem;
+  }
+  .contactDescription {
+    font-size: 0.9rem;
+  }
+  .contactInfoCol,
+  .contactFormCol {
+    padding: 1.5rem;
+  }
+  .infoItem {
+    gap: 1rem;
+  }
+  .contactIcon {
+    font-size: 1.6rem;
+  }
+  .infoItem h5 {
+    font-size: 1rem;
+  }
+  .formInput,
+  .formTextarea {
+    padding: 0.8rem;
+  }
+}

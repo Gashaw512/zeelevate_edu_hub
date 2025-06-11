@@ -1,6 +1,6 @@
 // src/components/Sidebar/Sidebar.jsx
 import { Link, useLocation } from 'react-router-dom';
-import { Home, BookOpen, User, Settings, LogOut, X, Users, Bookmark, BarChart } from 'lucide-react';
+import { Home, BookOpen, User, Settings, LogOut, X, Users, Bookmark, BarChart, BellDotIcon } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
 const Sidebar = ({ isOpen, toggleSidebar, user, logout, role = 'student' }) => {
@@ -17,8 +17,9 @@ const Sidebar = ({ isOpen, toggleSidebar, user, logout, role = 'student' }) => {
     { name: 'Dashboard', icon: Home, path: '/admin/dashboard' },
     { name: 'Courses', icon: BookOpen, path: '/admin/courses' },
     { name: 'Students', icon: Users, path: '/admin/students' },
-    { name: 'Profile', icon: User, path: '/admin/profile' },
-    { name: 'Settings', icon: Settings, path: '/admin/settings' },
+    { name: 'Send Notification', icon: BellDotIcon, path: '/admin/send-notification' },
+    
+    // { name: 'Settings', icon: Settings, path: '/admin/settings' },
   ];
 
   const navItems = role === 'admin' ? adminNavItems : studentNavItems;

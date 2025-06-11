@@ -1,9 +1,6 @@
-// src/data/navbarLinks.js
+
 import { faRightFromBracket, faUser } from '@fortawesome/free-solid-svg-icons';
 
-// ---
-// Navigation Links for the main Navbar & Footer
-// ---
 export const navLinks = [
   {
     id: "home", // ID for scroll, and will be the 'path' for the hook if type is 'scroll'
@@ -23,12 +20,7 @@ export const navLinks = [
     type: 'scroll', // Explicitly define type
     linkProps: { smooth: true, offset: -150, duration: 500 },
   },
-  {
-    id: 'team',
-    label: 'Team',
-    type: 'scroll', // Explicitly define type
-    linkProps: { smooth: true, offset: -260, duration: 500 },
-  },
+ 
   {
     id: 'contact',
     label: 'Contact',
