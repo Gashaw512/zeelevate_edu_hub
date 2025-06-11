@@ -1,65 +1,69 @@
+// src/components/DashboardHome/DashboardHome.jsx
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useEnrolledCourses } from '../../context/EnrolledCoursesContext'; // New import for the context hook
 import useNotifications from '../../hooks/useNotifications';
-import useEnrolledCoursesFetcher from '../../hooks/useEnrolledCoursesFetcher'; // Use the refined hook
+import LoadingSpinner from '../../components/common/LoadingSpinner';
 
 // Icons
-import { BookOpen, Bell, User, ChevronRight, Settings, GraduationCap, XCircle, Clock } from 'lucide-react'; // Added Clock icon
+import { BookOpen, Bell, User, ChevronRight, Settings, GraduationCap, XCircle, Clock } from 'lucide-react';
 
 // CSS Modules
 import styles from './DashboardHome.module.css';
 
 const DashboardHome = () => {
-    const { user, loading: authLoading } = useAuth();
-    const { notifications, loading: notificationsLoading, error: notificationsError } = useNotifications(user?.uid);
-    const { enrolledCourses, loadingEnrollments, enrollmentsError, refetchEnrollments } = useEnrolledCoursesFetcher(user?.uid);
+    const { user, loading: authLoading } = useAuth(); // Still need user from AuthContext for notifications and username
+    // --- Get enrolled courses data from the context ---
+    const {
+        enrolledCourses,
+        loadingEnrolledCourses, // Use the renamed prop from context
+        enrolledCoursesError,   // Use the renamed prop from context
+        refetchEnrolledCourses  // If you need to trigger a re-fetch, use this
+    } = useEnrolledCourses();
 
-    // Calculate unread notifications count, memoized for performance
+    const { notifications, loading: notificationsLoading, error: notificationsError } = useNotifications(user?.uid);
+
     const unreadNotificationsCount = useMemo(() => {
         if (notificationsLoading || notificationsError) return 0;
         return notifications.filter(n => !n.read).length;
     }, [notifications, notificationsLoading, notificationsError]);
 
-    // Determine user's display name, providing a fallback
-    // We'll use this for the dashboard's primary greeting.
     const userName = user?.displayName || user?.email?.split('@')[0] || 'Student';
 
-    // Filter active courses for "Continue Learning"
     const activeCourses = useMemo(() => {
         return enrolledCourses.filter(course => course.status === 'active');
     }, [enrolledCourses]);
 
-    // --- Loading State ---
-    if (authLoading || notificationsLoading || loadingEnrollments) {
+    // --- Loading State (combined from all sources) ---
+    if (authLoading || loadingEnrolledCourses || notificationsLoading) { // Use loadingEnrolledCourses here
         return (
-            <div className={styles.statusContainer}>
-                <div className={styles.spinner}></div>
-                <p className={styles.statusText}>Loading your dashboard...</p>
+            <div className={styles.fullPageStatusContainer}>
+                <LoadingSpinner message="Loading your dashboard..." />
             </div>
         );
     }
 
-    // --- Error State ---
-    if (notificationsError || enrollmentsError) {
+    // --- Error State (combined from all sources) ---
+    if (notificationsError || enrolledCoursesError) { // Use enrolledCoursesError here
         return (
             <div className={styles.errorContainer}>
                 <XCircle size={48} className={styles.errorIcon} />
                 <h2 className={styles.errorHeading}>Oops! Something Went Wrong.</h2>
                 {notificationsError && <p className={styles.errorText}>Notifications: {notificationsError}</p>}
-                {enrollmentsError && <p className={styles.errorText}>Courses: {enrollmentsError}</p>}
+                {enrolledCoursesError && <p className={styles.errorText}>Courses: {enrolledCoursesError}</p>}
                 <p className={styles.errorText}>We couldn't load all parts of your dashboard.</p>
-                <button onClick={refetchEnrollments} className={styles.retryButton}>
+                <button onClick={refetchEnrolledCourses} className={styles.retryButton}> {/* Use refetchEnrolledCourses */}
                     Retry
                 </button>
             </div>
         );
     }
 
-    // --- Main Dashboard Content ---
+    // ... (rest of your DashboardHome component remains the same) ...
     return (
         <div className={styles.dashboardContainer}>
-            {/* Welcome Section - Make it more engaging/action-oriented */}
+            {/* Welcome Section */}
             <div className={styles.welcomeSection}>
                 <h1 className={styles.welcomeHeading}>
                     Ready to learn, <span className={styles.userNameHighlight}>{userName}</span>?
@@ -91,10 +95,10 @@ const DashboardHome = () => {
                     </Link>
                 </div>
 
-                {/* Active Courses Card (New) */}
+                {/* Active Courses Card */}
                 <div className={styles.dashboardCard}>
                     <div className={styles.cardHeader}>
-                        <Clock className={styles.cardIconOrange} size={32} /> {/* Using a new color for active */}
+                        <Clock className={styles.cardIconOrange} size={32} />
                         <h2 className={styles.cardTitle}>In Progress</h2>
                     </div>
                     <p className={styles.cardValue}>{activeCourses.length}</p>
@@ -127,11 +131,10 @@ const DashboardHome = () => {
                 <h2 className={styles.latestActivityTitle}>Your Progress at a Glance</h2>
                 {enrolledCourses.length > 0 ? (
                     <div className={styles.activityList}>
-                        {enrolledCourses.slice(0, 3).map(course => ( // Show up to 3 latest courses
+                        {enrolledCourses.slice(0, 3).map(course => (
                             <div key={course.id} className={styles.activityItem}>
                                 <span className={styles.activityCourseTitle}>{course.title}</span>
                                 <span className={`${styles.activityStatus} ${styles[course.status]}`}>
-                                    {/* Safe access for status */}
                                     {course.status ? (course.status.charAt(0).toUpperCase() + course.status.slice(1)) : 'N/A'}
                                 </span>
                                 <Link to={`/student/dashboard/courses/${course.id}`} className={styles.activityLink}>
@@ -148,7 +151,7 @@ const DashboardHome = () => {
                 )}
             </div>
 
-            {/* Quick Links / Action Section (Optional: can be combined or left as is) */}
+            {/* Quick Links / Action Section */}
             <div className={styles.quickActionsSection}>
                 <h2 className={styles.quickActionsTitle}>Quick Actions</h2>
                 <div className={styles.quickActionsGrid}>
@@ -175,7 +178,6 @@ const DashboardHome = () => {
                     </Link>
                 </div>
             </div>
-
         </div>
     );
 };
