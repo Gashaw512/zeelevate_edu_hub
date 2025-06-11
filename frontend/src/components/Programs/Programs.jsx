@@ -1,10 +1,16 @@
 import { Link } from 'react-router-dom';
 import styles from './Programs.module.css';
-import useProgramsFetcher from '../../hooks/useProgramsFetcher'; // Corrected path if needed
+import { usePrograms } from '../../context/ProgramsContext'; // New import for the context hook
+import LoadingSpinner from '../../components/common/LoadingSpinner'; // Assuming you have a general LoadingSpinner
 
 const Programs = () => {
-  const BACKEND_API_URL = import.meta.env.VITE_BACKEND_URL;
-  const { programs, loading, error } = useProgramsFetcher(BACKEND_API_URL);
+  // --- Get programs data from the context ---
+  const {
+    programs,
+    loadingPrograms, // Use the renamed prop from context
+    programsError,   // Use the renamed prop from context
+    refetchPrograms  // Expose refetch if needed for retry button
+  } = usePrograms();
 
   const getButtonContent = (programStatus, programPrice) => {
     switch (programStatus) {
@@ -24,7 +30,7 @@ const Programs = () => {
 
   const isLinkActive = (programStatus) => programStatus === 'active' || programStatus === 'beta';
 
-  if (loading) {
+  if (loadingPrograms) { // Use loadingPrograms from context
     return (
       <section className={styles.programsSection}>
         <div className={styles.sectionHeader}>
@@ -32,21 +38,24 @@ const Programs = () => {
           <p className={styles.sectionSubtitle}>Please wait while we fetch our exciting courses.</p>
         </div>
         <div className={styles.programsGrid} style={{ textAlign: 'center', padding: '2rem' }}>
-          <p>Loading...</p>
+          <LoadingSpinner message="Fetching programs..." /> {/* Use your custom spinner */}
         </div>
       </section>
     );
   }
 
-  if (error) {
+  if (programsError) { // Use programsError from context
     return (
       <section className={styles.programsSection}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.mainHeading}>Error Loading Offerings</h2>
-          <p className={styles.sectionSubtitle}>{error}</p>
+          <p className={styles.sectionSubtitle}>{programsError}</p>
         </div>
         <div className={styles.programsGrid} style={{ textAlign: 'center', padding: '2rem', color: 'red' }}>
           <p>An issue occurred. Please try refreshing the page or contact support if the problem persists.</p>
+          <button onClick={refetchPrograms} className={styles.retryButton}>
+            Retry Loading Programs
+          </button>
         </div>
       </section>
     );
@@ -80,11 +89,11 @@ const Programs = () => {
             )}
 
             <div className={styles.cardHeader}>
-              <h3 className={styles.cardTitle}>{program.name}</h3> {/* Changed from program.title to program.name */}
+              <h3 className={styles.cardTitle}>{program.name}</h3>
               <div className={styles.pricing}>
                 <div className={styles.priceMain}>
                   <span className={styles.currency}>$</span>
-                  <span className={styles.amount}>{program.fixedPrice}</span> {/* Changed from program.price to program.fixedPrice */}
+                  <span className={styles.amount}>{program.fixedPrice}</span>
                   <span className={styles.duration}>/month</span>
                 </div>
                 <p className={styles.fullCourse}>
@@ -94,7 +103,7 @@ const Programs = () => {
             </div>
 
             <div className={styles.cardBody}>
-              <p className={styles.shortDescription}>{program.shortDescription}</p> {/* Added short description */}
+              <p className={styles.shortDescription}>{program.shortDescription}</p>
               <div className={styles.courseList}>
                 <h4 className={styles.listHeading}>Included Courses:</h4>
                 <ul>

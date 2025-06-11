@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useSearchParams, useNavigate, useParams } from "react-router-dom";
 
 import useEnrollmentAndPayment from "../../../hooks/useEnrollmentAndPayment";
-import useProgramsFetcher from "../../../hooks/useProgramsFetcher"; 
+import { usePrograms } from "../../../context/ProgramsContext"; // New import for the context hook
 import ProgramSelection from "./ProgramSelection";
 import AccountDetailsForm from "./AccountDetailsForm";
 import FormNavigation from "./FormNavigation";
@@ -15,7 +15,13 @@ const SignUp = () => {
   const { programType } = useParams();
   const accountDetailsFormRef = useRef();
 
-  const BACKEND_API_URL = import.meta.env.VITE_BACKEND_URL;
+  // --- Get programs data from the context ---
+  const {
+    programs: fetchedPrograms, // Renamed to fetchedPrograms for clarity as used in component
+    loadingPrograms,          // Use the renamed prop from context
+    programsError,            // Use the renamed prop from context
+    refetchPrograms,          // If you need to trigger a re-fetch, use this
+  } = usePrograms();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedProgramIds, setSelectedProgramIds] = useState([]);
@@ -30,13 +36,6 @@ const SignUp = () => {
   const [globalError, setGlobalError] = useState("");
 
   const {
-    programs: fetchedPrograms,
-    loading: programsLoading,
-    error: programsError,
-    refetchPrograms, 
-  } = useProgramsFetcher(BACKEND_API_URL);
-
-  const {
     initiatePayment,
     isLoading: paymentLoading,
     error: paymentError,
@@ -48,59 +47,45 @@ const SignUp = () => {
     }
   }, [paymentError]);
 
-// In SignUp.jsx
-useEffect(() => {
-  // Only process this if programs data has finished loading and there are no errors
-  if (!programsLoading && !programsError && fetchedPrograms.length > 0) {
-    const programIdFromUrl = searchParams.get("programId");
-    let initialProgramId = programType || programIdFromUrl;
+  // In SignUp.jsx
+  useEffect(() => {
+    // Only process this if programs data has finished loading and there are no errors
+    if (!loadingPrograms && !programsError && fetchedPrograms.length > 0) {
+      const programIdFromUrl = searchParams.get("programId");
+      let initialProgramId = programType || programIdFromUrl;
 
-    if (initialProgramId) {
-      const isValidProgram = fetchedPrograms.some(p => p.id === initialProgramId);
-      if (isValidProgram) {
-        // Ensure the program is selected before potentially moving to step 2
-        if (!selectedProgramIds.includes(initialProgramId)) {
-          setSelectedProgramIds([initialProgramId]);
-        }
-        // Only set currentStep to 2 if it's not already 2 (to prevent unnecessary re-renders)
-        // AND if we are trying to initialize from a URL.
-        if (currentStep !== 2) { // Prevents infinite loop if already at step 2
+      if (initialProgramId) {
+        const isValidProgram = fetchedPrograms.some(p => p.id === initialProgramId);
+        if (isValidProgram) {
+          if (!selectedProgramIds.includes(initialProgramId)) {
+            setSelectedProgramIds([initialProgramId]);
+          }
+          if (currentStep !== 2) {
             setCurrentStep(2);
+          }
+        } else {
+          setGlobalError("The program you selected from the URL is not available. Please choose from the list below.");
+          if (currentStep !== 1) {
+            setCurrentStep(1);
+          }
         }
       } else {
-        setGlobalError("The program you selected from the URL is not available. Please choose from the list below.");
-        // If an invalid program ID is in URL, ensure we are at step 1 for selection
-        if (currentStep !== 1) {
+        if (currentStep !== 1 && currentStep !== 2) {
           setCurrentStep(1);
         }
       }
-    } else {
-      // If no initial program ID in URL and we are not already at step 1,
-      // force to step 1 for interactive selection.
-      // IMPORTANT: Only set to 1 if we're not already explicitly at step 2 (e.g., from a manual "Next" click)
-      if (currentStep !== 1 && currentStep !== 2) { // <--- MODIFIED CONDITION HERE
-         setCurrentStep(1);
+    } else if (!loadingPrograms && !programsError && fetchedPrograms.length === 0) {
+      setGlobalError("No programs are currently available for enrollment. Please check back later.");
+      if (currentStep !== 1) {
+        setCurrentStep(1);
       }
-      // Alternatively, if you only want to force to step 1 on initial load and no URL param:
-      // if (currentStep === 1 && selectedProgramIds.length === 0) {
-      //   // Do nothing, already at step 1 and waiting for selection
-      // } else if (currentStep !== 1 && selectedProgramIds.length === 0) {
-      //   // If we somehow ended up at step 2 without a program selected, push back to 1
-      //   setCurrentStep(1);
-      // }
     }
-  } else if (!programsLoading && !programsError && fetchedPrograms.length === 0) {
-    // If loading is complete, no error, but no programs found, keep at step 1 and show message.
-    setGlobalError("No programs are currently available for enrollment. Please check back later.");
-    if (currentStep !== 1) { // Only set if not already 1
-      setCurrentStep(1);
-    }
-  }
-  // No changes to dependencies needed here.
-}, [programType, searchParams, selectedProgramIds, currentStep, fetchedPrograms, programsLoading, programsError]);
+    // No changes to dependencies needed here.
+    // Dependencies remain the same as the data they depend on are now coming from context,
+    // which has its own memoization logic.
+  }, [programType, searchParams, selectedProgramIds, currentStep, fetchedPrograms, loadingPrograms, programsError]);
 
 
- 
   const totalPrice = useMemo(
     () =>
       selectedProgramIds.reduce((total, id) => {
@@ -125,41 +110,37 @@ useEffect(() => {
     setGlobalError(""); // Clear global error on form input change
   }, []);
 
-// In "Robust/Customized" code
-const handleNextStep = useCallback(
-  (e) => {
-    e.preventDefault();
-    setGlobalError("");
+  const handleNextStep = useCallback(
+    (e) => {
+      e.preventDefault();
+      setGlobalError("");
 
-    if (currentStep === 1) {
-      if (programsLoading) { 
-        setGlobalError("Please wait, programs are still loading.");
-        return;
+      if (currentStep === 1) {
+        if (loadingPrograms) { // Use loadingPrograms from context
+          setGlobalError("Please wait, programs are still loading.");
+          return;
+        }
+        if (programsError) { // Use programsError from context
+          setGlobalError(`Cannot proceed due to a program loading error: ${programsError}`);
+          return;
+        }
+        if (selectedProgramIds.length === 0) {
+          setGlobalError("Please select at least one program module to proceed.");
+          return;
+        }
+        setCurrentStep(2);
       }
-      if (programsError) { 
-        setGlobalError(`Cannot proceed due to a program loading error: ${programsError}`);
-        return;
-      }
-      if (selectedProgramIds.length === 0) {
-        setGlobalError("Please select at least one program module to proceed.");
-        return;
-      }
-      setCurrentStep(2);
-    }
-  },
-  [currentStep, selectedProgramIds, programsLoading, programsError] 
-);
+    },
+    [currentStep, selectedProgramIds, loadingPrograms, programsError] // Updated dependencies
+  );
 
   const handlePreviousStep = useCallback(() => {
     setGlobalError("");
     if (currentStep === 2) {
       setCurrentStep(1);
     } else if (programType) {
-      // If programType is present, it means the user came from a specific program page,
-      // so navigating back should go to the homepage or relevant landing page.
       navigate("/");
     } else {
-      // Default to going back to step 1 if not coming from a programType URL
       setCurrentStep(1);
     }
   }, [currentStep, programType, navigate]);
@@ -167,7 +148,6 @@ const handleNextStep = useCallback(
   const handleSubmitAccountDetails = useCallback(async () => {
     setGlobalError("");
 
-    // Trigger validation on the AccountDetailsForm component via ref
     const isValid = accountDetailsFormRef.current?.triggerFormValidation();
     if (!isValid) {
       setGlobalError("Please correct the errors in your account details.");
@@ -187,20 +167,14 @@ const handleNextStep = useCallback(
       password: formData.password,
     };
 
-    // Assuming single program selection based on previous logic; adjust if multi-select is allowed
     const courseDetails = {
       courseId: selectedProgramIds[0],
     };
 
     try {
       await initiatePayment({ customerDetails, courseDetails });
-      // Payment successful, navigate or show success message
-      // navigate('/payment-success'); // Example
     } catch (err) {
       console.error("Payment initiation failed:", err);
-      // The `paymentError` state from the hook will update and trigger the `useEffect` above.
-      // However, it's good to also set globalError here for immediate feedback if `paymentError`
-      // isn't propagating fast enough or you want custom messages.
       setGlobalError(err.message || "Failed to initiate payment. Please review your details and try again.");
     }
   }, [formData, selectedProgramIds, initiatePayment]);
@@ -222,7 +196,7 @@ const handleNextStep = useCallback(
   const isLayoutWide = useMemo(() => currentStep === 1, [currentStep]);
 
   // --- Conditional Rendering for Loading/Error/No Programs ---
-  if (programsLoading) {
+  if (loadingPrograms) { // Use loadingPrograms from context
     return (
       <AuthLayout
         title="Loading Programs..."
@@ -234,7 +208,7 @@ const handleNextStep = useCallback(
     );
   }
 
-  if (programsError) {
+  if (programsError) { // Use programsError from context
     return (
       <AuthLayout
         title="Error Loading Programs"
@@ -293,18 +267,15 @@ const handleNextStep = useCallback(
           />
         )}
 
-        {/* Global error message display */}
         {globalError && <p className={styles.errorMessage}>{globalError}</p>}
 
         <FormNavigation
           currentStep={currentStep}
-          isSubmitting={paymentLoading} // Use paymentLoading to disable buttons during payment
+          isSubmitting={paymentLoading}
           onPreviousStep={handlePreviousStep}
           onNextStep={handleNextStep}
           onFinalSubmit={handleSubmitAccountDetails}
-          // Disable "Next" button on step 1 if no program is selected or if programs are loading/errored
-          // isNextDisabled={currentStep === 1 && (selectedProgramIds.length === 0 || programsLoading || programsError)}
-          selectedProgramIdsLength={selectedProgramIds.length} // Prop for conditional rendering in FormNavigation
+          selectedProgramIdsLength={selectedProgramIds.length}
         />
       </form>
     </AuthLayout>
