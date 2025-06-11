@@ -35,7 +35,6 @@ const useProgramsFetcher = (backendApiUrl) => {
       }
 
       const rawData = await response.json();
-      console.info('Successfully fetched raw program data.');
 
       // Validate the expected data structure for the overall response
       if (!rawData || !Array.isArray(rawData.courses)) {
@@ -49,16 +48,19 @@ const useProgramsFetcher = (backendApiUrl) => {
           return null; // Return null for malformed courses to be filtered out
         }
 
-                const parsedPrice = parseFloat(course.price);
+        const parsedPrice = parseFloat(course.price);
         const fixedPriceValue = isNaN(parsedPrice) ? 0 : parsedPrice; // Fallback to 0 if parsing fails
 
         return {
           id: course.courseId,
           name: course.courseTitle,
           shortDescription: course.courseDetails || 'No description available.',
-          // Ensure fixedPrice is always a number
           fixedPrice: fixedPriceValue,
-          courses: [{ id: course.courseId, name: course.courseTitle }],
+          courses: [{ id: course.courseId, name: course.courseTitle }], 
+          fullPrice: 0, // Not provided by the API, default to 0
+          badge: null, // Not provided by the API, default to null
+          features: [], // Not provided by the API, default to empty array
+          status: course.status || 'active', // Default to 'active' if not specified
         };
       }).filter(Boolean);
 
