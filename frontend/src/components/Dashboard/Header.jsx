@@ -4,7 +4,7 @@ import { Bell, Menu, Loader, XCircle } from 'lucide-react';
 import PropTypes from 'prop-types';
 import styles from './Header.module.css';
 import useClickOutside from '../../hooks/useClickOutside';
-import useNotifications from '../../hooks/useNotifications'; // New hook import
+import useNotifications from '../../hooks/useNotifications';
 
 const Header = ({ toggleSidebar, user, role = 'student' }) => {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -16,8 +16,8 @@ const Header = ({ toggleSidebar, user, role = 'student' }) => {
     clearing: clearingNotifications,
     markAsRead,
     clearAllNotifications,
-    MESSAGES // Access messages from the hook
-  } = useNotifications(user?.uid); // Pass user UID to the hook
+    MESSAGES
+  } = useNotifications(user?.uid);
 
   const unreadCount = useMemo(() => notifications.filter(n => !n.read).length, [notifications]);
 
@@ -31,42 +31,31 @@ const Header = ({ toggleSidebar, user, role = 'student' }) => {
 
   const dropdownRef = useClickOutside(closeNotifications, showNotifications);
 
-  // --- CHANGE START ---
-  // Modify formatNotificationTimestamp to parse a string date
-  const formatNotificationTimestamp = useCallback((timestampString) => {
-    if (!timestampString) return 'N/A'; // It's now a string, not an object with .toDate()
-    const date = new Date(timestampString); // Parse the ISO 8601 string into a Date object
-    const now = new Date();
-
-    const isToday = date.getDate() === now.getDate() && date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
-    const yesterday = new Date(now);
-    yesterday.setDate(now.getDate() - 1);
-    const isYesterday = date.getDate() === yesterday.getDate() && date.getMonth() === yesterday.getMonth() && date.getFullYear() === yesterday.getFullYear();
-
-    const diffTime = Math.abs(now.getTime() - date.getTime());
-    const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
-
-    if (isNaN(date.getTime())) { // Check if date parsing was successful
-      return 'Invalid Date';
+  const formatNotificationTimestamp = useCallback((timestamp) => {
+    if (!timestamp || typeof timestamp.toDate !== 'function') {
+      console.warn("Header: Invalid timestamp object received. Expected Firestore Timestamp with .toDate() method.", timestamp);
+      return 'N/A';
     }
 
-    if (isToday) {
-      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    } else if (isYesterday) {
-      return 'Yesterday';
-    } else if (diffTime < sevenDaysInMs) {
-      return date.toLocaleDateString([], { weekday: 'short' });
+    const date = timestamp.toDate();
+    const now = new Date();
+
+    const isSameDay = (d1, d2) =>
+      d1.getDate() === d2.getDate() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getFullYear() === d2.getFullYear();
+
+    if (isSameDay(date, now)) {
+      return `Today at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}`;
     } else {
       return date.toLocaleDateString();
     }
   }, []);
-  // --- CHANGE END ---
-
 
   const userName =
     user?.displayName?.split(' ')[0] ||
     user?.email?.split('@')[0] ||
-    MESSAGES.WELCOME_GUEST; // Use MESSAGE from hook for consistency
+    MESSAGES.WELCOME_GUEST;
 
   const roleTitle = role === 'admin' ? 'Admin' : 'Student';
 
@@ -112,6 +101,22 @@ const Header = ({ toggleSidebar, user, role = 'student' }) => {
           >
             <div className={styles.dropdownHeader}>
               <h3 className={styles.dropdownTitle}>Notifications</h3>
+              {notifications.length > 0 && (
+                <button
+                  onClick={clearAllNotifications}
+                  className={styles.clearAllBtn}
+                  disabled={notificationsLoading || notificationsError || clearingNotifications}
+                  aria-label={clearingNotifications ? MESSAGES.CLEARING_NOTIFICATIONS : MESSAGES.CLEAR_ALL}
+                >
+                  {clearingNotifications ? (
+                    <>
+                      <Loader size={16} className={styles.spinner} /> {MESSAGES.CLEARING_NOTIFICATIONS}
+                    </>
+                  ) : (
+                    MESSAGES.CLEAR_ALL
+                  )}
+                </button>
+              )}
             </div>
 
             {notificationsLoading ? (
@@ -130,22 +135,22 @@ const Header = ({ toggleSidebar, user, role = 'student' }) => {
                     className={`${styles.notificationItem} ${notification.read ? styles.notificationRead : styles.notificationUnread}`}
                     role="menuitem"
                   >
-                    <p className={styles.notificationMessage}>
-                      {notification.message}
-                    </p>
-                    {/* --- CHANGE START --- */}
-                    {/* Use notification.createdAt here */}
-                    {notification.createdAt && (
-                      <span className={styles.notificationTimestamp}>
-                        {formatNotificationTimestamp(notification.createdAt)}
-                      </span>
-                    )}
-                    {/* --- CHANGE END --- */}
+                    <div className={styles.notificationContent}>
+                      <p className={styles.notificationMessage}>
+                        {notification.message}
+                      </p>
+                      {notification.createdAt && (
+                        <span className={styles.notificationTimestamp}>
+                          {formatNotificationTimestamp(notification.createdAt)}
+                        </span>
+                      )}
+                    </div>
                     {!notification.read && (
                       <button
                         onClick={() => markAsRead(notification.id)}
                         className={styles.markReadBtn}
                         aria-label={`Mark notification "${notification.message.substring(0, Math.min(notification.message.length, 50))}..." as read`}
+                        title="Mark as Read"
                       >
                         {MESSAGES.MARK_AS_READ}
                       </button>
@@ -156,23 +161,6 @@ const Header = ({ toggleSidebar, user, role = 'student' }) => {
             ) : (
               <p className={styles.noNotifications} role="status">{MESSAGES.NO_NEW_NOTIFICATIONS}</p>
             )}
-
-            <div className={styles.clearAllContainer}>
-              <button
-                onClick={clearAllNotifications}
-                className={styles.clearAllBtn}
-                disabled={notifications.length === 0 || notificationsLoading || notificationsError || clearingNotifications}
-                aria-label={clearingNotifications ? MESSAGES.CLEARING_NOTIFICATIONS : MESSAGES.CLEAR_ALL}
-              >
-                {clearingNotifications ? (
-                  <>
-                    <Loader size={16} className={styles.spinner} /> {MESSAGES.CLEARING_NOTIFICATIONS}
-                  </>
-                ) : (
-                  MESSAGES.CLEAR_ALL
-                )}
-              </button>
-            </div>
           </div>
         )}
       </div>
