@@ -1,25 +1,22 @@
-// SignUp.jsx
-
-import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useSearchParams, useNavigate, useParams } from "react-router-dom";
+
 import useEnrollmentAndPayment from "../../../hooks/useEnrollmentAndPayment";
+import useProgramsFetcher from "../../../hooks/useProgramsFetcher"; 
 import ProgramSelection from "./ProgramSelection";
 import AccountDetailsForm from "./AccountDetailsForm";
 import FormNavigation from "./FormNavigation";
 import AuthLayout from "../../layouts/auth/AuthLayout";
-import SocialAuthButtons from "../../common/SocialAuthButton";
-import { getAllProviders } from "../../../data/externalAuthProviderConfig";
 import styles from "./SignUp.module.css";
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { programType } = useParams();
-  const externalProviders = getAllProviders();
   const accountDetailsFormRef = useRef();
 
-  // Form state
+  const BACKEND_API_URL = import.meta.env.VITE_BACKEND_URL;
+
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedProgramIds, setSelectedProgramIds] = useState([]);
   const [formData, setFormData] = useState({
@@ -32,94 +29,78 @@ const SignUp = () => {
   });
   const [globalError, setGlobalError] = useState("");
 
-  // States for fetching programs
-  const [fetchedPrograms, setFetchedPrograms] = useState([]);
-  const [programsLoading, setProgramsLoading] = useState(true);
-  const [programsError, setProgramsError] = useState(null);
+  const {
+    programs: fetchedPrograms,
+    loading: programsLoading,
+    error: programsError,
+    refetchPrograms, 
+  } = useProgramsFetcher(BACKEND_API_URL);
 
-  // Payment hook
   const {
     initiatePayment,
     isLoading: paymentLoading,
     error: paymentError,
   } = useEnrollmentAndPayment();
 
-  const BACKEND_API_URL = import.meta.env.VITE_BACKEND_URL;
-
-  // --- useEffect to fetch program data from backend ---
   useEffect(() => {
-    const fetchProgramsData = async () => {
-      try {
-        setProgramsLoading(true);
-        setProgramsError(null);
-
-        const response = await fetch(`${BACKEND_API_URL}/api/admin/public/courses`);
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({ message: 'Unknown error format' }));
-          throw new Error(errorData.message || `Server responded with status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        const coursesArray = data.courses || [];
-
-        const transformedData = coursesArray.map(course => ({
-          id: course.courseId,
-          name: course.courseTitle,
-          shortDescription: course.courseDetails,
-          fixedPrice: course.price || 0,
-          courses: [{ id: course.courseId, name: course.courseTitle }],
-        }));
-
-        setFetchedPrograms(transformedData);
-
-      } catch (err) {
-        console.error('Error fetching programs for SignUp:', err);
-        setProgramsError(`Failed to load program options: ${err.message}.`);
-      } finally {
-        setProgramsLoading(false);
-      }
-    };
-
-    fetchProgramsData();
-  }, [BACKEND_API_URL]);
-
-
-  // --- Program selection from URL / Default Step ---
-  useEffect(() => {
-    // Only process this if programs data has finished loading and there are no errors
-    if (!programsLoading && !programsError) {
-        const programIdFromUrl = searchParams.get("programId");
-        let initialProgramId = null;
-
-        if (programType) {
-            initialProgramId = programType;
-        } else if (programIdFromUrl) {
-            initialProgramId = programIdFromUrl;
-        }
-
-        // Only update if an initialProgramId is present and not already selected
-        // AND if it exists in the fetched programs
-        if (initialProgramId && !selectedProgramIds.includes(initialProgramId)) {
-            const isValidProgram = fetchedPrograms.some(p => p.id === initialProgramId);
-            if (isValidProgram) {
-                setSelectedProgramIds([initialProgramId]);
-                setCurrentStep(2); // Jump directly to Account Details (Step 2)
-            } else {
-                setGlobalError("Invalid program ID in URL. Please select a program manually.");
-                setCurrentStep(1); // Fallback to step 1 if URL ID is invalid
-            }
-        } else if (!initialProgramId && currentStep !== 1) {
-            // If no initial program ID in URL and we are not already at step 1,
-            // force to step 1 for interactive selection.
-            setCurrentStep(1);
-        }
+    if (paymentError) {
+      setGlobalError(paymentError.message || "An unexpected payment error occurred.");
     }
-    // Dependencies: Ensure effect runs when these values change
-  }, [programType, searchParams, selectedProgramIds, currentStep, fetchedPrograms, programsLoading, programsError]);
+  }, [paymentError]);
+
+// In SignUp.jsx
+useEffect(() => {
+  // Only process this if programs data has finished loading and there are no errors
+  if (!programsLoading && !programsError && fetchedPrograms.length > 0) {
+    const programIdFromUrl = searchParams.get("programId");
+    let initialProgramId = programType || programIdFromUrl;
+
+    if (initialProgramId) {
+      const isValidProgram = fetchedPrograms.some(p => p.id === initialProgramId);
+      if (isValidProgram) {
+        // Ensure the program is selected before potentially moving to step 2
+        if (!selectedProgramIds.includes(initialProgramId)) {
+          setSelectedProgramIds([initialProgramId]);
+        }
+        // Only set currentStep to 2 if it's not already 2 (to prevent unnecessary re-renders)
+        // AND if we are trying to initialize from a URL.
+        if (currentStep !== 2) { // Prevents infinite loop if already at step 2
+            setCurrentStep(2);
+        }
+      } else {
+        setGlobalError("The program you selected from the URL is not available. Please choose from the list below.");
+        // If an invalid program ID is in URL, ensure we are at step 1 for selection
+        if (currentStep !== 1) {
+          setCurrentStep(1);
+        }
+      }
+    } else {
+      // If no initial program ID in URL and we are not already at step 1,
+      // force to step 1 for interactive selection.
+      // IMPORTANT: Only set to 1 if we're not already explicitly at step 2 (e.g., from a manual "Next" click)
+      if (currentStep !== 1 && currentStep !== 2) { // <--- MODIFIED CONDITION HERE
+         setCurrentStep(1);
+      }
+      // Alternatively, if you only want to force to step 1 on initial load and no URL param:
+      // if (currentStep === 1 && selectedProgramIds.length === 0) {
+      //   // Do nothing, already at step 1 and waiting for selection
+      // } else if (currentStep !== 1 && selectedProgramIds.length === 0) {
+      //   // If we somehow ended up at step 2 without a program selected, push back to 1
+      //   setCurrentStep(1);
+      // }
+    }
+  } else if (!programsLoading && !programsError && fetchedPrograms.length === 0) {
+    // If loading is complete, no error, but no programs found, keep at step 1 and show message.
+    setGlobalError("No programs are currently available for enrollment. Please check back later.");
+    if (currentStep !== 1) { // Only set if not already 1
+      setCurrentStep(1);
+    }
+  }
+  // No changes to dependencies needed here.
+}, [programType, searchParams, selectedProgramIds, currentStep, fetchedPrograms, programsLoading, programsError]);
 
 
-  // Total Price calculator
+ 
   const totalPrice = useMemo(
     () =>
       selectedProgramIds.reduce((total, id) => {
@@ -129,60 +110,72 @@ const SignUp = () => {
     [selectedProgramIds, fetchedPrograms]
   );
 
-  // Handlers
+  // --- Handlers ---
   const handleProgramSelection = useCallback((programId) => {
     setSelectedProgramIds((prev) =>
       prev.includes(programId)
         ? prev.filter((id) => id !== programId)
-        : [programId] // Allows single selection
+        : [programId] // Enforce single selection
     );
-    setGlobalError("");
+    setGlobalError(""); // Clear any previous errors on selection change
   }, []);
 
   const handleChange = useCallback(({ target: { name, value } }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setGlobalError("");
+    setGlobalError(""); // Clear global error on form input change
   }, []);
 
-  const handleNextStep = useCallback(
-    (e) => {
-      e.preventDefault();
-      setGlobalError("");
+// In "Robust/Customized" code
+const handleNextStep = useCallback(
+  (e) => {
+    e.preventDefault();
+    setGlobalError("");
 
-      if (currentStep === 1) {
-        // Prevent proceeding if programs are still loading or there's an error
-        if (programsLoading || programsError) {
-          setGlobalError("Please wait for program options to load.");
-          return;
-        }
-        // Only allow next if at least one program is selected
-        if (selectedProgramIds.length === 0) {
-          setGlobalError("Please select at least one program module to proceed.");
-          return;
-        }
-        setCurrentStep(2);
+    if (currentStep === 1) {
+      if (programsLoading) { 
+        setGlobalError("Please wait, programs are still loading.");
+        return;
       }
-    },
-    [currentStep, selectedProgramIds, programsLoading, programsError] // Added dependencies
-  );
+      if (programsError) { 
+        setGlobalError(`Cannot proceed due to a program loading error: ${programsError}`);
+        return;
+      }
+      if (selectedProgramIds.length === 0) {
+        setGlobalError("Please select at least one program module to proceed.");
+        return;
+      }
+      setCurrentStep(2);
+    }
+  },
+  [currentStep, selectedProgramIds, programsLoading, programsError] 
+);
 
   const handlePreviousStep = useCallback(() => {
     setGlobalError("");
-    if (programType) {
+    if (currentStep === 2) {
+      setCurrentStep(1);
+    } else if (programType) {
+      // If programType is present, it means the user came from a specific program page,
+      // so navigating back should go to the homepage or relevant landing page.
       navigate("/");
     } else {
+      // Default to going back to step 1 if not coming from a programType URL
       setCurrentStep(1);
     }
-  }, [programType, navigate]);
+  }, [currentStep, programType, navigate]);
 
   const handleSubmitAccountDetails = useCallback(async () => {
     setGlobalError("");
 
+    // Trigger validation on the AccountDetailsForm component via ref
     const isValid = accountDetailsFormRef.current?.triggerFormValidation();
-    if (!isValid) return;
+    if (!isValid) {
+      setGlobalError("Please correct the errors in your account details.");
+      return;
+    }
 
     if (selectedProgramIds.length === 0) {
-      setGlobalError("No course selected for enrollment. Please go back and select a course.");
+      setGlobalError("No program selected for enrollment. Please go back to Step 1 and select a program.");
       return;
     }
 
@@ -194,38 +187,46 @@ const SignUp = () => {
       password: formData.password,
     };
 
+    // Assuming single program selection based on previous logic; adjust if multi-select is allowed
     const courseDetails = {
       courseId: selectedProgramIds[0],
     };
 
     try {
       await initiatePayment({ customerDetails, courseDetails });
+      // Payment successful, navigate or show success message
+      // navigate('/payment-success'); // Example
     } catch (err) {
-      console.error("Payment initiation error:", err);
-      setGlobalError(err.message || "Failed to initiate payment. Please try again.");
+      console.error("Payment initiation failed:", err);
+      // The `paymentError` state from the hook will update and trigger the `useEffect` above.
+      // However, it's good to also set globalError here for immediate feedback if `paymentError`
+      // isn't propagating fast enough or you want custom messages.
+      setGlobalError(err.message || "Failed to initiate payment. Please review your details and try again.");
     }
   }, [formData, selectedProgramIds, initiatePayment]);
 
-  const handleSocialAuthIntent = useCallback((providerName) => {
-    setGlobalError(
-      `${providerName} registration requires payment-first flow. Please use email/password or contact support.`
-    );
-  }, []);
 
-  const layoutTitle = currentStep === 1 ? "Enroll in Programs" : "Account Details";
-  const layoutInstruction =
+  // --- Layout Props Calculation ---
+  const layoutTitle = useMemo(() =>
+    currentStep === 1 ? "Choose Your Program Modules" : "Your Account Details",
+    [currentStep]
+  );
+
+  const layoutInstruction = useMemo(() =>
     currentStep === 1
-      ? "Select the program modules that best fit your learning goals."
-      : "Provide your personal and account details to complete your enrollment.";
+      ? "Please select the programs that best fit your learning goals."
+      : "Please provide your personal and account information to complete your enrollment.",
+    [currentStep]
+  );
 
-  const isLayoutWide = currentStep === 1;
+  const isLayoutWide = useMemo(() => currentStep === 1, [currentStep]);
 
-  // --- Render Loading/Error states for programs data, displayed on step 1 ---
+  // --- Conditional Rendering for Loading/Error/No Programs ---
   if (programsLoading) {
     return (
       <AuthLayout
         title="Loading Programs..."
-        instruction="Fetching available programs. Please wait."
+        instruction="Fetching available program options. Please wait a moment."
         isWide={true}
       >
         <div className={styles.loadingMessage}>Loading program options...</div>
@@ -237,29 +238,31 @@ const SignUp = () => {
     return (
       <AuthLayout
         title="Error Loading Programs"
-        instruction="Could not fetch program options."
+        instruction="We encountered an issue fetching program options. Please try refreshing the page."
         isWide={true}
       >
         <div className={styles.errorMessage}>{programsError}</div>
-        <p className={styles.errorMessage}>Please try refreshing the page.</p>
+        <button onClick={refetchPrograms} className={styles.retryButton}>
+          Retry Loading Programs
+        </button>
       </AuthLayout>
     );
   }
 
-  // If no programs are fetched and there's no error, display a message.
-  if (!programsLoading && !programsError && fetchedPrograms.length === 0) {
+  // If loading is complete and no errors, but no programs were fetched
+  if (fetchedPrograms.length === 0) {
     return (
       <AuthLayout
         title="No Programs Available"
-        instruction="Currently, there are no programs to display for enrollment."
+        instruction="Currently, there are no programs available for enrollment. Please check back later."
         isWide={true}
       >
-        <p className={styles.errorMessage}>Please check back later.</p>
+        <p className={styles.infoMessage}>We are working to add new programs soon!</p>
       </AuthLayout>
     );
   }
 
-
+  // --- Main Component Render ---
   return (
     <AuthLayout
       title={layoutTitle}
@@ -290,34 +293,20 @@ const SignUp = () => {
           />
         )}
 
+        {/* Global error message display */}
         {globalError && <p className={styles.errorMessage}>{globalError}</p>}
+
         <FormNavigation
           currentStep={currentStep}
-          isSubmitting={paymentLoading}
+          isSubmitting={paymentLoading} // Use paymentLoading to disable buttons during payment
           onPreviousStep={handlePreviousStep}
           onNextStep={handleNextStep}
           onFinalSubmit={handleSubmitAccountDetails}
-          // Disable "Next" button if programs are loading or selectedPrograms are empty on step 1
-          isNextDisabled={currentStep === 1 && (programsLoading || selectedProgramIds.length === 0)}
-          selectedProgramIdsLength={selectedProgramIds.length}
+          // Disable "Next" button on step 1 if no program is selected or if programs are loading/errored
+          // isNextDisabled={currentStep === 1 && (selectedProgramIds.length === 0 || programsLoading || programsError)}
+          selectedProgramIdsLength={selectedProgramIds.length} // Prop for conditional rendering in FormNavigation
         />
       </form>
-
-      <p className={styles.signUpPrompt}>
-        Already have an account?{" "}
-        <Link to="/signin" className={styles.link}>
-          Sign In
-        </Link>
-      </p>
-
-      <div className={styles.divider}>
-        <span className={styles.dividerText}>OR</span>
-      </div>
-
-      {/* <SocialAuthButtons
-        providers={externalProviders}
-        onSignIn={handleSocialAuthIntent}
-      /> */}
     </AuthLayout>
   );
 };

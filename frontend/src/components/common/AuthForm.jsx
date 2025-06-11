@@ -1,6 +1,7 @@
-// src/components/common/AuthForm.jsx
+
+import React from "react";
 import PropTypes from "prop-types";
-import styles from "./AuthForm.module.css"; // Correctly imports its own CSS module
+import styles from "./AuthForm.module.css";
 
 const AuthForm = ({
   formData,
@@ -8,7 +9,7 @@ const AuthForm = ({
   submitButtonText,
   disabled = false,
   fieldsConfig = [],
-  errors = {}, // Object to hold field-specific error messages
+  errors = {},
   children,
 }) => {
   const renderInputField = (field) => (
@@ -26,12 +27,13 @@ const AuthForm = ({
         onChange={onChange}
         required={field.required}
         className={`${styles.input} ${
-          errors[field.name] ? styles.inputError : "" // <<-- THIS APPLIES THE CLASS -->>
+          errors[field.name] ? styles.inputError : ""
         }`}
         disabled={disabled}
+        autoComplete={field.autocomplete || 'off'}
       />
       {errors[field.name] && (
-        <p className={styles.fieldError}>{errors[field.name]}</p> // <<-- THIS DISPLAYS THE TEXT -->>
+        <p className={styles.fieldError}>{errors[field.name]}</p>
       )}
     </div>
   );
@@ -71,10 +73,11 @@ AuthForm.propTypes = {
       type: PropTypes.string,
       placeholder: PropTypes.string,
       required: PropTypes.bool,
+      autocomplete: PropTypes.string, // <--- ADD THIS PROP TYPE
     })
   ).isRequired,
   errors: PropTypes.object,
   children: PropTypes.node,
 };
 
-export default AuthForm;
+export default React.memo(AuthForm)

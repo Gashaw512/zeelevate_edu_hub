@@ -2,31 +2,22 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import styles from "./ProgramSelection.module.css";
 
-// MOCK_PROGRAMS is no longer needed here as data comes from props.
-
 const ProgramSelection = ({
-  programs, // These are now the fetched and transformed programs from SignUp
+  programs, 
   selectedProgramIds,
   onProgramSelect,
-  totalPrice, // totalPrice is now passed directly, calculateTotalPrice is removed
+  totalPrice, 
 }) => {
-  // Use totalPrice directly, it's already calculated in SignUp based on fetched data
+  
   const computedTotal = totalPrice; 
 
   const handleCheckboxClick = (e, programId) => {
-    e.stopPropagation(); // Prevent card onClick from firing twice
+    e.stopPropagation(); 
     onProgramSelect(programId);
   };
 
   return (
     <div className={styles.programSelectionSection}>
-      <h3 className={styles.sectionTitle}>
-        Step 1: Choose Your Program Modules
-      </h3>
-      <p className={styles.sectionDescription}>
-        Select the programs that best fit your learning goals.
-      </p>
-
       <div className={styles.programCardsContainer}>
         {programs.map((program) => { 
           const isSelected = selectedProgramIds.includes(program.id);
@@ -89,7 +80,7 @@ const ProgramSelection = ({
                 <span className={styles.programPriceLabel}>Program Price:</span>
                 {/* Access program.fixedPrice as mapped from price in SignUp */}
                 <span className={styles.programPriceAmount}>
-                  {/* ${program.fixedPrice.toFixed(2)} */}
+                   ${program.fixedPrice.toFixed(2)}
                 </span>
               </div>
 
@@ -110,7 +101,6 @@ const ProgramSelection = ({
   );
 };
 
-// Helper components (no changes needed for logic)
 const CheckIcon = () => (
   <svg
     className={styles.checkIcon}
@@ -164,17 +154,17 @@ const ViewAllCoursesLink = () => {
   );
 };
 
-// Prop type definitions - updated to reflect the transformed data structure
+
 ProgramSelection.propTypes = {
   programs: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,          // Mapped from backend's courseId
-      name: PropTypes.string.isRequired,          // Mapped from backend's courseTitle
-      shortDescription: PropTypes.string.isRequired, // Mapped from backend's courseDetails
-      fixedPrice: PropTypes.number.isRequired,    // Mapped from backend's price
-      courses: PropTypes.arrayOf(                 // Mapped to [{id: courseId, name: courseTitle}]
+      id: PropTypes.string.isRequired,         
+      name: PropTypes.string.isRequired,          
+      shortDescription: PropTypes.string.isRequired, 
+      fixedPrice: PropTypes.number.isRequired,    
+      courses: PropTypes.arrayOf(                
         PropTypes.shape({
-          id: PropTypes.string, // Changed to not required in case backend doesn't provide for inner list
+          id: PropTypes.string, 
           name: PropTypes.string.isRequired,
         })
       ).isRequired,
