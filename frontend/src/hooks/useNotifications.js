@@ -286,3 +286,258 @@ const useNotifications = (userId) => {
 };
 
 export default useNotifications;
+
+
+
+
+
+//Refactor your useNotifications hook to use the functions from notificationsService.js instead of direct Firebase calls.
+
+
+// src/hooks/useNotifications.js
+// import { useState, useEffect, useCallback } from 'react';
+// import {
+//     listenToNotifications,
+//     markNotificationAsReadInFirestore,
+//     markAllNotificationsAsReadInFirestore,
+//     deleteNotificationFromFirestore,
+//     clearAllNotificationsInFirestore,
+// } from '../services/notificationsService'; // Import the new service functions
+
+// // Define standard messages for better consistency and potential i18n later
+// export const NOTIFICATION_MESSAGES = {
+//     NO_USER_AUTH: "Cannot perform action: User not authenticated.",
+//     NOTIF_LOAD_ERROR: "Failed to load notifications. Please check your connection or permissions.",
+//     CLEAR_ALL_ERROR: "Failed to clear all notifications. Please try again.",
+//     MARK_SINGLE_READ_ERROR: "Failed to mark notification as read. Please try again.",
+//     MARK_ALL_READ_ERROR: "Failed to mark all notifications as read. Please try again.",
+//     DELETE_SINGLE_ERROR: "Failed to delete notification. Please try again.",
+//     LOADING_NOTIFICATIONS: "Loading notifications...",
+//     NO_NEW_NOTIFICATIONS: "You don't have any notifications yet.",
+//     NO_NEW_NOTIFICATIONS_UNREAD: "No unread notifications! You're all caught up.",
+//     CLEARING_NOTIFICATIONS: "Clearing...",
+//     MARKING_ALL_READ: "Marking all as read...",
+//     CLEAR_ALL_SUCCESS: "All notifications cleared!",
+//     MARK_ALL_READ_SUCCESS: "All unread notifications marked as read!",
+//     DELETE_SINGLE_SUCCESS: "Notification deleted successfully!",
+//     CONFIRM_CLEAR_ALL: "Are you sure you want to clear all notifications? This action cannot be undone.",
+//     CONFIRM_DELETE_SINGLE: "Are you sure you want to delete this notification? This action cannot be undone.",
+//     CLEAR_ALL: "Clear All",
+//     MARK_AS_READ: "Mark as Read",
+// };
+
+// const useNotifications = (userId) => {
+//     const [notifications, setNotifications] = useState([]);
+//     const [loading, setLoading] = useState(true);
+//     const [error, setError] = useState(null);
+//     const [clearing, setClearing] = useState(false);
+//     const [markingAll, setMarkingAll] = useState(false);
+
+//     const [toastMessage, setToastMessage] = useState(null);
+
+//     const [requiresConfirmation, setRequiresConfirmation] = useState(null);
+//     const [notificationToDeleteId, setNotificationToDeleteId] = useState(null);
+
+//     // Clear toast message after a short period (remains the same)
+//     useEffect(() => {
+//         if (toastMessage) {
+//             const timer = setTimeout(() => {
+//                 setToastMessage(null);
+//             }, 5000);
+//             return () => clearTimeout(timer);
+//         }
+//     }, [toastMessage]);
+
+//     // Real-time listener (now uses service function)
+//     useEffect(() => {
+//         let unsubscribe;
+//         let isMounted = true; // Flag to prevent state updates on unmounted component
+
+//         if (!userId) {
+//             console.warn("useNotifications: No user ID available. Skipping real-time listener setup.");
+//             if (isMounted) {
+//                 setNotifications([]);
+//                 setLoading(false);
+//                 setError(null);
+//             }
+//             return;
+//         }
+
+//         if (isMounted) {
+//             setLoading(true);
+//             setError(null);
+//             console.log(`useNotifications: Setting up real-time listener for user: ${userId}`);
+//         }
+
+//         unsubscribe = listenToNotifications(
+//             userId,
+//             (fetchedNotifications) => {
+//                 if (isMounted) {
+//                     setNotifications(fetchedNotifications);
+//                     setLoading(false);
+//                     setError(null);
+//                     console.log(`useNotifications: Fetched ${fetchedNotifications.length} real-time notifications.`);
+//                 }
+//             },
+//             (err) => {
+//                 if (isMounted) {
+//                     console.error("useNotifications: Error fetching real-time notifications:", err);
+//                     setError(NOTIFICATION_MESSAGES.NOTIF_LOAD_ERROR);
+//                     setLoading(false);
+//                 }
+//             }
+//         );
+
+//         return () => {
+//             if (unsubscribe) {
+//                 console.log("useNotifications: Unsubscribing from real-time listener.");
+//                 unsubscribe();
+//             }
+//             isMounted = false; // Set to false on unmount
+//         };
+//     }, [userId]);
+
+//     // Mark single as read (now uses service function)
+//     const markAsRead = useCallback(async (id) => {
+//         if (!userId) {
+//             setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.NO_USER_AUTH });
+//             return;
+//         }
+//         try {
+//             await markNotificationAsReadInFirestore(id);
+//             // State update is handled by the onSnapshot listener, so no need to manually update here
+//             setError(null);
+//         } catch (err) {
+//             console.error("useNotifications: Error marking single notification as read:", err);
+//             setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.MARK_SINGLE_READ_ERROR });
+//         }
+//     }, [userId]);
+
+//     // Mark all as read (now uses service function)
+//     const markAllAsRead = useCallback(async () => {
+//         if (!userId) {
+//             setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.NO_USER_AUTH });
+//             return;
+//         }
+
+//         setMarkingAll(true);
+//         setError(null);
+//         setToastMessage(null);
+
+//         try {
+//             const count = await markAllNotificationsAsReadInFirestore(userId);
+//             if (count === 0) {
+//                 setToastMessage({ type: 'info', message: NOTIFICATION_MESSAGES.NO_NEW_NOTIFICATIONS_UNREAD });
+//             } else {
+//                 setToastMessage({ type: 'success', message: NOTIFICATION_MESSAGES.MARK_ALL_READ_SUCCESS });
+//             }
+//         } catch (err) {
+//             console.error("useNotifications: Error marking all notifications as read:", err);
+//             setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.MARK_ALL_READ_ERROR });
+//         } finally {
+//             setMarkingAll(false);
+//         }
+//     }, [userId]);
+
+//     // Clear all confirmation (remains the same logic, calls service function)
+//     const requestClearAllConfirmation = useCallback(() => {
+//         if (!userId) {
+//             setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.NO_USER_AUTH });
+//             return;
+//         }
+//         setRequiresConfirmation({ type: 'clearAll' });
+//         setNotificationToDeleteId(null);
+//     }, [userId]);
+
+//     // Confirm clear all (now uses service function)
+//     const confirmClearAllNotifications = useCallback(async () => {
+//         if (!userId) {
+//             setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.NO_USER_AUTH });
+//             return;
+//         }
+
+//         setClearing(true);
+//         setError(null);
+//         setToastMessage(null);
+//         setRequiresConfirmation(null);
+
+//         try {
+//             const count = await clearAllNotificationsInFirestore(userId);
+//             if (count === 0) {
+//                 setToastMessage({ type: 'info', message: NOTIFICATION_MESSAGES.NO_NEW_NOTIFICATIONS });
+//             } else {
+//                 setToastMessage({ type: 'success', message: NOTIFICATION_MESSAGES.CLEAR_ALL_SUCCESS });
+//             }
+//         } catch (err) {
+//             console.error("useNotifications: Error clearing all notifications:", err);
+//             setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.CLEAR_ALL_ERROR });
+//         } finally {
+//             setClearing(false);
+//         }
+//     }, [userId]);
+
+//     // Request delete single confirmation (remains the same logic)
+//     const requestDeleteConfirmation = useCallback((notificationId) => {
+//         if (!userId) {
+//             setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.NO_USER_AUTH });
+//             return;
+//         }
+//         setNotificationToDeleteId(notificationId);
+//         setRequiresConfirmation({ type: 'deleteSingle', id: notificationId });
+//     }, [userId]);
+
+//     // Confirm delete single (now uses service function)
+//     const confirmDeleteNotification = useCallback(async () => {
+//         if (!userId) {
+//             setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.NO_USER_AUTH });
+//             return;
+//         }
+//         if (!notificationToDeleteId) {
+//             console.warn("useNotifications: No notification ID set for deletion confirmation.");
+//             return;
+//         }
+
+//         setError(null);
+//         setToastMessage(null);
+//         setRequiresConfirmation(null);
+//         const idToDelete = notificationToDeleteId;
+//         setNotificationToDeleteId(null);
+
+//         try {
+//             await deleteNotificationFromFirestore(idToDelete);
+//             setToastMessage({ type: 'success', message: NOTIFICATION_MESSAGES.DELETE_SINGLE_SUCCESS });
+//         } catch (err) {
+//             console.error("useNotifications: Error deleting single notification:", err);
+//             setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.DELETE_SINGLE_ERROR });
+//         }
+//     }, [userId, notificationToDeleteId]);
+
+//     // Cancel confirmation (remains the same logic)
+//     const cancelConfirmation = useCallback(() => {
+//         setRequiresConfirmation(null);
+//         setNotificationToDeleteId(null);
+//     }, []);
+
+//     return {
+//         notifications,
+//         loading,
+//         error,
+//         clearing,
+//         markingAll,
+//         toastMessage,
+//         requiresConfirmation,
+//         notificationToDeleteId,
+//         markAsRead,
+//         markAllAsRead,
+//         requestClearAllConfirmation,
+//         confirmClearAllNotifications,
+//         requestDeleteConfirmation,
+//         confirmDeleteNotification,
+//         cancelConfirmation,
+//         NOTIFICATION_MESSAGES,
+//     };
+// };
+
+// export default useNotifications;
+
+
