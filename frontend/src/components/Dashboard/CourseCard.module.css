@@ -1,30 +1,30 @@
 
 .course-card {
-  background-color: var(--background-secondary); /* Use secondary for card background */
+  background-color: var(--background-secondary); 
   border: 1px solid var(--border-light);
   border-radius: 8px;
-  box-shadow: 0 2px 6px var(--shadow-color-card); /* Use new shadow variable */
+  box-shadow: 0 2px 6px var(--shadow-color-card); 
   display: flex;
   flex-direction: column;
   max-width: 320px;
   overflow: hidden;
-  transition: box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease; /* Add background transition */
+  transition: box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease; 
 }
 
 .course-card:hover,
 .course-card:focus-within {
-  box-shadow: 0 6px 15px var(--shadow-color-card-hover); /* Use new hover shadow variable */
+  box-shadow: 0 6px 15px var(--shadow-color-card-hover); 
   border-color: var(--primary-blue);
 }
 
-/* Course image */
+
 .course-image {
   width: 100%;
   height: 180px;
   object-fit: cover;
-  background-color: var(--background-muted); /* Background for image placeholder */
+  background-color: var(--background-muted); 
   border-bottom: 1px solid var(--border-light);
-  transition: background-color 0.3s ease, border-color 0.3s ease; /* Add transitions */
+  transition: background-color 0.3s ease, border-color 0.3s ease; 
 }
 
 /* Content */
@@ -40,39 +40,39 @@
 .card-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--text-dark); /* Use text-dark for main text */
+  color: var(--text-dark); 
   margin: 0;
   line-height: 1.2;
-  transition: color 0.3s ease; /* Add transition */
+  transition: color 0.3s ease;
 }
 
 /* Instructor */
 .card-instructor {
   font-size: 0.875rem;
-  color: var(--text-muted); /* Use text-muted for secondary text */
+  color: var(--text-muted); 
   margin: 0;
   font-style: italic;
-  transition: color 0.3s ease; /* Add transition */
+  transition: color 0.3s ease; 
 }
 
 /* Progress bar container */
 .progress-bar {
-  background-color: var(--border-light); /* Base for progress bar */
+  background-color: var(--border-light); 
   border-radius: 9999px;
   height: 10px;
   width: 100%;
   overflow: hidden;
   margin-top: 0.75rem;
-  transition: background-color 0.3s ease; /* Add transition */
+  transition: background-color 0.3s ease; 
 }
 
 /* Progress fill */
 .progress-fill {
   background-color: var(--primary-blue);
   height: 100%;
-  width: 0; /* controlled inline */
+  width: 0; 
   border-radius: 9999px;
-  transition: width 0.4s ease, background-color 0.3s ease; /* Add background transition */
+  transition: width 0.4s ease, background-color 0.3s ease; 
 }
 
 /* Progress text */
@@ -82,7 +82,7 @@
   margin-top: 0.25rem;
   text-align: right;
   user-select: none;
-  transition: color 0.3s ease; /* Add transition */
+  transition: color 0.3s ease; 
 }
 
 /* Status badge base */
@@ -97,7 +97,7 @@
   user-select: none;
   border: 1px solid var(--primary-blue);
   color: var(--primary-blue);
-  background-color: transparent; /* Default transparent */
+  background-color: transparent; 
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; /* Add transitions */
 }
 
