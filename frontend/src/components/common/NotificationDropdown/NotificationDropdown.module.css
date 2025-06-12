@@ -1,0 +1,263 @@
+/* src/components/common/NotificationDropdown/NotificationDropdown.module.css */
+
+/* --- Notifications Dropdown --- */
+.notificationsDropdown {
+  position: absolute;
+  right: 0;
+  margin-top: 0.75rem;
+  width: 24rem; /* Standard width for larger screens */
+  max-width: 95vw; /* Maximum width relative to viewport */
+  /* Use background-secondary, which adapts to theme */
+  background-color: var(--background-secondary);
+  /* Use border-light, which adapts to theme */
+  border: 1px solid var(--border-light);
+  border-radius: 0.75rem;
+  /* Use the dedicated shadow variable for dropdowns */
+  box-shadow: var(--shadow-color-dropdown); /* This variable should be defined in your global CSS */
+  z-index: 50;
+  overflow: hidden; /* Contains children, especially for rounded corners */
+  animation: fadeInScale 0.2s ease-out;
+  min-width: 200px; /* Prevent extreme collapse */
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.dropdownHeader {
+  padding: 1rem 1.25rem;
+  /* Use border-light, which adapts to theme */
+  border-bottom: 1px solid var(--border-light);
+  /* Use background-muted, which adapts to theme */
+  background-color: var(--background-muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s ease, border-color 0.3s ease; /* Smooth transitions */
+}
+
+.dropdownTitle {
+  font-weight: 700;
+  /* Use text-primary, which adapts to theme */
+  color: var(--text-primary);
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+.clearAllBtn {
+  /* Use background-muted for clearAll button */
+  background-color: var(--background-muted);
+  /* Use text-secondary for button text */
+  color: var(--text-secondary);
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.clearAllBtn:hover:not(:disabled) {
+  /* Use a slightly darker background-muted or a new specific hover variable */
+  background-color: var(--border-light); /* Using border-light as a slightly darker neutral */
+  /* Use text-primary for hover text */
+  color: var(--text-primary);
+}
+
+.clearAllBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Spinner for loading states */
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* --- Notification List & Status --- */
+.notificationList {
+  max-height: 350px; /* Max height before scrolling */
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Custom scrollbar for better aesthetics */
+.notificationList::-webkit-scrollbar {
+  width: 8px;
+}
+.notificationList::-webkit-scrollbar-track {
+  /* Use background-muted for scrollbar track */
+  background: var(--background-muted);
+  border-radius: 10px;
+}
+.notificationList::-webkit-scrollbar-thumb {
+  /* Use border-light for scrollbar thumb */
+  background: var(--border-light);
+  border-radius: 10px;
+}
+.notificationList::-webkit-scrollbar-thumb:hover {
+  /* Use text-muted for scrollbar thumb hover */
+  background: var(--text-muted);
+}
+
+
+.notificationItem {
+  padding: 0.9rem 1.25rem;
+  /* Use border-subtle for item separation */
+  border-bottom: 1px solid var(--border-subtle); /* This variable should be defined in your global CSS */
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; /* Smooth transitions */
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.notificationItem:last-child {
+  border-bottom: 0;
+}
+
+.notificationRead {
+  /* Use background-secondary for read items */
+  background-color: var(--background-secondary);
+  /* Use text-muted for read text */
+  color: var(--text-muted);
+}
+
+.notificationUnread {
+  /* Use background-secondary for unread items (or a slightly different var if desired) */
+  background-color: var(--background-secondary);
+  /* Use text-primary for unread text */
+  color: var(--text-primary);
+  /* Use primary-blue for the indicator, which adapts to theme */
+  border-left: 4px solid var(--primary-blue);
+  padding-left: calc(1.25rem - 4px);
+}
+
+.notificationUnread:hover {
+  /* Use background-muted for unread hover */
+  background-color: var(--background-muted);
+}
+
+.notificationContent {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.notificationMessage {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 0.25rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+.notificationTimestamp {
+  font-size: 0.75rem;
+  /* Use text-muted for timestamp */
+  color: var(--text-muted);
+}
+
+.markReadBtn {
+  background: none;
+  /* Use primary-blue for border, which adapts to theme */
+  border: 1px solid var(--primary-blue);
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  /* Use primary-blue for text, which adapts to theme */
+  color: var(--primary-blue);
+  padding: 0.4rem; /* Make it square/round for icon */
+  border-radius: 50%; /* Make it round */
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease; /* Smooth transitions */
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.markReadBtn:hover {
+  /* Use primary-blue for background, which adapts to theme */
+  background-color: var(--primary-blue);
+  /* Use text-light for hover text, which adapts to theme */
+  color: var(--text-light);
+}
+
+/* Status messages (loading, error, no notifications) */
+.notificationStatus {
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  font-size: 0.9rem;
+  /* Use text-muted for status messages */
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.errorStatus {
+  /* Use error-red for error status text, which adapts to theme */
+  color: var(--error-red);
+}
+
+.errorIcon {
+  /* Use error-red for error icon, which adapts to theme */
+  color: var(--error-red);
+}
+
+.noNotifications {
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  font-size: 0.9rem;
+  /* Use text-muted for no notifications message */
+  color: var(--text-muted);
+  font-style: italic; /* Keep italic for this specific message */
+}
+
+/* View All Notifications link */
+.viewAllContainer {
+  padding: 0.75rem 1.25rem;
+  /* Use border-light for top border */
+  border-top: 1px solid var(--border-light);
+  /* Use background-muted for the container */
+  background-color: var(--background-muted);
+  text-align: center;
+  transition: background-color 0.3s ease, border-color 0.3s ease; /* Smooth transitions */
+}
+
+.viewAllLink {
+  /* Use primary-blue for link color, which adapts to theme */
+  color: var(--primary-blue);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.viewAllLink:hover {
+  /* Use primary-blue-dark for hover color, which adapts to theme */
+  color: var(--primary-blue-dark);
+  text-decoration: underline;
+}
