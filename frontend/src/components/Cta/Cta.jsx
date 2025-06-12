@@ -15,8 +15,8 @@ import "./Cta.css";
  */
 const Cta = () => {
   return (
-    <section className="cta-section"> {/* Renamed for clarity and specificity */}
-      <div className="cta-content"> {/* Added a wrapper for content alignment */}
+    <section className="cta-section"> 
+      <div className="cta-content"> 
         <h2 className="cta-heading">
           Ready to Elevate Your Skills?
         </h2>
