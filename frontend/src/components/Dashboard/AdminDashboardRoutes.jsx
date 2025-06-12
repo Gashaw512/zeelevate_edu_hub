@@ -3,11 +3,11 @@ import Courses from '../../pages/adminDashbord/Courses';
 import NotFoundPage from '../../pages/NotFoundPage'; 
 import Dashboard from '../../pages/adminDashbord/Dashboard';
 import Students from '../../pages/adminDashbord/Students';
-import Profile from '../../pages/studentDashboard/Profile'; // Assuming Admin profile also uses this or similar
+import Profile from '../../pages/studentDashboard/Profile'; 
 import SendNotification from '../../pages/adminDashbord/SendNotification';
-import { useAuth } from '../../context/AuthContext'; // <--- IMPORT useAuth hook
-import LoadingSpinner from '../common/LoadingSpinner'; // Optional: If you want to show a loading spinner
-
+import { useAuth } from '../../context/AuthContext'; 
+import LoadingSpinner from '../common/LoadingSpinner'; 
+import AddProgram from '../AdminDashboar/AddProgram';
 const AdminDashboardRoutes = () => {
   const { user } = useAuth(); // <--- GET user from AuthContext
 
@@ -28,20 +28,14 @@ const AdminDashboardRoutes = () => {
 
   return (
     <Routes>
-      {/* Default dashboard page: /admin/dashboard */}
       <Route index element={<Dashboard />} />
-
-      {/* Specific dashboard pages */}
       <Route path="dashboard" element={<Dashboard />} />
       <Route path="courses" element={<Courses />} />
       <Route path="students" element={<Students />} />
-      {/* Assuming Profile is a shared component or needs user prop for admin as well */}
+      <Route path="add-program" element={<AddProgram />} />
       <Route path="profile" element={<Profile user={user} />} /> 
-      {/* Correctly pass the user prop to SendNotification */}
-      <Route path="send-notification" element={<SendNotification user={user} />} />
-      
-
-  
+      <Route path="send-notification" element={<SendNotification user={user} />
+    } />
       <Route path="*" element={<NotFoundPage />} /> {/* Render your general 404 page for sub-routes */}
     </Routes>
   );
