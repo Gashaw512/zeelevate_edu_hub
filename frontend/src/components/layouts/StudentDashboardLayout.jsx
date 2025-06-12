@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import Sidebar from '../Dashboard/Sidebar';
 import Header from '../Dashboard/Header';
 
-import styles from './StudentDashboard.module.css';
+import styles from './StudentDashboardLayout.module.css';
 
 const StudentDashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

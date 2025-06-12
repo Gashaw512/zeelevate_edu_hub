@@ -1,24 +1,22 @@
-/* src/components/common/NotificationDropdown/NotificationDropdown.module.css */
+/* NotificationDropdown.module.css */
 
-/* --- Notifications Dropdown --- */
+/* MAIN DROPDOWN STYLES */
 .notificationsDropdown {
   position: absolute;
   right: 0;
   margin-top: 0.75rem;
-  width: 24rem; /* Standard width for larger screens */
-  max-width: 95vw; /* Maximum width relative to viewport */
-  /* Use background-secondary, which adapts to theme */
+  width: 24rem;
+  max-width: 95vw;
   background-color: var(--background-secondary);
-  /* Use border-light, which adapts to theme */
   border: 1px solid var(--border-light);
   border-radius: 0.75rem;
-  /* Use the dedicated shadow variable for dropdowns */
-  box-shadow: var(--shadow-color-dropdown); /* This variable should be defined in your global CSS */
+  box-shadow: var(--shadow-color-dropdown);
   z-index: 50;
-  overflow: hidden; /* Contains children, especially for rounded corners */
+  overflow: hidden;
   animation: fadeInScale 0.2s ease-out;
-  min-width: 200px; /* Prevent extreme collapse */
-  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+  min-width: 200px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
 }
 
 @keyframes fadeInScale {
@@ -32,56 +30,67 @@
   }
 }
 
+/* HEADER */
 .dropdownHeader {
   padding: 1rem 1.25rem;
-  /* Use border-light, which adapts to theme */
   border-bottom: 1px solid var(--border-light);
-  /* Use background-muted, which adapts to theme */
   background-color: var(--background-muted);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: background-color 0.3s ease, border-color 0.3s ease; /* Smooth transitions */
 }
 
+/* TITLE */
 .dropdownTitle {
   font-weight: 700;
-  /* Use text-primary, which adapts to theme */
   color: var(--text-primary);
   font-size: 1.125rem;
   margin: 0;
+  flex-grow: 1;
 }
 
-.clearAllBtn {
-  /* Use background-muted for clearAll button */
-  background-color: var(--background-muted);
-  /* Use text-secondary for button text */
+/* ACTION BUTTON */
+.headerActionButton {
+  background-color: transparent;
   color: var(--text-secondary);
-  border: none;
+  border: 1px solid var(--border-light);
   border-radius: 0.5rem;
-  padding: 0.5rem 0.8rem;
-  font-size: 0.8rem;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.3rem;
+  white-space: nowrap;
 }
 
-.clearAllBtn:hover:not(:disabled) {
-  /* Use a slightly darker background-muted or a new specific hover variable */
-  background-color: var(--border-light); /* Using border-light as a slightly darker neutral */
-  /* Use text-primary for hover text */
-  color: var(--text-primary);
+.headerActionButton:hover:not(:disabled) {
+  background-color: var(--background-hover);
+  color: var(--primary-blue);
+  border-color: var(--primary-blue);
 }
 
-.clearAllBtn:disabled {
-  opacity: 0.6;
+/* DISABLED STATE */
+.headerActionButton:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* Spinner for loading states */
+/* CLOSE BUTTON */
+.closeButton {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* SPINNER */
 .spinner {
   animation: spin 1s linear infinite;
 }
@@ -91,71 +100,41 @@
   100% { transform: rotate(360deg); }
 }
 
-/* --- Notification List & Status --- */
+/* NOTIFICATION LIST */
 .notificationList {
-  max-height: 350px; /* Max height before scrolling */
+  max-height: 350px;
   overflow-y: auto;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-/* Custom scrollbar for better aesthetics */
-.notificationList::-webkit-scrollbar {
-  width: 8px;
-}
-.notificationList::-webkit-scrollbar-track {
-  /* Use background-muted for scrollbar track */
-  background: var(--background-muted);
-  border-radius: 10px;
-}
-.notificationList::-webkit-scrollbar-thumb {
-  /* Use border-light for scrollbar thumb */
-  background: var(--border-light);
-  border-radius: 10px;
-}
-.notificationList::-webkit-scrollbar-thumb:hover {
-  /* Use text-muted for scrollbar thumb hover */
-  background: var(--text-muted);
-}
-
-
 .notificationItem {
   padding: 0.9rem 1.25rem;
-  /* Use border-subtle for item separation */
-  border-bottom: 1px solid var(--border-subtle); /* This variable should be defined in your global CSS */
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; /* Smooth transitions */
+  border-bottom: 1px solid var(--border-subtle);
   display: flex;
   gap: 0.75rem;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .notificationItem:last-child {
-  border-bottom: 0;
+  border-bottom: none;
 }
 
-.notificationRead {
-  /* Use background-secondary for read items */
-  background-color: var(--background-secondary);
-  /* Use text-muted for read text */
-  color: var(--text-muted);
-}
-
+/* UNREAD / READ */
 .notificationUnread {
-  /* Use background-secondary for unread items (or a slightly different var if desired) */
   background-color: var(--background-secondary);
-  /* Use text-primary for unread text */
   color: var(--text-primary);
-  /* Use primary-blue for the indicator, which adapts to theme */
   border-left: 4px solid var(--primary-blue);
   padding-left: calc(1.25rem - 4px);
 }
 
-.notificationUnread:hover {
-  /* Use background-muted for unread hover */
-  background-color: var(--background-muted);
+.notificationRead {
+  background-color: var(--background-secondary);
+  color: var(--text-muted);
 }
 
+/* CONTENT */
 .notificationContent {
   flex-grow: 1;
   display: flex;
@@ -168,96 +147,163 @@
   line-height: 1.4;
   margin-bottom: 0.25rem;
   word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
 }
 
 .notificationTimestamp {
   font-size: 0.75rem;
-  /* Use text-muted for timestamp */
   color: var(--text-muted);
+}
+
+/* ACTIONS */
+.notificationActions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.markReadBtn, .deleteBtn {
+  background: none;
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .markReadBtn {
-  background: none;
-  /* Use primary-blue for border, which adapts to theme */
-  border: 1px solid var(--primary-blue);
-  cursor: pointer;
-  flex-shrink: 0;
-  font-size: 0.75rem;
-  font-weight: 600;
-  /* Use primary-blue for text, which adapts to theme */
   color: var(--primary-blue);
-  padding: 0.4rem; /* Make it square/round for icon */
-  border-radius: 50%; /* Make it round */
-  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease; /* Smooth transitions */
-  align-self: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border-color: var(--primary-blue);
 }
 
 .markReadBtn:hover {
-  /* Use primary-blue for background, which adapts to theme */
   background-color: var(--primary-blue);
-  /* Use text-light for hover text, which adapts to theme */
   color: var(--text-light);
 }
 
-/* Status messages (loading, error, no notifications) */
-.notificationStatus {
-  padding: 1.5rem 1.25rem;
-  text-align: center;
-  font-size: 0.9rem;
-  /* Use text-muted for status messages */
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.errorStatus {
-  /* Use error-red for error status text, which adapts to theme */
+.deleteBtn {
   color: var(--error-red);
+  border-color: var(--error-red);
 }
 
-.errorIcon {
-  /* Use error-red for error icon, which adapts to theme */
-  color: var(--error-red);
+.deleteBtn:hover {
+  background-color: var(--error-red);
+  color: var(--text-light);
 }
 
+/* STATUS / EMPTY */
+.notificationStatus,
 .noNotifications {
   padding: 1.5rem 1.25rem;
   text-align: center;
   font-size: 0.9rem;
-  /* Use text-muted for no notifications message */
   color: var(--text-muted);
-  font-style: italic; /* Keep italic for this specific message */
 }
 
-/* View All Notifications link */
+.noNotifications {
+  font-style: italic;
+}
+
+/* VIEW ALL */
 .viewAllContainer {
   padding: 0.75rem 1.25rem;
-  /* Use border-light for top border */
   border-top: 1px solid var(--border-light);
-  /* Use background-muted for the container */
   background-color: var(--background-muted);
   text-align: center;
-  transition: background-color 0.3s ease, border-color 0.3s ease; /* Smooth transitions */
 }
 
 .viewAllLink {
-  /* Use primary-blue for link color, which adapts to theme */
   color: var(--primary-blue);
   text-decoration: none;
   font-weight: 600;
   font-size: 0.9rem;
-  transition: color 0.2s ease;
 }
 
 .viewAllLink:hover {
-  /* Use primary-blue-dark for hover color, which adapts to theme */
   color: var(--primary-blue-dark);
   text-decoration: underline;
+}
+
+/* ========================== */
+/* ===== MEDIA QUERIES ===== */
+/* ========================== */
+
+@media (max-width: 768px) {
+  .notificationsDropdown {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 90vw;
+    margin-top: 0.5rem;
+    border-radius: 0.5rem;
+  }
+
+  .dropdownHeader {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    padding: 0.75rem 1rem;
+  }
+
+  .dropdownTitle {
+    text-align: center;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+  }
+
+  .headerActionButton {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.7rem;
+    flex-grow: 1;
+    justify-content: center;
+  }
+
+  .closeButton {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 1;
+  }
+
+  .notificationList {
+    max-height: 300px;
+  }
+
+  .notificationItem {
+    padding: 0.75rem 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .notificationActions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .noNotifications {
+    font-size: 0.85rem;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .notificationsDropdown {
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 95vw;
+    border-radius: 0.4rem;
+  }
+
+  .dropdownHeader {
+    padding: 0.7rem 0.8rem;
+  }
+
+  .dropdownTitle {
+    font-size: 1rem;
+  }
 }

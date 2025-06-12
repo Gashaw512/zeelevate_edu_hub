@@ -1,6 +1,6 @@
 // src/components/Sidebar/Sidebar.jsx
 import { Link, useLocation } from 'react-router-dom';
-import { Home, BookOpen, User, Settings, LogOut, X, Users, Bookmark, BarChart, BellDotIcon } from 'lucide-react';
+import { Home, BookOpen, User, Settings, LogOut, X, Users,  BellDotIcon } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
 const Sidebar = ({ isOpen, toggleSidebar, user, logout, role = 'student' }) => {
@@ -18,8 +18,6 @@ const Sidebar = ({ isOpen, toggleSidebar, user, logout, role = 'student' }) => {
     { name: 'Courses', icon: BookOpen, path: '/admin/courses' },
     { name: 'Students', icon: Users, path: '/admin/students' },
     { name: 'Send Notification', icon: BellDotIcon, path: '/admin/send-notification' },
-    
-    // { name: 'Settings', icon: Settings, path: '/admin/settings' },
   ];
 
   const navItems = role === 'admin' ? adminNavItems : studentNavItems;
@@ -30,6 +28,7 @@ const Sidebar = ({ isOpen, toggleSidebar, user, logout, role = 'student' }) => {
         className={`${styles.sidebarOverlay} ${isOpen ? styles.sidebarOverlayOpen : ''}`}
         onClick={toggleSidebar}
         role="presentation"
+        aria-hidden={!isOpen} // Added for accessibility
       />
 
       <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ''}`}>
@@ -70,7 +69,7 @@ const Sidebar = ({ isOpen, toggleSidebar, user, logout, role = 'student' }) => {
             <div className={styles.userCard}>
               <img
                 src={user.avatar || 'https://placehold.co/50x50'}
-                alt="User avatar"
+                alt={`${user.name || user.email}'s avatar`} // Improved alt text
                 className={styles.userAvatar}
               />
               <div>
