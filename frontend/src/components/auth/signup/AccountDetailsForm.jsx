@@ -1,23 +1,24 @@
-import { forwardRef, useImperativeHandle } from 'react';
+
+import { forwardRef, useImperativeHandle, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import AuthForm from '../../common/AuthForm';
 import styles from './AccountDetailsForm.module.css';
 import useFormValidation from '../../../hooks/useFormValidation';
 
 const AccountDetailsForm = forwardRef(({ formData, onFormChange, isSubmitting }, ref) => {
-    const enrollmentFieldsConfig = [
-        { name: 'fName', label: 'First Name', type: 'text', required: true },
-        { name: 'lName', label: 'Last Name', type: 'text', required: true },
-        { name: 'email', label: 'Email Address', type: 'email', required: true },
-        { name: 'phoneNumber', label: 'Phone Number', type: 'tel', required: true },
-        { name: 'password', label: 'Password', type: 'password', required: true },
-        { name: 'confirmPassword', label: 'Confirm Password', type: 'password', required: true },
-    ];
+    const enrollmentFieldsConfig = useMemo(() => [
+        { name: 'fName', label: 'First Name', type: 'text', required: true, autocomplete: 'given-name' },
+        { name: 'lName', label: 'Last Name', type: 'text', required: true, autocomplete: 'family-name' },
+        { name: 'email', label: 'Email Address', type: 'email', required: true, autocomplete: 'email' },
+        { name: 'phoneNumber', label: 'Phone Number', type: 'tel', required: true, autocomplete: 'tel' },
+        { name: 'password', label: 'Password', type: 'password', required: true, autocomplete: 'new-password' },
+        { name: 'confirmPassword', label: 'Confirm Password', type: 'password', required: true, autocomplete: 'new-password' },
+    ], []);
 
-    const { 
-        fieldErrors, 
-        isValid, 
-        validate, 
+    const {
+        fieldErrors,
+        isValid,
+        validate,
         handleFieldChange,
         resetValidation
     } = useFormValidation(formData, enrollmentFieldsConfig);
@@ -37,14 +38,10 @@ const AccountDetailsForm = forwardRef(({ formData, onFormChange, isSubmitting },
 
     return (
         <div className="initial-details-section">
-            <h3 className={styles.formTitle}>Step 2: Your Account Details</h3>
-            <p className={styles.formDescription}>
-                Please provide your personal and account information to complete your enrollment.
-            </p>
             <AuthForm
                 formData={formData}
                 onChange={combinedOnChange}
-                fieldsConfig={enrollmentFieldsConfig}
+                fieldsConfig={enrollmentFieldsConfig} // Pass the updated config
                 errors={fieldErrors}
                 disabled={isSubmitting}
             />

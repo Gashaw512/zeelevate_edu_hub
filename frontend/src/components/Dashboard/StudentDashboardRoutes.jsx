@@ -6,6 +6,7 @@ import Courses from '../../pages/studentDashboard/Courses';
 import Profile from '../../pages/studentDashboard/Profile';
 import SettingsPage from '../../pages/studentDashboard/Settings';
 import NotFoundPage from '../../pages/NotFoundPage'; // If you want a specific 404 for dashboard sub-routes
+import NotificationsPage from '../../pages/studentDashboard/NotificationsPage';
 
 const StudentDashboardRoutes = () => {
   // const { user } = useAuth(); // If individual dashboard pages use useAuth, this isn't strictly necessary here.
@@ -19,6 +20,8 @@ const StudentDashboardRoutes = () => {
       <Route path="courses" element={<Courses />} />
       <Route path="profile" element={<Profile />} />
       <Route path="settings" element={<SettingsPage />} />
+      <Route path="notifications" element={<NotificationsPage />} />
+     
 
       {/* Add more dashboard routes here as needed */}
 

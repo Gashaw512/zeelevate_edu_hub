@@ -1,25 +1,28 @@
-// SignUp.jsx
-
-import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useSearchParams, useNavigate, useParams } from "react-router-dom";
+
 import useEnrollmentAndPayment from "../../../hooks/useEnrollmentAndPayment";
+import { usePrograms } from "../../../context/ProgramsContext"; // New import for the context hook
 import ProgramSelection from "./ProgramSelection";
 import AccountDetailsForm from "./AccountDetailsForm";
 import FormNavigation from "./FormNavigation";
 import AuthLayout from "../../layouts/auth/AuthLayout";
-import SocialAuthButtons from "../../common/SocialAuthButton";
-import { getAllProviders } from "../../../data/externalAuthProviderConfig";
 import styles from "./SignUp.module.css";
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { programType } = useParams();
-  const externalProviders = getAllProviders();
   const accountDetailsFormRef = useRef();
 
-  // Form state
+  // --- Get programs data from the context ---
+  const {
+    programs: fetchedPrograms, // Renamed to fetchedPrograms for clarity as used in component
+    loadingPrograms,          // Use the renamed prop from context
+    programsError,            // Use the renamed prop from context
+    refetchPrograms,          // If you need to trigger a re-fetch, use this
+  } = usePrograms();
+
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedProgramIds, setSelectedProgramIds] = useState([]);
   const [formData, setFormData] = useState({
@@ -32,94 +35,57 @@ const SignUp = () => {
   });
   const [globalError, setGlobalError] = useState("");
 
-  // States for fetching programs
-  const [fetchedPrograms, setFetchedPrograms] = useState([]);
-  const [programsLoading, setProgramsLoading] = useState(true);
-  const [programsError, setProgramsError] = useState(null);
-
-  // Payment hook
   const {
     initiatePayment,
     isLoading: paymentLoading,
     error: paymentError,
   } = useEnrollmentAndPayment();
 
-  const BACKEND_API_URL = import.meta.env.VITE_BACKEND_URL;
-
-  // --- useEffect to fetch program data from backend ---
   useEffect(() => {
-    const fetchProgramsData = async () => {
-      try {
-        setProgramsLoading(true);
-        setProgramsError(null);
+    if (paymentError) {
+      setGlobalError(paymentError.message || "An unexpected payment error occurred.");
+    }
+  }, [paymentError]);
 
-        const response = await fetch(`${BACKEND_API_URL}/api/admin/public/courses`);
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({ message: 'Unknown error format' }));
-          throw new Error(errorData.message || `Server responded with status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        const coursesArray = data.courses || [];
-
-        const transformedData = coursesArray.map(course => ({
-          id: course.courseId,
-          name: course.courseTitle,
-          shortDescription: course.courseDetails,
-          fixedPrice: course.price || 0,
-          courses: [{ id: course.courseId, name: course.courseTitle }],
-        }));
-
-        setFetchedPrograms(transformedData);
-
-      } catch (err) {
-        console.error('Error fetching programs for SignUp:', err);
-        setProgramsError(`Failed to load program options: ${err.message}.`);
-      } finally {
-        setProgramsLoading(false);
-      }
-    };
-
-    fetchProgramsData();
-  }, [BACKEND_API_URL]);
-
-
-  // --- Program selection from URL / Default Step ---
+  // In SignUp.jsx
   useEffect(() => {
     // Only process this if programs data has finished loading and there are no errors
-    if (!programsLoading && !programsError) {
-        const programIdFromUrl = searchParams.get("programId");
-        let initialProgramId = null;
+    if (!loadingPrograms && !programsError && fetchedPrograms.length > 0) {
+      const programIdFromUrl = searchParams.get("programId");
+      let initialProgramId = programType || programIdFromUrl;
 
-        if (programType) {
-            initialProgramId = programType;
-        } else if (programIdFromUrl) {
-            initialProgramId = programIdFromUrl;
-        }
-
-        // Only update if an initialProgramId is present and not already selected
-        // AND if it exists in the fetched programs
-        if (initialProgramId && !selectedProgramIds.includes(initialProgramId)) {
-            const isValidProgram = fetchedPrograms.some(p => p.id === initialProgramId);
-            if (isValidProgram) {
-                setSelectedProgramIds([initialProgramId]);
-                setCurrentStep(2); // Jump directly to Account Details (Step 2)
-            } else {
-                setGlobalError("Invalid program ID in URL. Please select a program manually.");
-                setCurrentStep(1); // Fallback to step 1 if URL ID is invalid
-            }
-        } else if (!initialProgramId && currentStep !== 1) {
-            // If no initial program ID in URL and we are not already at step 1,
-            // force to step 1 for interactive selection.
+      if (initialProgramId) {
+        const isValidProgram = fetchedPrograms.some(p => p.id === initialProgramId);
+        if (isValidProgram) {
+          if (!selectedProgramIds.includes(initialProgramId)) {
+            setSelectedProgramIds([initialProgramId]);
+          }
+          if (currentStep !== 2) {
+            setCurrentStep(2);
+          }
+        } else {
+          setGlobalError("The program you selected from the URL is not available. Please choose from the list below.");
+          if (currentStep !== 1) {
             setCurrentStep(1);
+          }
         }
+      } else {
+        if (currentStep !== 1 && currentStep !== 2) {
+          setCurrentStep(1);
+        }
+      }
+    } else if (!loadingPrograms && !programsError && fetchedPrograms.length === 0) {
+      setGlobalError("No programs are currently available for enrollment. Please check back later.");
+      if (currentStep !== 1) {
+        setCurrentStep(1);
+      }
     }
-    // Dependencies: Ensure effect runs when these values change
-  }, [programType, searchParams, selectedProgramIds, currentStep, fetchedPrograms, programsLoading, programsError]);
+    // No changes to dependencies needed here.
+    // Dependencies remain the same as the data they depend on are now coming from context,
+    // which has its own memoization logic.
+  }, [programType, searchParams, selectedProgramIds, currentStep, fetchedPrograms, loadingPrograms, programsError]);
 
 
-  // Total Price calculator
   const totalPrice = useMemo(
     () =>
       selectedProgramIds.reduce((total, id) => {
@@ -129,19 +95,19 @@ const SignUp = () => {
     [selectedProgramIds, fetchedPrograms]
   );
 
-  // Handlers
+  // --- Handlers ---
   const handleProgramSelection = useCallback((programId) => {
     setSelectedProgramIds((prev) =>
       prev.includes(programId)
         ? prev.filter((id) => id !== programId)
-        : [programId] // Allows single selection
+        : [programId] // Enforce single selection
     );
-    setGlobalError("");
+    setGlobalError(""); // Clear any previous errors on selection change
   }, []);
 
   const handleChange = useCallback(({ target: { name, value } }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setGlobalError("");
+    setGlobalError(""); // Clear global error on form input change
   }, []);
 
   const handleNextStep = useCallback(
@@ -150,12 +116,14 @@ const SignUp = () => {
       setGlobalError("");
 
       if (currentStep === 1) {
-        // Prevent proceeding if programs are still loading or there's an error
-        if (programsLoading || programsError) {
-          setGlobalError("Please wait for program options to load.");
+        if (loadingPrograms) { // Use loadingPrograms from context
+          setGlobalError("Please wait, programs are still loading.");
           return;
         }
-        // Only allow next if at least one program is selected
+        if (programsError) { // Use programsError from context
+          setGlobalError(`Cannot proceed due to a program loading error: ${programsError}`);
+          return;
+        }
         if (selectedProgramIds.length === 0) {
           setGlobalError("Please select at least one program module to proceed.");
           return;
@@ -163,26 +131,31 @@ const SignUp = () => {
         setCurrentStep(2);
       }
     },
-    [currentStep, selectedProgramIds, programsLoading, programsError] // Added dependencies
+    [currentStep, selectedProgramIds, loadingPrograms, programsError] // Updated dependencies
   );
 
   const handlePreviousStep = useCallback(() => {
     setGlobalError("");
-    if (programType) {
+    if (currentStep === 2) {
+      setCurrentStep(1);
+    } else if (programType) {
       navigate("/");
     } else {
       setCurrentStep(1);
     }
-  }, [programType, navigate]);
+  }, [currentStep, programType, navigate]);
 
   const handleSubmitAccountDetails = useCallback(async () => {
     setGlobalError("");
 
     const isValid = accountDetailsFormRef.current?.triggerFormValidation();
-    if (!isValid) return;
+    if (!isValid) {
+      setGlobalError("Please correct the errors in your account details.");
+      return;
+    }
 
     if (selectedProgramIds.length === 0) {
-      setGlobalError("No course selected for enrollment. Please go back and select a course.");
+      setGlobalError("No program selected for enrollment. Please go back to Step 1 and select a program.");
       return;
     }
 
@@ -201,31 +174,33 @@ const SignUp = () => {
     try {
       await initiatePayment({ customerDetails, courseDetails });
     } catch (err) {
-      console.error("Payment initiation error:", err);
-      setGlobalError(err.message || "Failed to initiate payment. Please try again.");
+      console.error("Payment initiation failed:", err);
+      setGlobalError(err.message || "Failed to initiate payment. Please review your details and try again.");
     }
   }, [formData, selectedProgramIds, initiatePayment]);
 
-  const handleSocialAuthIntent = useCallback((providerName) => {
-    setGlobalError(
-      `${providerName} registration requires payment-first flow. Please use email/password or contact support.`
-    );
-  }, []);
 
-  const layoutTitle = currentStep === 1 ? "Enroll in Programs" : "Account Details";
-  const layoutInstruction =
+  // --- Layout Props Calculation ---
+  const layoutTitle = useMemo(() =>
+    currentStep === 1 ? "Choose Your Program Modules" : "Your Account Details",
+    [currentStep]
+  );
+
+  const layoutInstruction = useMemo(() =>
     currentStep === 1
-      ? "Select the program modules that best fit your learning goals."
-      : "Provide your personal and account details to complete your enrollment.";
+      ? "Please select the programs that best fit your learning goals."
+      : "Please provide your personal and account information to complete your enrollment.",
+    [currentStep]
+  );
 
-  const isLayoutWide = currentStep === 1;
+  const isLayoutWide = useMemo(() => currentStep === 1, [currentStep]);
 
-  // --- Render Loading/Error states for programs data, displayed on step 1 ---
-  if (programsLoading) {
+  // --- Conditional Rendering for Loading/Error/No Programs ---
+  if (loadingPrograms) { // Use loadingPrograms from context
     return (
       <AuthLayout
         title="Loading Programs..."
-        instruction="Fetching available programs. Please wait."
+        instruction="Fetching available program options. Please wait a moment."
         isWide={true}
       >
         <div className={styles.loadingMessage}>Loading program options...</div>
@@ -233,33 +208,35 @@ const SignUp = () => {
     );
   }
 
-  if (programsError) {
+  if (programsError) { // Use programsError from context
     return (
       <AuthLayout
         title="Error Loading Programs"
-        instruction="Could not fetch program options."
+        instruction="We encountered an issue fetching program options. Please try refreshing the page."
         isWide={true}
       >
         <div className={styles.errorMessage}>{programsError}</div>
-        <p className={styles.errorMessage}>Please try refreshing the page.</p>
+        <button onClick={refetchPrograms} className={styles.retryButton}>
+          Retry Loading Programs
+        </button>
       </AuthLayout>
     );
   }
 
-  // If no programs are fetched and there's no error, display a message.
-  if (!programsLoading && !programsError && fetchedPrograms.length === 0) {
+  // If loading is complete and no errors, but no programs were fetched
+  if (fetchedPrograms.length === 0) {
     return (
       <AuthLayout
         title="No Programs Available"
-        instruction="Currently, there are no programs to display for enrollment."
+        instruction="Currently, there are no programs available for enrollment. Please check back later."
         isWide={true}
       >
-        <p className={styles.errorMessage}>Please check back later.</p>
+        <p className={styles.infoMessage}>We are working to add new programs soon!</p>
       </AuthLayout>
     );
   }
 
-
+  // --- Main Component Render ---
   return (
     <AuthLayout
       title={layoutTitle}
@@ -291,33 +268,16 @@ const SignUp = () => {
         )}
 
         {globalError && <p className={styles.errorMessage}>{globalError}</p>}
+
         <FormNavigation
           currentStep={currentStep}
           isSubmitting={paymentLoading}
           onPreviousStep={handlePreviousStep}
           onNextStep={handleNextStep}
           onFinalSubmit={handleSubmitAccountDetails}
-          // Disable "Next" button if programs are loading or selectedPrograms are empty on step 1
-          isNextDisabled={currentStep === 1 && (programsLoading || selectedProgramIds.length === 0)}
           selectedProgramIdsLength={selectedProgramIds.length}
         />
       </form>
-
-      <p className={styles.signUpPrompt}>
-        Already have an account?{" "}
-        <Link to="/signin" className={styles.link}>
-          Sign In
-        </Link>
-      </p>
-
-      <div className={styles.divider}>
-        <span className={styles.dividerText}>OR</span>
-      </div>
-
-      <SocialAuthButtons
-        providers={externalProviders}
-        onSignIn={handleSocialAuthIntent}
-      />
     </AuthLayout>
   );
 };

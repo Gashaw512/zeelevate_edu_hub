@@ -5,7 +5,7 @@ import { Routes, Route } from "react-router-dom";
 import LandingPage from "../pages/LandingPage";
 import SignInPage from "../pages/SignInPage";
 import SignUpPage from "../pages/SignUpPage";
-import ResetPasswordPage from "../pages/ResetPasswordPage"; // Assuming you have this
+import ForgotPassword from "../components/auth/ForgotPassword"; // Assuming this is the correct path
 
 // Payment & Success Pages
 import CheckoutPage from "../pages/CheckoutPage";
@@ -34,7 +34,8 @@ const AppRoutes = () => {
       <Route path="/" element={<LandingPage />} />
       <Route path="/signin" element={<SignInPage />} />
       <Route path="/signup" element={<SignUpPage />} />
-      <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <Route path="/reset-password" element={<ForgotPassword />} />
+      
       {/* Consider if /enroll/:programType should lead directly to signup or 
         a pre-enrollment page that gathers info and then redirects to signup/login.
         For now, keeping as is, but it's a UX consideration.
