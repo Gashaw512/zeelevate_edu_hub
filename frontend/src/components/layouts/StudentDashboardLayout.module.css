@@ -1,0 +1,82 @@
+/* --- StudentDashboard.module.css --- */
+
+.dashboardWrapper {
+  display: flex;
+  min-height: 100vh;
+  /* Use Outfit as per your other components */
+  font-family: 'Outfit', sans-serif;
+  /* Use background-root or background-muted for the main wrapper */
+  background-color: var(--background-root); /* Assuming this is your global body/root background */
+  position: relative;
+  transition: background-color 0.3s ease; /* Smooth transition for background */
+}
+
+/* Sidebar for all screens */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100%;
+  /* Use background-dark for the sidebar, which will adapt */
+  background-color: var(--background-dark);
+  /* Use text-light for sidebar text, which will adapt */
+  color: var(--text-light);
+  overflow-y: auto;
+  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
+  transform: translateX(-100%);
+  z-index: 1000;
+}
+
+/* Sidebar visible when toggled */
+.sidebarOpen {
+  transform: translateX(0);
+}
+
+/* Sidebar always visible on large screens */
+@media screen and (min-width: 1024px) {
+  .sidebar {
+    position: fixed;
+    transform: translateX(0);
+  }
+}
+
+/* Backdrop for mobile sidebar */
+/* .sidebarBackdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* This rgba can be replaced by a shadow variable if defined for backdrops */
+/* z-index: 900;
+} */
+
+/* Show backdrop only when sidebar is open */
+.sidebarBackdropVisible {
+  /* display: block; */
+  /* If you decide to keep the backdrop, use a variable for its background */
+  background-color: var(--backdrop-color); /* New variable needed for backdrop */
+}
+
+/* Wrapper for content beside sidebar */
+.contentWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
+}
+
+/* On large screens, add space for sidebar */
+@media screen and (min-width: 1024px) {
+  .contentWrapper {
+    margin-left: 260px;
+  }
+}
+
+.mainContent {
+  flex: 1;
+  padding: 1rem;
+  /* Use background-root or background-muted, which will adapt */
+  background-color: var(--background-muted); /* More common for content areas than root */
+  transition: background-color 0.3s ease; /* Smooth transition */
+}
