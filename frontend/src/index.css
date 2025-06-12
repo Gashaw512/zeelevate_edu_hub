@@ -32,12 +32,12 @@ html, body {
   /* Background Colors */
   --background-primary: #F5F5F5; /* Main page background */
   --background-secondary: #FFFFFF; /* Card/Panel background, used in Settings, Header, etc. */
-  --background-muted: #F7F9FC; /* Slightly off-white for subtle backgrounds */
+  --background-muted: #F7F9FC; /* Slightly off-white for subtle backgrounds (e.g., hover states for light elements) */
 
   /* Text Colors */
   --text-primary: #222222; /* Main dark text color */
   --text-secondary: #666666; /* Muted/secondary text color (for descriptions, etc.) */
-  --text-light: #FFFFFF; /* White text, for use on dark backgrounds */
+  --text-light: #FFFFFF; /* White text, for use on dark backgrounds (e.g., buttons, hero text) */
   --text-light-alt: #F0F0F0; /* Slightly off-white for softer light text */
 
   /* Brand/Accent Colors */
@@ -64,6 +64,8 @@ html, body {
 
   /* Other */
   --shadow-color-light: rgba(34, 34, 34, 0.08); /* Light mode shadow */
+  --shadow-color-dark-subtle: rgba(0, 0, 0, 0.15); /* For general use with dark mode */
+
 
   /* Dashboard Layout Specifics (ensure these match your layout.js / sidebar widths) */
   --collapsed-sidebar-width: 70px;
@@ -77,13 +79,14 @@ body.dark-mode {
   /* Background Overrides */
   --background-primary: #1a202c; /* Dark main page background */
   --background-secondary: #2d3748; /* Darker card/panel background */
-  --background-muted: #2f3c4c; /* Slightly darker muted background */
+  --background-muted: #2f3c4c; /* Slightly darker muted background (e.g., hover states for dark elements) */
 
   /* Text Overrides */
   --text-primary: #f8f8f8; /* Light text for dark backgrounds */
   --text-secondary: #a0aec0; /* Muted light text */
-  /* --text-light remains #FFFFFF */
-  /* --text-light-alt remains #F0F0F0 */
+  --text-light: #FFFFFF; /* White text, for use on primary blue, etc. */
+  --text-light-alt: #e2e8f0; /* Slightly off-white for softer light text in dark mode */
+
 
   /* Brand/Accent Overrides */
   --primary-blue: #63b3ed; /* Adjusted blue for better contrast in dark mode */
@@ -96,12 +99,12 @@ body.dark-mode {
 
   /* Border Overrides */
   --border-light: #4a5568; /* Darker borders */
-  /* --border-dark can remain the same or adjust if needed for dark sidebar */
+  --border-dark: #617d98; /* Adjust for dark mode if distinct from light's border-dark */
 
   /* Sidebar Specific Overrides (if different in dark mode) */
   --sidebar-bg: #1f2937; /* Can remain same or adjust to deeper dark mode */
   --sidebar-text: #f8f8f8;
-  --sidebar-border: #374151;
+  --sidebar-border: #374151; /* If sidebar has its own border that needs dark mode adj */
 
   /* Feedback/Status Overrides (adjust for dark backgrounds) */
   --success-green: #48bb78;
@@ -109,14 +112,16 @@ body.dark-mode {
   --warning-orange: #fbd38d;
 
   /* Other */
-  --shadow-color-light: rgba(0, 0, 0, 0.5); /* Stronger shadow in dark mode */
+  --shadow-color-light: rgba(0, 0, 0, 0.4); /* Stronger, darker shadow in dark mode */
+  --shadow-color-dark-subtle: rgba(0, 0, 0, 0.25); /* Subtle dark shadow */
 }
 
 /* --- Base Body Styles (Use Variables) --- */
 body {
   background: var(--background-primary);
   color: var(--text-primary);
-  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for theme change */
+  /* Smooth transition for theme change */
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 
@@ -126,6 +131,7 @@ a {
   color: inherit; /* Inherit text color from parent, which will be variable-controlled */
   line-height: 1;
   cursor: pointer;
+  transition: color 0.3s ease; /* Smooth transition for links too */
 }
 
 .container {
@@ -135,8 +141,10 @@ a {
 }
 
 .btn {
-  background: var(--background-secondary); /* Use background secondary for light button */
-  color: var(--text-primary); /* Use primary text for light button */
+  /* Use variable for background */
+  background: var(--background-secondary);
+  /* Use variable for text color */
+  color: var(--text-primary);
   padding: 14px 25px;
   font-size: 16px;
   border-radius: 30px;
@@ -150,7 +158,9 @@ a {
 }
 
 .btn:hover {
-  background: var(--background-muted); /* Slightly darker on hover */
+  /* Use variable for hover background */
+  background: var(--background-muted);
+  /* Text color remains primary on hover */
   color: var(--text-primary);
 }
 
@@ -159,20 +169,17 @@ a {
   margin-left: 10px;
 }
 
+/* Specific "dark-themed" button that is *always* dark, regardless of global theme */
+/* If this button should also adapt, you'd define new variables like --btn-dark-bg, etc. */
 .btn.dark-btn {
-  /* This appears to be a specific "dark-themed" button,
-     not necessarily tied to the global dark mode toggle.
-     So, keeping its colors somewhat fixed.
-     If it should also adapt, you'd define --btn-dark-bg, etc.
-  */
-  background: #3a48c4;
-  color: white;
+  background: var(--primary-blue-dark); /* Using a primary blue shade for this button */
+  color: var(--text-light); /* White text on this specific dark button */
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .btn.dark-btn:hover {
-  background: #28349f;
-  color: white;
+  background: var(--hover-blue); /* A slightly adjusted blue for hover */
+  color: var(--text-light);
 }
 
 /* --- Media Queries --- */
@@ -190,6 +197,7 @@ a {
 .hero-wrapper {
   /* For hero-wrapper, if it's a fixed background, it might not change with dark mode.
      If you want it to, you'd need dark mode versions of the image or different overlay.
+     Consider using a variable for the rgba overlay color if you want the overlay to change.
   */
   background: linear-gradient(rgba(8, 0, 58, 0.7), rgba(8, 0, 58, 0.7)),
               url('/images/pp3.png');
@@ -199,11 +207,7 @@ a {
   min-height: 100vh;
 }
 
-/* Dashboard Layout Specifics */
-/* This media query should be integrated into your StudentDashboardLayout.module.css
-   where the contentWrapper's margin-left is dynamically set by JavaScript.
-   It's better to avoid hardcoding component-specific layout rules in global CSS.
-*/
+/* Dashboard Layout Specifics - Keep these outside global CSS as advised */
 /*
 @media (min-width: 1024px) {
   .main-content {
