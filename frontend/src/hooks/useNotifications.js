@@ -10,23 +10,31 @@ import {
     updateDoc,
     doc,
     writeBatch,
-    getDocs, // Needed for markAllAsRead and clearAllNotifications
+    getDocs,
+    deleteDoc, // <--- Make sure deleteDoc is imported
 } from 'firebase/firestore';
-import { db } from '../firebase/firestore'; // Adjust path as needed
+import { db } from '../firebase/firestore'; // Adjust path if necessary
 
 // Define standard messages for better consistency and potential i18n later
-const MESSAGES = {
+export const NOTIFICATION_MESSAGES = {
     NO_USER_AUTH: "Cannot perform action: User not authenticated.",
     NOTIF_LOAD_ERROR: "Failed to load notifications. Please check your connection or permissions.",
     CLEAR_ALL_ERROR: "Failed to clear all notifications. Please try again.",
-    MARK_SINGLE_READ_ERROR: "Failed to mark notification as read. Please try again.", // Specific message
-    MARK_ALL_READ_ERROR: "Failed to mark all notifications as read. Please try again.", // Specific message
+    MARK_SINGLE_READ_ERROR: "Failed to mark notification as read. Please try again.",
+    MARK_ALL_READ_ERROR: "Failed to mark all notifications as read. Please try again.",
+    DELETE_SINGLE_ERROR: "Failed to delete notification. Please try again.", // NEW
     LOADING_NOTIFICATIONS: "Loading notifications...",
-    NO_NEW_NOTIFICATIONS: "No new notifications.",
+    NO_NEW_NOTIFICATIONS: "You don't have any notifications yet.", // Adjusted for general empty state
+    NO_NEW_NOTIFICATIONS_UNREAD: "No unread notifications! You're all caught up.", // Specific for unread filter
     CLEARING_NOTIFICATIONS: "Clearing...",
-    MARKING_ALL_READ: "Marking all as read...", // New message
-    CLEAR_ALL: "Clear All",
-    MARK_AS_READ: "Mark as Read",
+    MARKING_ALL_READ: "Marking all as read...",
+    CLEAR_ALL_SUCCESS: "All notifications cleared!",
+    MARK_ALL_READ_SUCCESS: "All unread notifications marked as read!",
+    DELETE_SINGLE_SUCCESS: "Notification deleted successfully!", // NEW
+    CONFIRM_CLEAR_ALL: "Are you sure you want to clear all notifications? This action cannot be undone.",
+    CONFIRM_DELETE_SINGLE: "Are you sure you want to delete this notification? This action cannot be undone.", // NEW
+    CLEAR_ALL: "Clear All", // For button text
+    MARK_AS_READ: "Mark as Read", // For button text
 };
 
 const useNotifications = (userId) => {
@@ -34,7 +42,24 @@ const useNotifications = (userId) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [clearing, setClearing] = useState(false);
-    const [markingAll, setMarkingAll] = useState(false); // New state for marking all as read
+    const [markingAll, setMarkingAll] = useState(false);
+
+    const [toastMessage, setToastMessage] = useState(null); // { type: 'success' | 'error' | 'info', message: string }
+
+    // Unified state for confirmation prompts
+    const [requiresConfirmation, setRequiresConfirmation] = useState(null); // { type: 'clearAll' | 'deleteSingle', id?: string }
+    const [notificationToDeleteId, setNotificationToDeleteId] = useState(null); // Stores the ID for individual delete
+
+    // Clear toast message after a short period
+    useEffect(() => {
+        if (toastMessage) {
+            const timer = setTimeout(() => {
+                setToastMessage(null);
+            }, 5000); // Clears after 5 seconds
+            return () => clearTimeout(timer);
+        }
+    }, [toastMessage]);
+
 
     useEffect(() => {
         if (!userId) {
@@ -53,7 +78,7 @@ const useNotifications = (userId) => {
             collection(db, 'notifications'),
             where('recipientId', '==', userId),
             orderBy('createdAt', 'desc'),
-            limit(20) // Limits to the 20 most recent notifications
+            limit(20)
         );
 
         const unsubscribe = onSnapshot(
@@ -70,7 +95,7 @@ const useNotifications = (userId) => {
             },
             (err) => {
                 console.error("useNotifications: Error fetching real-time notifications:", err);
-                setError(MESSAGES.NOTIF_LOAD_ERROR);
+                setError(NOTIFICATION_MESSAGES.NOTIF_LOAD_ERROR);
                 setLoading(false);
             }
         );
@@ -81,11 +106,10 @@ const useNotifications = (userId) => {
         };
     }, [userId]);
 
-    // Function to mark a single notification as read
     const markAsRead = useCallback(async (id) => {
         if (!userId) {
-            console.warn("useNotifications: " + MESSAGES.NO_USER_AUTH);
-            setError(MESSAGES.NO_USER_AUTH);
+            console.warn("useNotifications: " + NOTIFICATION_MESSAGES.NO_USER_AUTH);
+            setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.NO_USER_AUTH });
             return;
         }
         try {
@@ -95,26 +119,26 @@ const useNotifications = (userId) => {
             setError(null);
         } catch (err) {
             console.error("useNotifications: Error marking single notification as read:", err);
-            setError(MESSAGES.MARK_SINGLE_READ_ERROR);
+            setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.MARK_SINGLE_READ_ERROR });
         }
     }, [userId]);
 
-    // Function to mark ALL UNREAD notifications as read
     const markAllAsRead = useCallback(async () => {
         if (!userId) {
-            console.warn("useNotifications: " + MESSAGES.NO_USER_AUTH);
-            setError(MESSAGES.NO_USER_AUTH);
+            console.warn("useNotifications: " + NOTIFICATION_MESSAGES.NO_USER_AUTH);
+            setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.NO_USER_AUTH });
             return;
         }
 
-        setMarkingAll(true); // Set loading state for this action
+        setMarkingAll(true);
         setError(null);
+        setToastMessage(null);
 
         try {
             const unreadNotificationsQuery = query(
                 collection(db, 'notifications'),
                 where('recipientId', '==', userId),
-                where('read', '==', false) // Only target unread notifications
+                where('read', '==', false)
             );
 
             const snapshot = await getDocs(unreadNotificationsQuery);
@@ -122,8 +146,8 @@ const useNotifications = (userId) => {
 
             if (snapshot.empty) {
                 console.log("useNotifications: No unread notifications to mark as read.");
-                setError(null);
-                return; // No need to commit if nothing to update
+                setToastMessage({ type: 'info', message: NOTIFICATION_MESSAGES.NO_NEW_NOTIFICATIONS_UNREAD });
+                return;
             }
 
             snapshot.docs.forEach((d) => {
@@ -133,26 +157,37 @@ const useNotifications = (userId) => {
 
             await batch.commit();
             console.log(`useNotifications: Marked ${snapshot.docs.length} notifications as read for user ${userId}.`);
-            setError(null);
+            setToastMessage({ type: 'success', message: NOTIFICATION_MESSAGES.MARK_ALL_READ_SUCCESS });
         } catch (err) {
             console.error("useNotifications: Error marking all notifications as read:", err);
-            setError(MESSAGES.MARK_ALL_READ_ERROR);
+            setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.MARK_ALL_READ_ERROR });
         } finally {
-            setMarkingAll(false); // Reset loading state
+            setMarkingAll(false);
         }
     }, [userId]);
 
-
-    // Function to clear ALL notifications for the user
-    const clearAllNotifications = useCallback(async () => {
+    // Function to initiate the 'Clear All' confirmation
+    const requestClearAllConfirmation = useCallback(() => {
         if (!userId) {
-            console.warn("useNotifications: " + MESSAGES.NO_USER_AUTH);
-            setError(MESSAGES.NO_USER_AUTH);
+            setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.NO_USER_AUTH });
+            return;
+        }
+        setRequiresConfirmation({ type: 'clearAll' }); // Signal that clearAll needs confirmation
+        setNotificationToDeleteId(null); // Ensure no individual ID is set
+    }, [userId]);
+
+    // Function to execute 'Clear All' after user confirms
+    const confirmClearAllNotifications = useCallback(async () => {
+        if (!userId) {
+            console.warn("useNotifications: " + NOTIFICATION_MESSAGES.NO_USER_AUTH);
+            setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.NO_USER_AUTH });
             return;
         }
 
-        setClearing(true); // Set loading state for this action
+        setClearing(true);
         setError(null);
+        setToastMessage(null);
+        setRequiresConfirmation(null); // Reset confirmation state
 
         try {
             const userNotificationsQuery = query(
@@ -165,8 +200,8 @@ const useNotifications = (userId) => {
 
             if (snapshot.empty) {
                 console.log("useNotifications: No notifications to clear.");
-                setError(null);
-                return; // No need to commit if nothing to delete
+                setToastMessage({ type: 'info', message: NOTIFICATION_MESSAGES.NO_NEW_NOTIFICATIONS });
+                return;
             }
 
             snapshot.docs.forEach((d) => {
@@ -175,25 +210,78 @@ const useNotifications = (userId) => {
 
             await batch.commit();
             console.log(`useNotifications: Cleared ${snapshot.docs.length} notifications for user ${userId}.`);
-            setError(null);
+            setToastMessage({ type: 'success', message: NOTIFICATION_MESSAGES.CLEAR_ALL_SUCCESS });
         } catch (err) {
             console.error("useNotifications: Error clearing all notifications:", err);
-            setError(MESSAGES.CLEAR_ALL_ERROR);
+            setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.CLEAR_ALL_ERROR });
         } finally {
-            setClearing(false); // Reset loading state
+            setClearing(false);
         }
     }, [userId]);
+
+    // NEW: Function to initiate confirmation for deleting a single notification
+    const requestDeleteConfirmation = useCallback((notificationId) => {
+        if (!userId) {
+            setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.NO_USER_AUTH });
+            return;
+        }
+        setNotificationToDeleteId(notificationId); // Store the ID of the notification to delete
+        setRequiresConfirmation({ type: 'deleteSingle', id: notificationId }); // Signal single delete confirmation
+    }, [userId]);
+
+    // NEW: Function to execute deleting a single notification after user confirms
+    const confirmDeleteNotification = useCallback(async () => {
+        if (!userId) {
+            console.warn("useNotifications: " + NOTIFICATION_MESSAGES.NO_USER_AUTH);
+            setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.NO_USER_AUTH });
+            return;
+        }
+        if (!notificationToDeleteId) {
+            console.warn("useNotifications: No notification ID set for deletion confirmation.");
+            // Maybe show an error toast here if this happens unexpectedly
+            return;
+        }
+
+        setError(null);
+        setToastMessage(null);
+        setRequiresConfirmation(null); // Reset confirmation state
+        const idToDelete = notificationToDeleteId; // Capture ID before clearing state
+        setNotificationToDeleteId(null); // Clear the ID immediately
+
+        try {
+            const notificationRef = doc(db, 'notifications', idToDelete);
+            await deleteDoc(notificationRef);
+            console.log(`useNotifications: Notification ${idToDelete} deleted.`);
+            setToastMessage({ type: 'success', message: NOTIFICATION_MESSAGES.DELETE_SINGLE_SUCCESS });
+        } catch (err) {
+            console.error("useNotifications: Error deleting single notification:", err);
+            setToastMessage({ type: 'error', message: NOTIFICATION_MESSAGES.DELETE_SINGLE_ERROR });
+        }
+    }, [userId, notificationToDeleteId]); 
+
+  
+    const cancelConfirmation = useCallback(() => {
+        setRequiresConfirmation(null);
+        setNotificationToDeleteId(null); 
+    }, []);
 
     return {
         notifications,
         loading,
         error,
         clearing,
-        markingAll, // Export the new loading state
+        markingAll,
+        toastMessage,
+        requiresConfirmation, 
+        notificationToDeleteId, 
         markAsRead,
-        markAllAsRead, // Export the new function
-        clearAllNotifications,
-        MESSAGES // Export MESSAGES for convenience in components
+        markAllAsRead,
+        requestClearAllConfirmation,
+        confirmClearAllNotifications,
+        requestDeleteConfirmation,   
+        confirmDeleteNotification,   
+        cancelConfirmation,
+        NOTIFICATION_MESSAGES 
     };
 };
 

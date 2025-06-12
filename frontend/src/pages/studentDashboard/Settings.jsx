@@ -1,43 +1,124 @@
-// --- src/pages/Settings.jsx ---
-// Settings page for user preferences.
-import { useState } from 'react';
+// src/pages/SettingsPage/SettingsPage.js
+import { useState, useEffect } from 'react';
 import styles from './Settings.module.css';
+// REMOVED: import useSettings from '../../hooks/useSettings';
+// REMOVED: import { useAuth } from '../../context/AuthContext';
+
+// IMPORTED: The custom hook for your new SettingsContext
+import { useSettingsContext } from '../../context/SettingsContext';
 
 const SettingsPage = () => {
-  const [emailNotifications, setEmailNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
+  // REMOVED: const { user } = useAuth();
+  // REMOVED: const userId = user?.uid;
+  // The userId is now handled internally by the SettingsProvider,
+  // which uses useAuth, so you don't need to pass it here.
+
+  // Destructure properties from your useSettingsContext hook
+  const {
+    settings,
+    loading,
+    saving,
+    error,
+    successMessage,
+    saveSettings,
+    MESSAGES, 
+  } = useSettingsContext(); 
+
+  const [localEmailNotifications, setLocalEmailNotifications] = useState(false);
+  const [localDarkMode, setLocalDarkMode] = useState(false);
+
+  useEffect(() => {
+    if (!loading && settings) {
+      setLocalEmailNotifications(settings.emailNotifications);
+      setLocalDarkMode(settings.darkMode);
+    }
+  }, [settings, loading]); 
+
+  const handleSave = async () => {
+    const newSettings = {
+      emailNotifications: localEmailNotifications,
+      darkMode: localDarkMode,
+    
+    };
+    await saveSettings(newSettings);
+    
+  };
+
+  
+  if (loading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loadingMessage}>{MESSAGES.LOADING}</div>
+      </div>
+    );
+  }
+
+ 
+  if (!settings) {
+      return (
+          <div className={styles.container}>
+              <div className={styles.errorMessage}>Failed to load settings. Please try again.</div>
+          </div>
+      );
+  }
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.heading}>Settings</h2>
+      <h2 className={styles.heading}>Account Settings</h2>
+
       <div className={styles.card}>
         <h3 className={styles.sectionTitle}>Notification Preferences</h3>
         <div className={styles.flexRow}>
-          <label htmlFor="emailNotifications" className={styles.label}>Email Notifications</label>
+          <label htmlFor="emailNotifications" className={styles.label}>
+            Email Notifications
+            <p className={styles.settingDescription}>Receive updates and alerts via email.</p>
+          </label>
           <input
             type="checkbox"
             id="emailNotifications"
-            checked={emailNotifications}
-            onChange={() => setEmailNotifications(!emailNotifications)}
+            checked={localEmailNotifications}
+            onChange={() => setLocalEmailNotifications(!localEmailNotifications)}
             className={styles.checkbox}
           />
         </div>
 
         <h3 className={styles.sectionTitle}>Display Preferences</h3>
         <div className={styles.flexRow}>
-          <label htmlFor="darkMode" className={styles.label}>Dark Mode</label>
+          <label htmlFor="darkMode" className={styles.label}>
+            Dark Mode
+            <p className={styles.settingDescription}>Switch to a darker theme for reduced eye strain.</p>
+          </label>
           <input
             type="checkbox"
             id="darkMode"
-            checked={darkMode}
-            onChange={() => setDarkMode(!darkMode)}
+            checked={localDarkMode}
+            onChange={() => setLocalDarkMode(!localDarkMode)}
             className={styles.checkbox}
           />
         </div>
 
+        {/* Add more setting sections here */}
+        <h3 className={styles.sectionTitle}>Privacy</h3>
+        <div className={styles.flexRow}>
+          <label htmlFor="dataPrivacy" className={styles.label}>
+            Data Privacy
+            <p className={styles.settingDescription}>Manage how your data is used and shared.</p>
+          </label>
+          <button className={styles.linkButton}>View Privacy Policy</button>
+        </div>
+
+
         <div className={styles.buttonContainer}>
-          <button className={styles.button}>
-            Save Settings
+     
+          {error && <p className={styles.errorMessage}>{error.message}</p>}
+      
+          {successMessage && <p className={styles.successMessage}>{successMessage}</p>}
+          <button
+            className={styles.button}
+            onClick={handleSave}
+            disabled={saving || loading} 
+          >
+            {saving ? MESSAGES.SAVING : 'Save Changes'}
           </button>
         </div>
       </div>

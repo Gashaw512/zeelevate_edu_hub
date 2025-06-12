@@ -1,7 +1,11 @@
+// src/components/AppProviders.js
 import PropTypes from 'prop-types';
 import { AuthProvider } from '../../context/AuthContext';
 import { ProgramsProvider } from '../../context/ProgramsContext';
 import { EnrolledCoursesProvider } from '../../context/EnrolledCoursesContext';
+
+import { NotificationsProvider } from '../../context/NotificationsContext';
+import { SettingsProvider } from '../../context/SettingsContext';
 
 /**
  * @typedef {object} AppProvidersProps
@@ -17,13 +21,18 @@ import { EnrolledCoursesProvider } from '../../context/EnrolledCoursesContext';
  */
 const AppProviders = ({ children }) => {
   return (
-    <AuthProvider>
-      <ProgramsProvider>
-        <EnrolledCoursesProvider>
-          {children}
-        </EnrolledCoursesProvider>
-      </ProgramsProvider>
-    </AuthProvider>
+    <ProgramsProvider>
+      <AuthProvider>
+          <NotificationsProvider> 
+            <EnrolledCoursesProvider>
+              <SettingsProvider>
+{children}
+              </SettingsProvider>
+            </EnrolledCoursesProvider>
+          </NotificationsProvider>
+       
+      </AuthProvider>
+    </ProgramsProvider>
   );
 };
 
