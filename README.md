@@ -97,8 +97,8 @@
 ## 👤 Author
 
 
-<! -- **Gashaw Kidanu** – Frontend Developer, Cybersecurity Analyst  --!>
- <! -- _Connect with me on [LinkedIn](https://www.linkedin.com/) or GitHub_ --!>
+ **Gashaw Kidanu** – Frontend Developer, Cybersecurity Analyst 
+-- _Connect with me on [LinkedIn](https://www.linkedin.com/) or GitHub_ 
 
 ---
 
