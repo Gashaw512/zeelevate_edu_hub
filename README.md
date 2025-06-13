@@ -1,4 +1,5 @@
 # 🌱 Zeelevate — Empowering the Next Generation Through Digital Education
+![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)
 
 **Zeelevate** is a modern educational platform built to equip teenagers and adults with the digital, financial, and professional skills needed to thrive in today’s world. Tailored for learners aged 13–18 and adults alike, Zeelevate bridges the gap between academic learning and real-world life skills.
 
