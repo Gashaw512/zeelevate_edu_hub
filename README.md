@@ -105,7 +105,7 @@ See the [LICENSE](./LICENSE) file for details.
 
 ## 📣 Connect with Zeelevate
 
-- 🌍 Website: [Zeelevate.com](https://www.zeelevate.com) *(placeholder)*
+- 🌍 Website: [Zeelevate.com](https://www.zeelevate.com)
 - 🔗 [LinkedIn](#) | 📘 [Facebook](#) | 📸 [Instagram](#) | 📺 [YouTube](#)
 
 ---
