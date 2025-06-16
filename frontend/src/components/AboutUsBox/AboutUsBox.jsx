@@ -1,5 +1,3 @@
-// src/components/AboutUs/AboutUsBox.jsx (No significant changes needed for toggle)
-import React from 'react';
 import { Link } from "react-router-dom";
 import FounderCard from "./FounderCard";
 import OrgStory from "./OrgStory";
@@ -8,10 +6,12 @@ import { founders } from "../../data/founders";
 import styles from "./AboutUsBox.module.css";
 
 const AboutUsBox = () => {
+
+    const PROGRAMS_SECTION_ID = 'service';
   return (
     <section className={styles.aboutUsSection}>
       <div className={styles.aboutUsContainer}>
-        {/* Main Title & Intro Description */}
+   
         <h1 className={styles.sectionTitle}>Discover Zeelevate Academy</h1>
         <p className={styles.sectionDescription}>
           At Zeelevate, we're more than just an academy; we're a launchpad for digital empowerment.
@@ -19,26 +19,30 @@ const AboutUsBox = () => {
           fostering a community of confident and capable digital citizens.
         </p>
 
-        {/* Organization Story - Sets the core narrative */}
+      
         <div className={styles.sectionBlock}>
           <OrgStory />
         </div>
 
-        {/* Introductory Video - Adds a dynamic and personal touch */}
+       
         <div className={styles.sectionBlock}>
           <h2 className={styles.subsectionHeading}>Experience Zeelevate in Action</h2>
           <IntroVideo />
         </div>
-
-        {/* Call-to-action - Prompts for course exploration */}
+      
         <div className={styles.aboutSectionCta}>
           <h2 className={styles.ctaHeadingSmall}>Ready to Elevate Your Skills?</h2>
-          <Link to="/courses" className="cta-button primary-cta-button">
-            Explore Our Programs
-          </Link>
+          <Link
+  to="/"
+  state={{ scrollTo: PROGRAMS_SECTION_ID }}
+  className="cta-button primary-cta-button"
+>
+  Explore Our Programs
+</Link>
+
         </div>
 
-        {/* Meet the Team - Founders */}
+     
         <div className={styles.sectionBlock}>
           <h2 className={styles.subsectionHeading}>Meet Our Visionary Founders</h2>
           <p className={styles.sectionDescription}>
@@ -49,14 +53,14 @@ const AboutUsBox = () => {
             {founders.map((founder) => (
               <FounderCard
                 key={founder.name}
-                // Ensure social is always an object here before spreading
+           
                 {...{ ...founder, social: founder.social || {} }}
               />
             ))}
           </div>
         </div>
 
-        {/* "Why Choose Us" - Special Treatment */}
+
         <div className={styles.whyChooseUsSection}>
           <h2 className={styles.whyChooseUsHeading}>Why Zeelevate is Your Best Choice</h2>
           <p className={styles.whyChooseUsDescription}>

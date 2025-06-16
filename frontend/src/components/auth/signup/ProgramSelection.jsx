@@ -132,8 +132,9 @@ const ViewAllCoursesLink = () => {
       <p className={styles.viewCoursesText}>
         Want to see a full breakdown of each program's content?
       </p>
-      <Link
-        to={{ pathname: "/", state: { scrollTo: "service" } }}
+           <Link
+        to="/"
+        state={{ scrollTo: "service" }}
         className={styles.viewAllCoursesLink}
       >
         View All Courses & Details
