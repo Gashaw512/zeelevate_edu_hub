@@ -2,9 +2,18 @@ const express = require('express');
 const { db, admin } = require('../config/firebase-admin');
 const { authenticate, requireAdmin } = require('../middlewares/authMiddleware');
 const {
+  getAllCourses,
+  addCourse,
+  updateCourse,
+  deleteCourse,
+  getAllPrograms, // New
+  addProgram,     // New
+  updateProgram,  // New
+  deleteProgram,  // New
   sendCourseNotification,
   sendGlobalNotification
-} = require('../services/adminService');
+} = require('../services/adminService'); // Destructure new service functions
+const crypto = require('crypto'); // Already there
 
 const router = express.Router();
 
@@ -36,7 +45,58 @@ router.post('/create-admin', async (req, res) => {
   }
 });
 
-// List all courses (public view, no classLink)
+// Public: Get all programs
+router.get('/public/programs', async (req, res) => {
+  try {
+    const programs = await getAllPrograms(); // Use the service function
+    res.json({ success: true, programs });
+  } catch (err) {
+    console.error('Get Public Programs Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Public: Get a single program by title
+router.post('/public/program-by-title', async (req, res) => {
+  try {
+    const { title } = req.body;
+
+    if (!title) {
+      return res.status(400).json({ error: 'Program title is required' });
+    }
+
+    const snapshot = await db.collection('programs')
+      .where('title', '==', title)
+      .limit(1)
+      .get();
+
+    if (snapshot.empty) {
+      return res.status(404).json({ error: 'Program not found' });
+    }
+
+    const doc = snapshot.docs[0];
+    const data = doc.data();
+
+    res.json({
+      success: true,
+      programId: data.programId,
+      title: data.title,
+      price: data.price,
+      badge: data.badge,
+      status: data.status,
+      classStartDate: data.classStartDate,
+      registrationDeadline: data.registrationDeadline,
+      order: data.order,
+      features: data.features
+      // Omit sensitive data if any
+    });
+  } catch (err) {
+    console.error('Get Program By Title Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Public: Get all courses (without classLink)
 router.get('/public/courses', async (req, res) => {
   try {
     const snapshot = await db.collection('courses').get();
@@ -48,120 +108,134 @@ router.get('/public/courses', async (req, res) => {
 
     res.json({ success: true, courses });
   } catch (err) {
-    console.error('Get Courses Error:', err);
+    console.error('Get Public Courses Error:', err);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Public: Get a single course by title
-router.post('/course-by-title', async (req, res) => {
+// Public: Get courses by Program ID (without classLink)
+router.get('/public/programs/:programId/courses', async (req, res) => {
   try {
-    const { courseTitle } = req.body;
-
-    if (!courseTitle) {
-      return res.status(400).json({ error: 'courseTitle is required' });
-    }
+    const { programId } = req.params;
 
     const snapshot = await db.collection('courses')
-      .where('courseTitle', '==', courseTitle)
-      .limit(1)
+      .where('programIds', 'array-contains', programId)
       .get();
 
-    if (snapshot.empty) {
-      return res.status(404).json({ error: 'Course not found' });
-    }
-
-    const doc = snapshot.docs[0];
-    const data = doc.data();
-
-    res.json({
-      success: true,
-      courseTitle: data.courseTitle,
-      courseId: data.courseId
+    const courses = snapshot.docs.map(doc => {
+      const { classLink, ...rest } = doc.data(); // Remove classLink
+      return rest;
     });
+
+    res.json({ success: true, courses });
   } catch (err) {
-    console.error('Get Course By Title Error:', err);
+    console.error('Get Public Courses by Program ID Error:', err);
     res.status(500).json({ error: err.message });
   }
 });
-
 
 // Protect all routes below this line
 router.use(authenticate);
 router.use(requireAdmin);
 
-// List all courses
+// Admin: Program Management Routes
+// Get all programs
+router.get('/programs', async (req, res) => {
+  try {
+    const programs = await getAllPrograms();
+    res.json({ success: true, programs });
+  } catch (err) {
+    console.error('Admin Get Programs Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Add a program
+router.post('/add-program', async (req, res) => {
+  try {
+    const programId = await addProgram(req.body);
+    res.json({ success: true, programId });
+  } catch (err) {
+    console.error('Admin Add Program Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update a program
+router.put('/programs/:id', async (req, res) => {
+  try {
+    const programId = req.params.id;
+    const updates = req.body;
+    await updateProgram(programId, updates);
+    res.json({ success: true, message: 'Program updated successfully' });
+  } catch (err) {
+    console.error('Admin Update Program Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete a program
+router.delete('/programs/:id', async (req, res) => {
+  try {
+    const programId = req.params.id;
+    await deleteProgram(programId);
+    res.json({ success: true, message: 'Program deleted successfully' });
+  } catch (err) {
+    console.error('Admin Delete Program Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// Admin: Course Management Routes (modified)
 router.get('/courses', async (req, res) => {
   try {
-    const snapshot = await db.collection('courses').get();
-    const courses = snapshot.docs.map(doc => doc.data());
+    const courses = await getAllCourses(); // Use the service function
     res.json({ success: true, courses });
   } catch (err) {
-    console.error('Get Courses Error:', err);
+    console.error('Admin Get Courses Error:', err);
     res.status(500).json({ error: err.message });
   }
 });
 
-// ➕ Add a course
+// ➕ Add a course (modified)
 router.post('/add-course', async (req, res) => {
   try {
-    const {
-      courseTitle,
-      courseDetails,
-      price,
-      registrationDeadline,
-      classStartDate,
-      classLink,
-      classDuration
-    } = req.body;
-
-    const courseId = crypto.randomUUID();
-
-    await db.collection('courses').doc(courseId).set({
-      courseId,
-      courseTitle,
-      courseDetails,
-      price,
-      registrationDeadline,
-      classStartDate,
-      classLink,
-      classDuration
-    });
-
+    // The service layer handles ID generation and program name fetching
+    const courseId = await addCourse(req.body);
     res.json({ success: true, courseId });
   } catch (err) {
-    console.error('Add Course Error:', err);
+    console.error('Admin Add Course Error:', err);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Update a course
+// Update a course (modified)
 router.put('/courses/:id', async (req, res) => {
   try {
     const courseId = req.params.id;
     const updates = req.body;
-
-    await db.collection('courses').doc(courseId).update(updates);
+    await updateCourse(courseId, updates); // Use the service function
     res.json({ success: true, message: 'Course updated successfully' });
   } catch (err) {
-    console.error('Update Course Error:', err);
+    console.error('Admin Update Course Error:', err);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Delete a course
+// Delete a course (modified)
 router.delete('/courses/:id', async (req, res) => {
   try {
     const courseId = req.params.id;
-
-    await db.collection('courses').doc(courseId).delete();
+    await deleteCourse(courseId); // Use the service function
     res.json({ success: true, message: 'Course deleted successfully' });
   } catch (err) {
-    console.error('Delete Course Error:', err);
+    console.error('Admin Delete Course Error:', err);
     res.status(500).json({ error: err.message });
   }
 });
 
+// Existing student and notification routes (no changes needed for logic)
 // Get students and their subcollection enrollments
 router.get('/students', async (req, res) => {
   try {
