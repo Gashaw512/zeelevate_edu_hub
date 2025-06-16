@@ -1,8 +1,9 @@
+// src/components/SignUp/SignUp.jsx
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useSearchParams, useNavigate, useParams } from "react-router-dom";
 
 import useEnrollmentAndPayment from "../../../hooks/useEnrollmentAndPayment";
-import { usePrograms } from "../../../context/ProgramsContext"; // New import for the context hook
+import { usePrograms } from "../../../context/ProgramsContext";
 import ProgramSelection from "./ProgramSelection";
 import AccountDetailsForm from "./AccountDetailsForm";
 import FormNavigation from "./FormNavigation";
@@ -12,19 +13,20 @@ import styles from "./SignUp.module.css";
 const SignUp = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { programType } = useParams();
+  const { programType } = useParams(); // programType from route path param
   const accountDetailsFormRef = useRef();
 
-  // --- Get programs data from the context ---
+  // --- Get programs and allCourses data from the context ---
   const {
-    programs: fetchedPrograms, // Renamed to fetchedPrograms for clarity as used in component
-    loadingPrograms,          // Use the renamed prop from context
-    programsError,            // Use the renamed prop from context
-    refetchPrograms,          // If you need to trigger a re-fetch, use this
+    programs: fetchedPrograms, // Renamed for clarity to avoid conflict with local 'programs' if any
+    allCourses,               // <-- Added this to get all courses from context
+    loadingPrograms,
+    programsError,
+    refetchPrograms,
   } = usePrograms();
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [selectedProgramIds, setSelectedProgramIds] = useState([]);
+  const [selectedProgramIds, setSelectedProgramIds] = useState([]); // Stores programId (e.g., "25000e08...")
   const [formData, setFormData] = useState({
     fName: "",
     lName: "",
@@ -47,50 +49,72 @@ const SignUp = () => {
     }
   }, [paymentError]);
 
-  // In SignUp.jsx
+  // --- Process initial program selection from URL ---
   useEffect(() => {
-    // Only process this if programs data has finished loading and there are no errors
+    // Only process if data has loaded successfully
     if (!loadingPrograms && !programsError && fetchedPrograms.length > 0) {
       const programIdFromUrl = searchParams.get("programId");
-      let initialProgramId = programType || programIdFromUrl;
+      // Prioritize path param, then search param for initial program ID
+      const initialProgramIdentifier = programType || programIdFromUrl;
 
-      if (initialProgramId) {
-        const isValidProgram = fetchedPrograms.some(p => p.id === initialProgramId);
+      if (initialProgramIdentifier) {
+        // Use 'programId' from the fetched program object for validation
+        const isValidProgram = fetchedPrograms.some(p => p.programId === initialProgramIdentifier);
         if (isValidProgram) {
-          if (!selectedProgramIds.includes(initialProgramId)) {
-            setSelectedProgramIds([initialProgramId]);
+          if (!selectedProgramIds.includes(initialProgramIdentifier)) {
+            setSelectedProgramIds([initialProgramIdentifier]); // Enforce single selection
           }
           if (currentStep !== 2) {
-            setCurrentStep(2);
+            setCurrentStep(2); // Move to account details if program pre-selected
           }
         } else {
           setGlobalError("The program you selected from the URL is not available. Please choose from the list below.");
           if (currentStep !== 1) {
-            setCurrentStep(1);
+            setCurrentStep(1); // Revert to program selection if invalid ID
           }
         }
       } else {
-        if (currentStep !== 1 && currentStep !== 2) {
+        // If no program ID in URL, default to step 1
+        if (currentStep !== 1) {
           setCurrentStep(1);
         }
       }
     } else if (!loadingPrograms && !programsError && fetchedPrograms.length === 0) {
+      // Handle case where no programs are available after loading
       setGlobalError("No programs are currently available for enrollment. Please check back later.");
       if (currentStep !== 1) {
         setCurrentStep(1);
       }
     }
-    // No changes to dependencies needed here.
-    // Dependencies remain the same as the data they depend on are now coming from context,
-    // which has its own memoization logic.
   }, [programType, searchParams, selectedProgramIds, currentStep, fetchedPrograms, loadingPrograms, programsError]);
 
+  // --- Prepare programs data with their included courses for ProgramSelection component ---
+  const programsWithCourses = useMemo(() => {
+    if (!fetchedPrograms || fetchedPrograms.length === 0 || !allCourses || allCourses.length === 0) {
+      return [];
+    }
 
+    return fetchedPrograms.map(program => {
+      const includedCourses = allCourses.filter(course =>
+        // Match course's programIds array with the current program's programId
+        course.programIds && Array.isArray(course.programIds) && course.programIds.includes(program.programId)
+      );
+      return {
+        ...program,
+        // Add the filtered courses array to each program object
+        courses: includedCourses 
+      };
+    });
+  }, [fetchedPrograms, allCourses]); // Recalculate if fetchedPrograms or allCourses change
+
+  // --- Calculate total price for selected programs ---
   const totalPrice = useMemo(
     () =>
       selectedProgramIds.reduce((total, id) => {
-        const program = fetchedPrograms.find((p) => p.id === id);
-        return total + (program?.fixedPrice || 0);
+        // Find the program using its programId, not 'id'
+        const program = fetchedPrograms.find((p) => p.programId === id);
+        // Use 'program.price' as per your data structure
+        return total + (program?.price || 0); 
       }, 0),
     [selectedProgramIds, fetchedPrograms]
   );
@@ -98,16 +122,15 @@ const SignUp = () => {
   // --- Handlers ---
   const handleProgramSelection = useCallback((programId) => {
     setSelectedProgramIds((prev) =>
-      prev.includes(programId)
-        ? prev.filter((id) => id !== programId)
-        : [programId] // Enforce single selection
+      // Enforce single selection by always replacing the array
+      prev.includes(programId) ? [] : [programId] 
     );
-    setGlobalError(""); // Clear any previous errors on selection change
+    setGlobalError(""); 
   }, []);
 
   const handleChange = useCallback(({ target: { name, value } }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setGlobalError(""); // Clear global error on form input change
+    setGlobalError(""); 
   }, []);
 
   const handleNextStep = useCallback(
@@ -116,38 +139,39 @@ const SignUp = () => {
       setGlobalError("");
 
       if (currentStep === 1) {
-        if (loadingPrograms) { // Use loadingPrograms from context
+        if (loadingPrograms) {
           setGlobalError("Please wait, programs are still loading.");
           return;
         }
-        if (programsError) { // Use programsError from context
+        if (programsError) {
           setGlobalError(`Cannot proceed due to a program loading error: ${programsError}`);
           return;
         }
         if (selectedProgramIds.length === 0) {
-          setGlobalError("Please select at least one program module to proceed.");
+          setGlobalError("Please select a program module to proceed."); // Changed "at least one" to "a" for single selection
           return;
         }
         setCurrentStep(2);
       }
     },
-    [currentStep, selectedProgramIds, loadingPrograms, programsError] // Updated dependencies
+    [currentStep, selectedProgramIds, loadingPrograms, programsError]
   );
 
   const handlePreviousStep = useCallback(() => {
     setGlobalError("");
     if (currentStep === 2) {
       setCurrentStep(1);
-    } else if (programType) {
-      navigate("/");
+    } else if (programType) { // If initially came from a specific program URL
+      navigate("/"); // Navigate home if on step 1 with pre-selected program
     } else {
-      setCurrentStep(1);
+      setCurrentStep(1); // Stay on step 1 if no pre-selected program
     }
   }, [currentStep, programType, navigate]);
 
   const handleSubmitAccountDetails = useCallback(async () => {
     setGlobalError("");
 
+    // Trigger validation on the AccountDetailsForm component
     const isValid = accountDetailsFormRef.current?.triggerFormValidation();
     if (!isValid) {
       setGlobalError("Please correct the errors in your account details.");
@@ -167,12 +191,13 @@ const SignUp = () => {
       password: formData.password,
     };
 
-    const courseDetails = {
-      courseId: selectedProgramIds[0],
+    // Assuming initiatePayment expects the programId for enrollment
+    const enrollmentDetails = {
+      programId: selectedProgramIds[0], // Pass the ID of the selected program
     };
 
     try {
-      await initiatePayment({ customerDetails, courseDetails });
+      await initiatePayment({ customerDetails, enrollmentDetails });
     } catch (err) {
       console.error("Payment initiation failed:", err);
       setGlobalError(err.message || "Failed to initiate payment. Please review your details and try again.");
@@ -196,7 +221,7 @@ const SignUp = () => {
   const isLayoutWide = useMemo(() => currentStep === 1, [currentStep]);
 
   // --- Conditional Rendering for Loading/Error/No Programs ---
-  if (loadingPrograms) { // Use loadingPrograms from context
+  if (loadingPrograms) {
     return (
       <AuthLayout
         title="Loading Programs..."
@@ -208,7 +233,7 @@ const SignUp = () => {
     );
   }
 
-  if (programsError) { // Use programsError from context
+  if (programsError) {
     return (
       <AuthLayout
         title="Error Loading Programs"
@@ -251,7 +276,7 @@ const SignUp = () => {
       >
         {currentStep === 1 && (
           <ProgramSelection
-            programs={fetchedPrograms}
+            programs={programsWithCourses} // Pass the enriched programs array
             selectedProgramIds={selectedProgramIds}
             onProgramSelect={handleProgramSelection}
             totalPrice={totalPrice}
