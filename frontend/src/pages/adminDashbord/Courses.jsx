@@ -4,7 +4,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Courses.css';
 import { getIdToken } from "firebase/auth";
-import { auth } from "../../firebase/auth"; // adjust path as needed
+import { auth } from "../../firebase/auth"; 
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
