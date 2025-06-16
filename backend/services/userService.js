@@ -4,14 +4,18 @@ async function registerUserAndEnroll(token) {
   const pendingRef = db.collection('pending_registrations').doc(token);
   const pendingSnap = await pendingRef.get();
 
-  if (!pendingSnap.exists) throw new Error('Registration token not found');
-  const { customerDetails, courseId } = pendingSnap.data();
+  if (!pendingSnap.exists) {
+    throw new Error('Registration token not found');
+  }
 
-  // ✅ Use actual courseId to fetch course
-  const courseSnap = await db.collection('courses').doc(courseId).get();
-  if (!courseSnap.exists) throw new Error('Course not found');
+  const { customerDetails, programId } = pendingSnap.data();
 
-  const courseData = courseSnap.data();
+  const programSnap = await db.collection('programs').doc(programId).get();
+  if (!programSnap.exists) {
+    throw new Error('Program not found');
+  }
+
+  const programData = programSnap.data();
 
   // Register user
   let userRecord;
@@ -36,64 +40,66 @@ async function registerUserAndEnroll(token) {
     firstname: customerDetails.firstName,
     lastname: customerDetails.lastName,
     email: customerDetails.email,
-    phone_number: customerDetails.phone || '',
-    registration_date: new Date()
+    phone: customerDetails.phone || ''
+    // Add any other student-specific details here
   });
 
-  // Calculate expiry = classStartDate + classDuration
-  const startDate = new Date(courseData.classStartDate);
-  const expiry = new Date(startDate);
-  expiry.setDate(startDate.getDate() + parseInt(courseData.classDuration));
-
-  await studentRef.collection('enrollments').add({
-    course_id: courseId,
-    course_title: courseData.courseTitle,
-    courseDetails: courseData.courseDetails,
-    classLink: courseData.classLink,
-    classStartDate: courseData.classStartDate,
-    classDuration: courseData.classDuration,
-    expiry
+  // Save enrollment
+  await db.collection('students').doc(userRecord.uid).collection('enrollments').add({
+    programId: programData.programId,
+    programTitle: programData.title,
+    enrollmentDate: admin.firestore.FieldValue.serverTimestamp(),
+    status: 'enrolled',
   });
 
-  await db.collection('users').doc(userRecord.uid).set({
-    email: customerDetails.email,
-    role: 'student'
-  });
-
+  // Delete pending registration
   await pendingRef.delete();
 
+  // --- MODIFICATION HERE: ADDING EMAIL AND PASSWORD TO THE RETURN OBJECT ---
   return {
-    uid: userRecord.uid,
+    success: true,
+    uid: userRecord.uid, // Changed from userId to uid for consistency with Firebase
     email: customerDetails.email,
-    password: customerDetails.authPassword
+    password: customerDetails.authPassword, // Returning the password passed for auth
+    programTitle: programData.title
   };
 }
 
+// Keep other functions as they were (getEnrollmentsByUID, getStudentNotifications, etc.)
 async function getEnrollmentsByUID(uid) {
-  const snapshot = await db.collection('students').doc(uid).collection('enrollments').get();
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  const enrollmentsSnapshot = await db.collection('students')
+    .doc(uid)
+    .collection('enrollments')
+    .orderBy('enrollmentDate', 'desc')
+    .get();
+
+  return enrollmentsSnapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data(),
+    enrollmentDate: doc.data().enrollmentDate.toDate()
+  }));
 }
 
 async function getStudentNotifications(userId) {
-  const [individualSnap, globalSnap] = await Promise.all([
-    db.collection('notifications')
-      .where('recipientId', '==', userId)
-      .orderBy('createdAt', 'desc')
-      .get(),
-    db.collection('notifications')
-      .where('isGlobal', '==', true)
-      .orderBy('createdAt', 'desc')
-      .get()
-  ]);
+  const notificationsRef = db.collection('notifications');
+  const querySnapshot = await notificationsRef
+    .where('recipientId', '==', userId)
+    .orderBy('createdAt', 'desc')
+    .get();
+
+  const globalNotificationsSnapshot = await notificationsRef
+    .where('isGlobal', '==', true)
+    .orderBy('createdAt', 'desc')
+    .get();
 
   return [
-    ...individualSnap.docs.map(doc => ({ 
-      id: doc.id, 
+    ...querySnapshot.docs.map(doc => ({
+      id: doc.id,
       ...doc.data(),
       createdAt: doc.data().createdAt.toDate()
     })),
-    ...globalSnap.docs.map(doc => ({ 
-      id: doc.id, 
+    ...globalNotificationsSnapshot.docs.map(doc => ({
+      id: doc.id,
       ...doc.data(),
       createdAt: doc.data().createdAt.toDate()
     }))
@@ -103,30 +109,28 @@ async function getStudentNotifications(userId) {
 async function markNotificationAsRead(notificationId, userId) {
   const notificationRef = db.collection('notifications').doc(notificationId);
   const notificationSnap = await notificationRef.get();
-  
+
   if (!notificationSnap.exists) {
     throw new Error('Notification not found');
   }
-  
+
   const notification = notificationSnap.data();
-  
+
   if ((!notification.isGlobal && notification.recipientId !== userId)) {
     throw new Error('Unauthorized to mark this notification as read');
   }
-  
+
   await notificationRef.update({ read: true });
   return { success: true };
 }
 
 async function clearAllUserNotifications(userId) {
   try {
-    // Get all notifications for this user
     const notificationsRef = db.collection('notifications');
     const querySnapshot = await notificationsRef
       .where('recipientId', '==', userId)
       .get();
 
-    // Batch delete all matching notifications
     const batch = db.batch();
     querySnapshot.forEach(doc => {
       batch.delete(doc.ref);
@@ -140,8 +144,8 @@ async function clearAllUserNotifications(userId) {
   }
 }
 
-module.exports = { 
-  registerUserAndEnroll, 
+module.exports = {
+  registerUserAndEnroll,
   getEnrollmentsByUID,
   getStudentNotifications,
   markNotificationAsRead,

@@ -105,10 +105,10 @@ const AddProgram = () => {
       }
       return newSelection;
     });
-    setCourseSearchTerm(''); // Clear search term after adding
+    setCourseSearchTerm(''); 
   }, [formErrors]);
 
-  // Handler to remove a course from the selected list
+ 
   const handleRemoveCourseFromProgram = useCallback((courseId) => {
     setSelectedCourseIds(prevSelected => prevSelected.filter(id => id !== courseId));
   }, []);

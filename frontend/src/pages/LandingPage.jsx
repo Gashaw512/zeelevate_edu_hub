@@ -27,7 +27,8 @@ import { useScrollToSection } from '../hooks/useScrollToSection';
  */
 const LandingPage = () => {
 
-   useScrollToSection(); // This auto-scrolls on mount if location.state.scrollTo exists
+ const { handleNavigationAndScroll } = useScrollToSection(); // this runs the useEffect inside the hook
+
 
 
 

@@ -13,6 +13,7 @@ const { admin, db } = require('../config/firebase-admin');
 
 // POST /register-user
 router.post('/register-user', async (req, res) => {
+   console.log('Incoming request body:', req.body); // <-- Add this line
   try {
     const { token } = req.body;
     const result = await registerUserAndEnroll(token);
