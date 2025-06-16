@@ -1,11 +1,11 @@
-
 import React from "react";
 import PropTypes from "prop-types";
-import styles from "./AuthForm.module.css";
+import styles from "./AuthForm.module.css"; 
 
 const AuthForm = ({
   formData,
   onChange,
+  onBlur, 
   submitButtonText,
   disabled = false,
   fieldsConfig = [],
@@ -25,13 +25,16 @@ const AuthForm = ({
         placeholder={field.placeholder || `Enter your ${field.label}`}
         value={formData[field.name] || ""}
         onChange={onChange}
+        onBlur={onBlur}
         required={field.required}
         className={`${styles.input} ${
           errors[field.name] ? styles.inputError : ""
         }`}
         disabled={disabled}
-        autoComplete={field.autocomplete || 'off'}
+        autoComplete={field.autoComplete || 'off'} 
+        inputMode={field.inputMode || 'text'} 
       />
+      
       {errors[field.name] && (
         <p className={styles.fieldError}>{errors[field.name]}</p>
       )}
@@ -64,6 +67,7 @@ const AuthForm = ({
 AuthForm.propTypes = {
   formData: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
+  onBlur: PropTypes.func.isRequired, 
   submitButtonText: PropTypes.string,
   disabled: PropTypes.bool,
   fieldsConfig: PropTypes.arrayOf(
@@ -73,11 +77,17 @@ AuthForm.propTypes = {
       type: PropTypes.string,
       placeholder: PropTypes.string,
       required: PropTypes.bool,
-      autocomplete: PropTypes.string, // <--- ADD THIS PROP TYPE
+      autoComplete: PropTypes.string, 
+      regex: PropTypes.instanceOf(RegExp),
+      minLength: PropTypes.number,
+      maxLength: PropTypes.number,
+      errorMessage: PropTypes.string,
+      inputMode: PropTypes.string,
+      hint: PropTypes.string, 
     })
   ).isRequired,
   errors: PropTypes.object,
   children: PropTypes.node,
 };
 
-export default React.memo(AuthForm)
+export default React.memo(AuthForm);
