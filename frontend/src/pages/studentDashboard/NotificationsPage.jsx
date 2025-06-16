@@ -1,30 +1,43 @@
-// src/components/NotificationsPage/NotificationsPage.jsx
-import React, { useState, useMemo, useCallback } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import useNotifications from '../../hooks/useNotifications';
+// src/pages/NotificationsPage/NotificationsPage.js
+import { useState, useMemo, useCallback } from 'react';
+// No longer import useNotifications directly, use the context
+// import useNotifications, { NOTIFICATION_MESSAGES } from '../../hooks/useNotifications';
+import { useNotificationsContext, NOTIFICATION_MESSAGES } from '../../context/NotificationsContext'; // Import from context
+import { useAuth } from '../../context/AuthContext'; // Still needed for user ID
+
+// You might still import these if they are generic components not strictly part of NotificationsContext
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import { formatDistanceToNow, parseISO } from 'date-fns'; // parseISO is no longer strictly needed for timestamps, but kept if you have other date strings
+import Toast from '../../components/common/Toast';
+import Modal from '../../components/common/Modal';
 
-// Icons
-import { Bell, MailOpen, Trash2, XCircle, Loader2 } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
+import { Bell, MailOpen, Trash2, Loader2, AlertCircle } from 'lucide-react';
 
-// CSS Modules
 import styles from './NotificationsPage.module.css';
 
+
 const NotificationsPage = () => {
-    const { user, loading: authLoading } = useAuth();
+    const { loading: authLoading } = useAuth(); // We don't need `user` directly here, it's passed to context provider
+
+    // Consume the notification state and actions from the context
     const {
         notifications,
         loading: notificationsLoading,
         error: notificationsError,
-        markAsRead, // Matches the updated hook function name
-        markAllAsRead, // Matches the updated hook function name
-        deleteNotification, // Needs to be implemented in your hook if not already
-        clearAllNotifications,
-        markingAll, // State for "Mark All as Read" loading directly from the hook
-        clearing,   // State for "Clear All" loading directly from the hook
-        MESSAGES    // Messages object from the hook for consistency
-    } = useNotifications(user?.uid);
+        markAsRead,
+        markAllAsRead,
+        markingAll,
+        clearing,
+        toastMessage,
+        requiresConfirmation,
+        notificationToDeleteId,
+        requestClearAllConfirmation,
+        confirmClearAllNotifications,
+        requestDeleteConfirmation,
+        confirmDeleteNotification,
+        cancelConfirmation,
+        NOTIFICATION_MESSAGES, // Now correctly destructured from the context
+    } = useNotificationsContext(); // No userId prop needed here
 
     const [filter, setFilter] = useState('all'); // 'all' or 'unread'
 
@@ -42,38 +55,11 @@ const NotificationsPage = () => {
         await markAsRead(notificationId);
     }, [markAsRead]);
 
-    const handleDeleteNotification = useCallback(async (notificationId) => {
-        if (window.confirm("Are you sure you want to delete this notification?")) {
-            // Ensure deleteNotification is provided by your hook
-            if (deleteNotification) {
-                await deleteNotification(notificationId);
-            } else {
-                console.warn("deleteNotification function is not available in useNotifications hook.");
-                // Optionally provide user feedback here
-            }
-        }
-    }, [deleteNotification]);
+    // This function now requests confirmation for deleting a single notification
+    const handleDeleteNotificationClick = useCallback((notificationId) => {
+        requestDeleteConfirmation(notificationId); // Triggers the modal
+    }, [requestDeleteConfirmation]);
 
-    // Handle bulk actions
-    const handleMarkAllAsRead = useCallback(async () => {
-        try {
-            await markAllAsRead(); // Call the hook's function
-        } catch (error) {
-            console.error(MESSAGES.MARK_ALL_READ_ERROR, error);
-            // Additional user-facing error feedback could go here
-        }
-    }, [markAllAsRead, MESSAGES]);
-
-    const handleClearAllNotifications = useCallback(async () => {
-        if (window.confirm("Are you sure you want to clear ALL notifications? This action cannot be undone.")) {
-            try {
-                await clearAllNotifications();
-            } catch (error) {
-                console.error(MESSAGES.CLEAR_ALL_ERROR, error);
-                // Additional user-facing error feedback could go here
-            }
-        }
-    }, [clearAllNotifications, MESSAGES]);
 
     // Determine if there are any unread notifications for 'Mark all as read' button
     const hasUnreadNotifications = useMemo(() => {
@@ -85,11 +71,20 @@ const NotificationsPage = () => {
         return notifications && notifications.length > 0;
     }, [notifications]);
 
+    // Get the message content for the notification currently pending deletion
+    const notificationToDeleteMessage = useMemo(() => {
+        if (notificationToDeleteId) {
+            const notification = notifications.find(n => n.id === notificationToDeleteId);
+            return notification ? notification.message : '';
+        }
+        return '';
+    }, [notificationToDeleteId, notifications]);
+
     // Handle initial loading states
     if (authLoading || notificationsLoading) {
         return (
             <div className={styles.fullPageStatusContainer}>
-                <LoadingSpinner message={MESSAGES.LOADING_NOTIFICATIONS} />
+                <LoadingSpinner message={NOTIFICATION_MESSAGES.LOADING_NOTIFICATIONS} />
             </div>
         );
     }
@@ -98,9 +93,8 @@ const NotificationsPage = () => {
     if (notificationsError) {
         return (
             <div className={styles.errorContainer}>
-                <XCircle size={48} className={styles.errorIcon} />
+                <AlertCircle size={48} className={styles.errorIcon} />
                 <h2 className={styles.errorHeading}>Error Loading Notifications</h2>
-                {/* Display error message directly from the hook's error state */}
                 <p className={styles.errorText}>{notificationsError}</p>
                 <p className={styles.errorText}>Please try refreshing the page.</p>
             </div>
@@ -115,20 +109,20 @@ const NotificationsPage = () => {
                 </h1>
                 <div className={styles.actionsGroup}>
                     <button
-                        onClick={handleMarkAllAsRead}
+                        onClick={markAllAsRead}
                         className={styles.actionButton}
-                        disabled={!hasUnreadNotifications || markingAll} // Use 'markingAll' from hook
+                        disabled={!hasUnreadNotifications || markingAll}
                     >
                         {markingAll ? <Loader2 size={18} className={styles.spinner} /> : <MailOpen size={18} />}
-                        <span>{markingAll ? MESSAGES.MARKING_ALL_READ : MESSAGES.MARK_AS_READ}</span>
+                        <span>{markingAll ? NOTIFICATION_MESSAGES.MARKING_ALL_READ : NOTIFICATION_MESSAGES.MARK_AS_READ}</span>
                     </button>
                     <button
-                        onClick={handleClearAllNotifications}
+                        onClick={requestClearAllConfirmation} // Calls the confirmation function
                         className={`${styles.actionButton} ${styles.dangerButton}`}
-                        disabled={!hasAnyNotifications || clearing} // Use 'clearing' from hook
+                        disabled={!hasAnyNotifications || clearing}
                     >
                         {clearing ? <Loader2 size={18} className={styles.spinner} /> : <Trash2 size={18} />}
-                        <span>{clearing ? MESSAGES.CLEARING_NOTIFICATIONS : MESSAGES.CLEAR_ALL}</span>
+                        <span>{clearing ? NOTIFICATION_MESSAGES.CLEARING_NOTIFICATIONS : NOTIFICATION_MESSAGES.CLEAR_ALL}</span>
                     </button>
                 </div>
             </div>
@@ -154,8 +148,8 @@ const NotificationsPage = () => {
                         <Bell size={48} className={styles.emptyStateIcon} />
                         <p className={styles.emptyStateText}>
                             {filter === 'unread'
-                                ? "No unread notifications! You're all caught up."
-                                : "You don't have any notifications yet."}
+                                ? NOTIFICATION_MESSAGES.NO_NEW_NOTIFICATIONS_UNREAD
+                                : NOTIFICATION_MESSAGES.NO_NEW_NOTIFICATIONS}
                         </p>
                     </div>
                 ) : (
@@ -167,7 +161,6 @@ const NotificationsPage = () => {
                             <div className={styles.notificationContent}>
                                 <p className={styles.notificationMessage}>{notification.message}</p>
                                 <span className={styles.notificationTimestamp}>
-                                    {/* Corrected: Convert Firestore Timestamp to Date object */}
                                     {notification.createdAt ? formatDistanceToNow(notification.createdAt.toDate(), { addSuffix: true }) : 'Just now'}
                                 </span>
                             </div>
@@ -181,20 +174,50 @@ const NotificationsPage = () => {
                                         <MailOpen size={18} />
                                     </button>
                                 )}
-                                {deleteNotification && ( // Only render if deleteNotification is available in the hook
-                                    <button
-                                        className={`${styles.itemActionButton} ${styles.deleteButton}`}
-                                        onClick={() => handleDeleteNotification(notification.id)}
-                                        title="Delete"
-                                    >
-                                        <Trash2 size={18} />
-                                    </button>
-                                )}
+                                <button
+                                    className={`${styles.itemActionButton} ${styles.deleteButton}`}
+                                    onClick={() => handleDeleteNotificationClick(notification.id)} // Calls the confirmation request
+                                    title="Delete"
+                                >
+                                    <Trash2 size={18} />
+                                </button>
                             </div>
                         </div>
                     ))
                 )}
             </div>
+
+            {/* --- Toast Component --- */}
+            {toastMessage && (
+                <Toast
+                    type={toastMessage.type}
+                    message={toastMessage.message}
+                />
+            )}
+
+            {/* --- Confirmation Modals --- */}
+            {requiresConfirmation && requiresConfirmation.type === 'clearAll' && hasAnyNotifications && (
+                <Modal
+                    title="Confirm Clear All Notifications"
+                    message={NOTIFICATION_MESSAGES.CONFIRM_CLEAR_ALL}
+                    onConfirm={confirmClearAllNotifications}
+                    onCancel={cancelConfirmation}
+                    confirmText="Clear Notifications"
+                    cancelText="Cancel"
+                />
+            )}
+
+            {requiresConfirmation && requiresConfirmation.type === 'deleteSingle' && hasAnyNotifications && (
+                <Modal
+                    title="Confirm Notification Deletion"
+                    // Display the message of the notification being deleted in the modal
+                    message={`${NOTIFICATION_MESSAGES.CONFIRM_DELETE_SINGLE}\n\n"${notificationToDeleteMessage}"`}
+                    onConfirm={confirmDeleteNotification}
+                    onCancel={cancelConfirmation}
+                    confirmText="Delete"
+                    cancelText="Cancel"
+                />
+            )}
         </div>
     );
 };

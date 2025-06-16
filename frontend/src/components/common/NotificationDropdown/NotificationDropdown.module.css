@@ -1,0 +1,228 @@
+/* NotificationDropdown.module.css */
+
+/* MAIN DROPDOWN STYLES */
+.notificationsDropdown {
+  position: absolute;
+  right: 0;
+  margin-top: 0.75rem;
+  width: 24rem;
+  max-width: 95vw;
+  background-color: var(--background-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-color-dropdown);
+  z-index: 50;
+  overflow: hidden;
+  animation: fadeInScale 0.2s ease-out;
+  min-width: 200px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* HEADER */
+.dropdownHeader {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-light);
+  background-color: var(--background-muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* TITLE */
+.dropdownTitle {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 1.125rem;
+  margin: 0;
+  flex-grow: 1;
+}
+
+/* ACTION BUTTON */
+.headerActionButton {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  white-space: nowrap;
+}
+
+.headerActionButton:hover:not(:disabled) {
+  background-color: var(--background-hover);
+  color: var(--primary-blue);
+  border-color: var(--primary-blue);
+}
+
+/* DISABLED STATE */
+.headerActionButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* CLOSE BUTTON */
+.closeButton {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* SPINNER */
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* NOTIFICATION LIST */
+.notificationList {
+  max-height: 350px;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.notificationItem {
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.notificationItem:last-child {
+  border-bottom: none;
+}
+
+/* UNREAD / READ */
+.notificationUnread {
+  background-color: var(--background-secondary);
+  color: var(--text-primary);
+  border-left: 4px solid var(--primary-blue);
+  padding-left: calc(1.25rem - 4px);
+}
+
+.notificationRead {
+  background-color: var(--background-secondary);
+  color: var(--text-muted);
+}
+
+/* CONTENT */
+.notificationContent {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.notificationMessage {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 0.25rem;
+  word-wrap: break-word;
+}
+
+.notificationTimestamp {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ACTIONS */
+.notificationActions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.markReadBtn, .deleteBtn {
+  background: none;
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.markReadBtn {
+  color: var(--primary-blue);
+  border-color: var(--primary-blue);
+}
+
+.markReadBtn:hover {
+  background-color: var(--primary-blue);
+  color: var(--text-light);
+}
+
+.deleteBtn {
+  color: var(--error-red);
+  border-color: var(--error-red);
+}
+
+.deleteBtn:hover {
+  background-color: var(--error-red);
+  color: var(--text-light);
+}
+
+/* STATUS / EMPTY */
+.notificationStatus,
+.noNotifications {
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.noNotifications {
+  font-style: italic;
+}
+
+/* VIEW ALL */
+.viewAllContainer {
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--border-light);
+  background-color: var(--background-muted);
+  text-align: center;
+}
+
+.viewAllLink {
+  color: var(--primary-blue);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.viewAllLink:hover {
+  color: var(--primary-blue-dark);
+  text-decoration: underline;
+}
+
+

@@ -1,15 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap'); /* Changed to Outfit */
 
 body {
-  font-family: 'Inter', sans-serif;
+  /* This body rule should ideally be in your global CSS (e.g., index.css) */
+  font-family: 'Outfit', sans-serif; /* Consistent font family */
   margin: 0;
-  background-color: #f0f2f5; /* Light neutral background */
+  background-color: var(--background-root); /* Use global root background variable */
+  transition: background-color 0.3s ease; /* Smooth transition for theme change */
 }
 
 /* --- Header Container --- */
 .headerContainer {
-  background-color: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  /* Use background-secondary for header, which adapts to theme */
+  background-color: var(--background-secondary);
+  /* Use shadow variable for consistency */
+  box-shadow: var(--shadow-color-header); /* New variable recommended for header shadow */
   padding: 1rem 1.5rem;
   display: flex;
   justify-content: space-between;
@@ -17,12 +21,13 @@ body {
   border-radius: 0 0 1rem 1rem;
   position: relative;
   z-index: 10;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
 }
 
 .headerLeft {
   display: flex;
   align-items: center;
-  gap: 1rem; /* Spacing between menu button and greeting */
+  gap: 1rem;
 }
 
 /* --- Menu Button (for Sidebar Toggle) --- */
@@ -30,27 +35,31 @@ body {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0.75rem; /* Increased padding for easier click */
-  color: #6b7280; /* neutral gray */
+  padding: 0.75rem;
+  /* Use text-muted, which adapts */
+  color: var(--text-muted);
   transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
   border-radius: 0.5rem;
-  display: none; /* Hidden by default, shown on smaller screens */
+  display: none;
 }
 
 .menuButton:hover {
-  color: #1f2937; /* darker gray */
-  background-color: #f3f4f6;
-  transform: scale(1.05); /* Slight hover effect */
+  /* Use text-primary for hover color, which adapts */
+  color: var(--text-primary);
+  /* Use background-hover-light or background-muted, which adapts */
+  background-color: var(--background-muted);
+  transform: scale(1.05);
 }
 
 .menuButton:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(54, 134, 255, 0.4);
+  /* Use primary-blue for focus ring, with a new focus shadow variable */
+  box-shadow: 0 0 0 3px var(--primary-blue-focus-shadow); /* Use a defined variable */
 }
 
 @media (max-width: 1023px) {
   .menuButton {
-    display: block; /* Show menu button on tablets and smaller */
+    display: block;
   }
 }
 
@@ -58,9 +67,10 @@ body {
 .greeting {
   font-size: 1.625rem;
   font-weight: 600;
-  color: #1f2937; /* dark neutral */
+  /* Use text-primary, which adapts */
+  color: var(--text-primary);
   line-height: 1.2;
-  margin: 0; /* Remove default margin */
+  margin: 0;
 }
 
 @media (max-width: 767px) {
@@ -72,15 +82,18 @@ body {
 /* --- Role Badge --- */
 .roleBadge {
   display: inline-block;
-  background-color: #3686FF; /* Primary blue for the badge background */
-  color: #fff; /* White text */
+  /* Use primary-blue, which adapts */
+  background-color: var(--primary-blue);
+  /* Use text-light, which adapts (white/light gray) */
+  color: var(--text-light);
   padding: 0.2rem 0.6rem;
   border-radius: 0.375rem;
   font-size: 0.7rem;
   font-weight: 500;
   margin-left: 0.75rem;
   vertical-align: middle;
-  box-shadow: 0 2px 4px rgba(54, 134, 255, 0.2); /* Subtle shadow for badge */
+  /* Use shadow variable for consistency, primary action specific */
+  box-shadow: 0 2px 4px var(--shadow-color-primary-action);
 }
 
 /* --- Notifications Area --- */
@@ -93,7 +106,7 @@ body {
   border: none;
   cursor: pointer;
   padding: 0.75rem;
-  border-radius: 9999px; /* Fully rounded */
+  border-radius: 9999px;
   transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   position: relative;
   display: flex;
@@ -102,17 +115,20 @@ body {
 }
 
 .notificationsButton:hover {
-  background-color: #f3f4f6;
-  transform: scale(1.05); /* Slight hover effect */
+  /* Use background-muted, which adapts */
+  background-color: var(--background-muted);
+  transform: scale(1.05);
 }
 
 .notificationsButton:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(54, 134, 255, 0.4); /* primary color focus ring */
+  /* Use primary-blue for focus ring, with a new focus shadow variable */
+  box-shadow: 0 0 0 3px var(--primary-blue-focus-shadow);
 }
 
 .bellIcon {
-  color: #3686FF; /* Primary blue color */
+  /* Use primary-blue, which adapts */
+  color: var(--primary-blue);
 }
 
 .unreadBadge {
@@ -128,36 +144,43 @@ body {
   font-size: 0.75rem;
   font-weight: 700;
   line-height: 1;
-  color: #fff;
-  background-color: #ef4444; /* A more striking red for unread */
+  /* Use text-light, which adapts */
+  color: var(--text-light);
+  /* Use error-red, which adapts */
+  background-color: var(--error-red);
   border-radius: 9999px;
-  border: 2px solid #fff;
-  transform: translate(25%, -25%); /* Adjust badge position */
-  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3); /* Shadow for unread badge */
+  /* Use background-secondary for the border, which adapts */
+  border: 2px solid var(--background-secondary);
+  transform: translate(25%, -25%);
+  /* Use shadow variable for consistency, error specific */
+  box-shadow: 0 2px 4px var(--shadow-color-error); /* New variable recommended */
 }
 
 /* --- Notifications Dropdown --- */
 .notificationsDropdown {
   position: absolute;
-  right: 0; /* Default position for larger screens */
+  right: 0;
   margin-top: 0.75rem;
-  width: 24rem; /* Standard width for larger screens */
-  max-width: 95vw; /* Maximum width relative to viewport */
-  background-color: #fff;
-  border: 1px solid #e5e7eb;
+  width: 24rem;
+  max-width: 95vw;
+  /* Use background-secondary, which adapts */
+  background-color: var(--background-secondary);
+  /* Use border-light, which adapts */
+  border: 1px solid var(--border-light);
   border-radius: 0.75rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18); /* More pronounced shadow */
+  /* Use shadow variable for consistency, more pronounced */
+  box-shadow: var(--shadow-color-dropdown); /* New variable recommended for dropdowns */
   z-index: 50;
   overflow: hidden;
   animation: fadeInScale 0.2s ease-out;
-  /* Add min-width to prevent extreme collapse */
-  min-width: 200px; /* Adjust as needed, but this prevents it from being a "line" */
+  min-width: 200px;
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
 }
 
 @keyframes fadeInScale {
   from {
     opacity: 0;
-    transform: scale(0.95) translateY(-10px); /* Add slight vertical movement */
+    transform: scale(0.95) translateY(-10px);
   }
   to {
     opacity: 1;
@@ -167,16 +190,20 @@ body {
 
 .dropdownHeader {
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid #e5e7eb;
-  background-color: #f9fafb;
+  /* Use border-light, which adapts */
+  border-bottom: 1px solid var(--border-light);
+  /* Use background-muted, which adapts */
+  background-color: var(--background-muted);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: background-color 0.3s ease; /* Smooth transition */
 }
 
 .dropdownTitle {
   font-weight: 700;
-  color: #1f2937;
+  /* Use text-primary, which adapts */
+  color: var(--text-primary);
   font-size: 1.125rem;
   margin: 0;
 }
@@ -196,27 +223,31 @@ body {
 }
 
 .notificationList::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  /* Use a background variable for scrollbar track */
+  background: var(--background-muted);
   border-radius: 10px;
 }
 
 .notificationList::-webkit-scrollbar-thumb {
-  background: #ccc;
+  /* Use a background variable for scrollbar thumb */
+  background: var(--border-light);
   border-radius: 10px;
 }
 
 .notificationList::-webkit-scrollbar-thumb:hover {
-  background: #999;
+  /* Use a background variable for scrollbar thumb hover */
+  background: var(--text-muted);
 }
 
 
 .notificationItem {
   padding: 0.9rem 1.25rem;
-  border-bottom: 1px solid #f3f4f6;
-  transition: background-color 0.2s ease;
+  /* Use a subtle border variable for item separation */
+  border-bottom: 1px solid var(--border-subtle); /* New variable recommended for very light borders */
+  transition: background-color 0.2s ease, color 0.2s ease; /* Smooth transition */
   display: flex;
   gap: 0.75rem;
-  align-items: flex-start; /* Align text to top if multiline */
+  align-items: flex-start;
 }
 
 .notificationItem:last-child {
@@ -224,68 +255,79 @@ body {
 }
 
 .notificationRead {
-  background-color: #fcfcfc;
-  color: #9ca3af;
+  /* Use background-secondary for read items, with slight variation if needed */
+  background-color: var(--background-secondary);
+  /* Use text-muted, which adapts */
+  color: var(--text-muted);
 }
 
 .notificationUnread {
-  background-color: #fff;
-  color: #374151;
-  border-left: 4px solid #3686FF;
+  /* Use background-secondary or a subtle variant for unread, which adapts */
+  background-color: var(--background-secondary);
+  /* Use text-primary, which adapts */
+  color: var(--text-primary);
+  /* Use primary-blue for accent, which adapts */
+  border-left: 4px solid var(--primary-blue);
   padding-left: calc(1.25rem - 4px);
 }
 
 .notificationUnread:hover {
-  background-color: #f3f4f6;
+  /* Use background-muted for unread hover, which adapts */
+  background-color: var(--background-muted);
 }
 
 .notificationContent {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  /* Allow message to break and not overflow */
-  min-width: 0; /* Important for flex items within a fixed width container */
+  min-width: 0;
 }
 
 .notificationMessage {
   font-size: 0.9rem;
   line-height: 1.4;
   margin-bottom: 0.25rem;
-  word-wrap: break-word; /* Ensure long words break */
-  overflow-wrap: break-word; /* Ensure long words break */
-  white-space: normal; /* Allow text to wrap naturally */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .notificationTimestamp {
   font-size: 0.75rem;
-  color: #9ca3af;
+  /* Use text-muted, which adapts */
+  color: var(--text-muted);
 }
 
 .markReadBtn {
   background: none;
-  border: 1px solid #3686FF;
+  /* Use primary-blue for border, which adapts */
+  border: 1px solid var(--primary-blue);
   cursor: pointer;
   flex-shrink: 0;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #3686FF;
+  /* Use primary-blue for text, which adapts */
+  color: var(--primary-blue);
   padding: 0.4rem 0.8rem;
   border-radius: 0.375rem;
   transition: background-color 0.15s ease, color 0.15s ease;
   align-self: center;
-  white-space: nowrap; /* Prevent button text wrapping on larger screens */
+  white-space: nowrap;
 }
 
 .markReadBtn:hover {
-  background-color: #3686FF;
-  color: #fff;
+  /* Use primary-blue for background, which adapts */
+  background-color: var(--primary-blue);
+  /* Use text-light, which adapts */
+  color: var(--text-light);
 }
 
 /* --- No Notifications / Status Messages --- */
 .noNotifications {
   padding: 1.5rem 1.25rem;
   font-size: 0.95rem;
-  color: #6b7280;
+  /* Use text-muted, which adapts */
+  color: var(--text-muted);
   text-align: center;
   font-style: italic;
 }
@@ -293,7 +335,8 @@ body {
 .notificationStatus {
   padding: 1.5rem;
   text-align: center;
-  color: #6b7280;
+  /* Use text-muted, which adapts */
+  color: var(--text-muted);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -304,11 +347,13 @@ body {
 
 .notificationStatus .spinner {
   animation: spin 1s linear infinite;
-  color: #3686FF;
+  /* Use primary-blue, which adapts */
+  color: var(--primary-blue);
 }
 
 .errorStatus {
-  color: #ef4444;
+  /* Use error-red, which adapts */
+  color: var(--error-red);
   font-weight: 600;
 }
 
@@ -323,7 +368,8 @@ body {
   border: none;
   cursor: pointer;
   font-weight: 600;
-  color: #3686FF;
+  /* Use primary-blue, which adapts */
+  color: var(--primary-blue);
   font-size: 0.9rem;
   padding: 0.3rem 0.75rem;
   border-radius: 0.5rem;
@@ -331,16 +377,19 @@ body {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  white-space: nowrap; /* Prevent button text wrapping */
+  white-space: nowrap;
 }
 
 .clearAllBtn:hover:not(:disabled) {
-  background-color: #e0f0ff;
-  color: #2a6edc;
+  /* Use primary-blue-light for hover, which adapts */
+  background-color: var(--primary-blue-light);
+  /* Use primary-blue-dark for text on hover, which adapts */
+  color: var(--primary-blue-dark);
 }
 
 .clearAllBtn:disabled {
-  color: #9ca3af;
+  /* Use text-muted for disabled color, which adapts */
+  color: var(--text-muted);
   cursor: not-allowed;
   background-color: transparent;
   opacity: 0.6;
@@ -348,22 +397,20 @@ body {
 
 /* --- Responsive Adjustments --- */
 
-/* Further adjustments for extremely small screens (e.g., width < 375px) */
-
 @media (max-width: 374px) {
   .headerContainer {
-    padding: 0.75rem 1rem; /* Reduce padding for smaller screens */
+    padding: 0.75rem 1rem;
   }
 
   .greeting {
-    font-size: 1.2rem; /* Smaller greeting text */
+    font-size: 1.2rem;
   }
 
   .notificationsButton {
-    padding: 0.5rem; /* Smaller padding for notifications button */
+    padding: 0.5rem;
   }
 
   .menuButton {
-    padding: 0.5rem; /* Smaller padding for menu button */
+    padding: 0.5rem;
   }
 }

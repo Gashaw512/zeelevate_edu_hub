@@ -1,0 +1,80 @@
+.toast {
+    position: fixed; /* Fixed position relative to the viewport */
+    bottom: 20px; /* Adjust as needed */
+    right: 20px; /* Adjust as needed */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Soft shadow */
+    z-index: 1000; /* Ensure it's above most other elements */
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out; /* Smooth entry/exit */
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Specific styles for different toast types */
+.toast.success {
+    background-color: var(--success-green-light); /* Assuming you'll add these variables */
+    color: var(--success-green-dark);
+    border: 1px solid var(--success-green-border);
+}
+
+.toast.error {
+    background-color: var(--error-red-light);
+    color: var(--error-red-dark);
+    border: 1px solid var(--error-red-border);
+}
+
+.toast.info {
+    background-color: var(--info-blue-light);
+    color: var(--info-blue-dark);
+    border: 1px solid var(--info-blue-border);
+}
+
+.toastIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.toastMessage {
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* You might want to define these variables in your global CSS (e.g., :root and body.dark-mode) */
+/* Example in light mode:
+:root {
+  --success-green-light: #e6ffe6;
+  --success-green-dark: #28a745;
+  --success-green-border: #4CAF50;
+
+  --error-red-light: #ffe6e6;
+  --error-red-dark: #dc3545;
+  --error-red-border: #F44336;
+
+  --info-blue-light: #e6f7ff;
+  --info-blue-dark: #007bff;
+  --info-blue-border: #2196F3;
+}
+*/
+/* Example in dark mode:
+body.dark-mode {
+  --success-green-light: #1c3d2e;
+  --success-green-dark: #4CAF50;
+  --success-green-border: #28a745;
+
+  --error-red-light: #3d1c1c;
+  --error-red-dark: #F44336;
+  --error-red-border: #dc3545;
+
+  --info-blue-light: #1c2e3d;
+  --info-blue-dark: #2196F3;
+  --info-blue-border: #007bff;
+}
+*/

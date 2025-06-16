@@ -1,53 +1,64 @@
 /* DashboardHome.module.css */
 
 /*
-   Assuming 'index.css' is imported globally (e.g., in App.js or index.js)
-   and its :root variables are accessible.
-   DO NOT @import url() for fonts here; ensure they are loaded globally.
+    Assuming 'index.css' is imported globally (e.g., in App.js or index.js)
+    and its :root variables and body.dark-mode overrides are accessible.
+    DO NOT @import url() for fonts here; ensure they are loaded globally.
 */
 
 /* --- Dashboard Container --- */
 .dashboardContainer {
   padding: 2.5rem;
-  background-color: var(--background-muted); /* Using background-muted for dashboard background */
-  min-height: calc(100vh - 4rem); /* Adjust based on your header height if fixed */
+  /* Use background-muted for dashboard background, which will adapt */
+  background-color: var(--background-muted);
+  /* Adjust based on your header height if fixed. header-height variable comes from global CSS. */
+  min-height: calc(100vh - var(--header-height, 64px));
   border-radius: 1rem;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  /* Use shadow variable for consistency */
+  box-shadow: 0 6px 20px var(--shadow-color-light);
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
-  color: var(--text-dark); /* Using text-dark for general body content */
+  /* Use text-primary for general body content, which will adapt */
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
 }
 
 /* --- Welcome Section --- */
 .welcomeSection {
-  background-color: var(--background-light); /* Using background-light for cards/sections */
+  /* Use background-secondary for cards/sections, which will adapt */
+  background-color: var(--background-secondary);
   padding: 3rem;
   border-radius: 1.5rem;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  /* Use shadow variable for consistency */
+  box-shadow: 0 8px 25px var(--shadow-color-light);
   border-bottom: 5px solid var(--primary-blue); /* Primary blue accent border */
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.25rem;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
 }
 
 .welcomeHeading {
   font-size: 2.8rem;
   font-weight: 800;
-  color: var(--primary-blue-dark); /* Using a darker primary blue for heading emphasis */
+  /* Using a darker primary blue for heading emphasis, which will adapt */
+  color: var(--primary-blue-dark);
   line-height: 1.2;
   margin: 0;
 }
 
 .userNameHighlight {
-  color: var(--primary-blue); /* Using primary blue for highlight to match branding */
+  /* Using primary blue for highlight to match branding, which will adapt */
+  color: var(--primary-blue);
 }
 
 .welcomeSubtitle {
   font-size: 1.15rem;
-  color: var(--text-muted); /* Using text-muted for subtitles */
+  /* Using text-secondary for subtitles, which will adapt */
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -56,20 +67,25 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1.1rem 2.2rem;
+  /* Use primary-blue, which will adapt */
   background-color: var(--primary-blue);
+  /* Use text-light, which will adapt (white/light gray) */
   color: var(--text-light);
   border-radius: 0.75rem;
   text-decoration: none;
   font-weight: 600;
   font-size: 1.15rem;
   transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  box-shadow: 0 5px 15px rgba(54, 134, 255, 0.3); /* Manual rgba to keep primary blue shade */
+  /* Use primary-blue for shadow with dynamic alpha for light/dark mode */
+  box-shadow: 0 5px 15px var(--shadow-color-light-primary-action); /* New variable */
 }
 
 .primaryActionButton:hover {
+  /* Use hover-blue, which will adapt */
   background-color: var(--hover-blue);
   transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(54, 134, 255, 0.4);
+  /* Use hover-blue for shadow with dynamic alpha for light/dark mode */
+  box-shadow: 0 8px 20px var(--shadow-color-light-primary-action-hover); /* New variable */
 }
 
 /* --- Overview Cards Grid --- */
@@ -93,11 +109,14 @@
 
 /* --- Individual Card Styles --- */
 .dashboardCard {
-  background-color: var(--background-light);
+  /* Use background-secondary, which will adapt */
+  background-color: var(--background-secondary);
   padding: 2.2rem;
   border-radius: 1.25rem;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
-  border: 1px solid var(--border-light); /* Using border-light */
+  /* Use shadow variable for consistency */
+  box-shadow: 0 4px 18px var(--shadow-color-light);
+  /* Using border-light, which will adapt */
+  border: 1px solid var(--border-light);
   transition: all 0.3s ease-in-out;
   display: flex;
   flex-direction: column;
@@ -105,7 +124,8 @@
 }
 
 .dashboardCard:hover {
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+  /* Use shadow variable for consistency */
+  box-shadow: 0 12px 35px var(--shadow-color-light-hover); /* New variable for hover shadow */
   transform: translateY(-0.6rem);
 }
 
@@ -116,6 +136,7 @@
 }
 
 .cardIconBlue {
+  /* Use primary-blue, which will adapt */
   color: var(--primary-blue);
   margin-right: 1rem;
   flex-shrink: 0;
@@ -123,13 +144,15 @@
 
 /* Renamed from cardIconIndigo to cardIconAccent for broader use as per your palette */
 .cardIconAccent {
-  color: var(--primary-blue-dark); /* Using primary-blue-dark as a strong accent */
+  /* Using primary-blue-dark as a strong accent, which will adapt */
+  color: var(--primary-blue-dark);
   margin-right: 1rem;
   flex-shrink: 0;
 }
 
-.cardIconOrange { /* Assuming you'll add a vibrant orange variable if you don't have one */
-  color: #FFA500; /* Keeping hardcoded for now, or add --vibrant-orange to :root */
+.cardIconOrange {
+  /* Keeping hardcoded #FFA500 for now. Consider adding --accent-orange to :root if used elsewhere. */
+  color: var(--warning-orange); /* Changed to use warning-orange variable */
   margin-right: 1rem;
   flex-shrink: 0;
 }
@@ -137,19 +160,22 @@
 .cardTitle {
   font-size: 1.55rem;
   font-weight: 700;
-  color: var(--text-dark);
+  /* Use text-primary, which will adapt */
+  color: var(--text-primary);
 }
 
 .cardValue {
   font-size: 3.2rem;
   font-weight: 800;
-  color: var(--primary-blue); /* Using primary-blue for values */
+  /* Using primary-blue for values, which will adapt */
+  color: var(--primary-blue);
   margin-bottom: 0.8rem;
   line-height: 1;
 }
 
 .cardDescription {
-  color: var(--text-muted);
+  /* Use text-secondary, which will adapt */
+  color: var(--text-secondary);
   font-size: 0.98rem;
   line-height: 1.5;
   margin-bottom: 1.25rem;
@@ -158,7 +184,8 @@
 .cardLink {
   display: inline-flex;
   align-items: center;
-  color: var(--primary-blue-dark); /* Using primary-blue-dark for links to keep consistent blue theme */
+  /* Use primary-blue-dark for links, which will adapt */
+  color: var(--primary-blue-dark);
   margin-top: auto;
   font-weight: 600;
   text-decoration: none;
@@ -167,7 +194,8 @@
 }
 
 .cardLink:hover {
-  color: var(--primary-blue); /* Lighter primary blue on hover */
+  /* Use primary-blue on hover, which will adapt */
+  color: var(--primary-blue);
   transform: translateX(0.35rem);
 }
 
@@ -177,17 +205,22 @@
 
 /* --- Latest Activity / Progress Section --- */
 .latestActivitySection {
-  background-color: var(--background-light);
+  /* Use background-secondary, which will adapt */
+  background-color: var(--background-secondary);
   padding: 2.2rem;
   border-radius: 1.25rem;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
+  /* Use shadow variable for consistency */
+  box-shadow: 0 4px 18px var(--shadow-color-light);
+  /* Use border-light, which will adapt */
   border: 1px solid var(--border-light);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
 }
 
 .latestActivityTitle {
   font-size: 1.6rem;
   font-weight: 700;
-  color: var(--text-dark);
+  /* Use text-primary, which will adapt */
+  color: var(--text-primary);
   margin-bottom: 1.75rem;
 }
 
@@ -202,20 +235,25 @@
   align-items: center;
   justify-content: space-between;
   padding: 1.1rem 1.4rem;
-  background-color: var(--background-muted); /* Using background-muted for activity items */
+  /* Use background-muted for activity items, which will adapt */
+  background-color: var(--background-muted);
   border-radius: 0.8rem;
-  border: 1px solid var(--border-light); /* Using border-light */
+  /* Use border-light, which will adapt */
+  border: 1px solid var(--border-light);
   transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
 .activityItem:hover {
-  background-color: var(--primary-blue-light); /* Using primary-blue-light for subtle hover */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  /* Use primary-blue-light for subtle hover, which will adapt */
+  background-color: var(--primary-blue-light);
+  /* Use shadow variable for consistency */
+  box-shadow: 0 2px 10px var(--shadow-color-light);
 }
 
 .activityCourseTitle {
   font-weight: 600;
-  color: var(--text-dark);
+  /* Use text-primary, which will adapt */
+  color: var(--text-primary);
   flex-grow: 1;
   min-width: 0;
   word-wrap: break-word;
@@ -232,30 +270,36 @@
   flex-shrink: 0;
 }
 
-/* Specific status colors */
+/* Specific status colors - now using variables or suggesting new ones */
 .active {
-  background-color: rgba(255, 165, 0, 0.18); /* Keeping this specific orange if not in :root */
-  color: #D97706; /* A slightly darker orange for text */
+  /* Consider adding --status-active-bg and --status-active-text to :root */
+  background-color: var(--warning-orange); /* Use warning-orange */
+  color: var(--text-primary); /* Adjust as needed for contrast */
 }
 
 .completed {
-  background-color: var(--indigo-light); /* Using indigo-light for completed background */
-  color: var(--primary-blue-dark); /* Using primary-blue-dark for completed text */
+  /* Using indigo-light for completed background, which will adapt */
+  background-color: var(--indigo-light);
+  /* Using primary-blue-dark for completed text, which will adapt */
+  color: var(--primary-blue-dark);
 }
 
 .unknown {
-  background-color: rgba(148, 163, 184, 0.15); /* Manual rgba or add new gray variable */
+  /* Consider adding --status-unknown-bg and --status-unknown-text to :root */
+  background-color: rgba(148, 163, 184, 0.15); /* Still hardcoded, add new variable */
   color: var(--cool-gray); /* Using cool-gray */
 }
 
 .pending {
-  background-color: rgba(255, 193, 7, 0.18); /* Keeping this specific yellow/orange */
-  color: #D97706;
+  /* Consider adding --status-pending-bg and --status-pending-text to :root */
+  background-color: rgba(255, 193, 7, 0.18); /* Still hardcoded, add new variable */
+  color: #D97706; /* Still hardcoded, add new variable */
 }
 
 .activityLink {
   display: inline-flex;
   align-items: center;
+  /* Use primary-blue, which will adapt */
   color: var(--primary-blue);
   text-decoration: none;
   font-weight: 500;
@@ -264,17 +308,21 @@
 }
 
 .activityLink:hover {
+  /* Use primary-blue-dark, which will adapt */
   color: var(--primary-blue-dark);
 }
 
 /* --- Empty State Styling --- */
 .emptyState {
+  /* Use background-muted, which will adapt */
   background-color: var(--background-muted);
   padding: 2.5rem;
   border-radius: 1rem;
   text-align: center;
-  color: var(--text-muted);
+  /* Use text-secondary, which will adapt */
+  color: var(--text-secondary);
   font-style: italic;
+  /* Use border-light, which will adapt */
   border: 1px dashed var(--border-light);
 }
 
@@ -282,34 +330,44 @@
   display: inline-block;
   margin-top: 1.8rem;
   padding: 0.9rem 2rem;
+  /* Use primary-blue, which will adapt */
   background-color: var(--primary-blue);
+  /* Use text-light, which will adapt */
   color: var(--text-light);
   border-radius: 0.75rem;
   text-decoration: none;
   font-weight: 600;
   transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
-  box-shadow: 0 3px 10px rgba(54, 134, 255, 0.2);
+  /* Use primary-blue for shadow with dynamic alpha for light/dark mode */
+  box-shadow: 0 3px 10px var(--shadow-color-light-primary-action); /* Reusing the primary action shadow */
 }
 
 .enrollNowButton:hover {
+  /* Use hover-blue, which will adapt */
   background-color: var(--hover-blue);
   transform: translateY(-2px);
-  box-shadow: 0 5px 12px rgba(54, 134, 255, 0.3);
+  /* Use hover-blue for shadow with dynamic alpha for light/dark mode */
+  box-shadow: 0 5px 12px var(--shadow-color-light-primary-action-hover); /* Reusing the primary action hover shadow */
 }
 
 /* --- Quick Actions Section --- */
 .quickActionsSection {
-  background-color: var(--background-light);
+  /* Use background-secondary, which will adapt */
+  background-color: var(--background-secondary);
   padding: 2.2rem;
   border-radius: 1.25rem;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
+  /* Use shadow variable for consistency */
+  box-shadow: 0 4px 18px var(--shadow-color-light);
+  /* Use border-light, which will adapt */
   border: 1px solid var(--border-light);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
 }
 
 .quickActionsTitle {
   font-size: 1.6rem;
   font-weight: 700;
-  color: var(--text-dark);
+  /* Use text-primary, which will adapt */
+  color: var(--text-primary);
   margin-bottom: 1.75rem;
 }
 
@@ -330,24 +388,30 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.4rem;
+  /* Use background-muted, which will adapt */
   background-color: var(--background-muted);
   border-radius: 0.8rem;
-  color: var(--text-dark);
+  /* Use text-primary, which will adapt */
+  color: var(--text-primary);
   text-decoration: none;
   transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   font-weight: 500;
+  /* Use border-light, which will adapt */
   border: 1px solid var(--border-light);
 }
 
 .quickActionLink:hover {
+  /* Use indigo-light, which will adapt */
   background-color: var(--indigo-light);
   transform: translateY(-0.2rem);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.09);
+  /* Use shadow variable for consistency */
+  box-shadow: 0 5px 15px var(--shadow-color-light); /* Lighter shadow on hover */
 }
 
 .actionLinkIcon {
   margin-right: 0.8rem;
-  color: var(--primary-blue-dark); /* Using primary-blue-dark for action icons */
+  /* Use primary-blue-dark for action icons, which will adapt */
+  color: var(--primary-blue-dark);
 }
 
 /* --- Loading and Error States --- */
@@ -357,22 +421,31 @@
   align-items: center;
   justify-content: center;
   min-height: 80vh;
-  background-color: var(--background-muted); /* Consistent with dashboard background */
+  /* Use background-muted, which will adapt */
+  background-color: var(--background-muted);
   padding: 2rem;
   border-radius: 1rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  color: var(--text-dark);
+  /* Use shadow variable for consistency */
+  box-shadow: 0 4px 10px var(--shadow-color-light);
+  /* Use text-primary, which will adapt */
+  color: var(--text-primary);
   text-align: center;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
 }
 
 .errorContainer {
   composes: fullPageStatusContainer;
-  background-color: var(--danger-red); /* Using the suggested danger-red from your :root comments */
+  /* Use danger-red, which will adapt */
+  background-color: var(--error-red); /* Changed from danger-red to error-red for consistency with global */
+  /* Use text-light, which will adapt */
   color: var(--text-light);
-  box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3); /* Manual rgba for specific shadow */
+  /* Explicit shadow for error, ensure a dark mode version if colors change */
+  box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3); /* This rgba will stay fixed as it's for error highlight */
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .errorIcon {
+  /* Use text-light, which will adapt */
   color: var(--text-light);
   margin-bottom: 1.2rem;
 }
@@ -381,11 +454,13 @@
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 1rem;
+  /* Use text-light, which will adapt */
   color: var(--text-light);
 }
 
 .errorText {
-  color: var(--text-light-alt); /* Using text-light-alt for slightly muted error text */
+  /* Use text-light-alt, which will adapt */
+  color: var(--text-light-alt);
   text-align: center;
   max-width: 600px;
   margin-bottom: 1.5rem;
@@ -394,22 +469,28 @@
 }
 
 .retryButton {
-  background-color: var(--background-light); /* Using background-light */
-  color: var(--danger-red); /* Using danger-red */
+  /* Use background-secondary (which is background-light from your original thought), will adapt */
+  background-color: var(--background-secondary);
+  /* Use error-red, which will adapt */
+  color: var(--error-red); /* Changed from danger-red to error-red */
   padding: 0.8rem 1.6rem;
   border-radius: 0.75rem;
   font-weight: 600;
   transition: all 0.2s ease-in-out;
   border: none;
   cursor: pointer;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  /* Use shadow variable for consistency */
+  box-shadow: 0 3px 8px var(--shadow-color-light);
 }
 
 .retryButton:hover {
-  background-color: var(--background-muted); /* Using background-muted on hover */
-  color: var(--danger-red); /* Keeping danger-red */
+  /* Use background-muted, which will adapt */
+  background-color: var(--background-muted);
+  /* Keep error-red for consistent visual cue */
+  color: var(--error-red);
   transform: translateY(-2px);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  /* Use shadow variable for consistency */
+  box-shadow: 0 5px 10px var(--shadow-color-light);
 }
 
 /* --- Responsive Adjustments (kept same as before) --- */
@@ -443,7 +524,7 @@
   }
 
   .cardIconBlue,
-  .cardIconAccent, /* Updated class name */
+  .cardIconAccent,
   .cardIconOrange {
     margin-right: 0;
     margin-bottom: 0.5rem;

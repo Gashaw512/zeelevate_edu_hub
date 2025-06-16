@@ -1,42 +1,30 @@
-:root {
-  --primary-blue: #3686FF;
-  --text-light: #FFFFFF;
-  --text-light-alt: #F0F0F0;
-  --background-light: #FFFFFF;
-  --background-muted: #F7F9FC;
-  --text-dark: #222222;
-  --text-muted: #666666;
-  --border-light: #D1D5DB;
-  --hover-blue: #2c73e8;
-  --active-blue: #265ec1;
-}
 
-/* Card container */
 .course-card {
-  background-color: var(--background-light);
+  background-color: var(--background-secondary); 
   border: 1px solid var(--border-light);
   border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(54, 134, 255, 0.15);
+  box-shadow: 0 2px 6px var(--shadow-color-card); 
   display: flex;
   flex-direction: column;
   max-width: 320px;
   overflow: hidden;
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease; 
 }
 
 .course-card:hover,
 .course-card:focus-within {
-  box-shadow: 0 6px 15px rgba(54, 134, 255, 0.3);
+  box-shadow: 0 6px 15px var(--shadow-color-card-hover); 
   border-color: var(--primary-blue);
 }
 
-/* Course image */
+
 .course-image {
   width: 100%;
   height: 180px;
   object-fit: cover;
-  background-color: var(--background-muted);
+  background-color: var(--background-muted); 
   border-bottom: 1px solid var(--border-light);
+  transition: background-color 0.3s ease, border-color 0.3s ease; 
 }
 
 /* Content */
@@ -52,36 +40,39 @@
 .card-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--text-dark);
+  color: var(--text-dark); 
   margin: 0;
   line-height: 1.2;
+  transition: color 0.3s ease;
 }
 
 /* Instructor */
 .card-instructor {
   font-size: 0.875rem;
-  color: var(--text-muted);
+  color: var(--text-muted); 
   margin: 0;
   font-style: italic;
+  transition: color 0.3s ease; 
 }
 
 /* Progress bar container */
 .progress-bar {
-  background-color: var(--border-light);
+  background-color: var(--border-light); 
   border-radius: 9999px;
   height: 10px;
   width: 100%;
   overflow: hidden;
   margin-top: 0.75rem;
+  transition: background-color 0.3s ease; 
 }
 
 /* Progress fill */
 .progress-fill {
   background-color: var(--primary-blue);
   height: 100%;
-  width: 0; /* controlled inline */
+  width: 0; 
   border-radius: 9999px;
-  transition: width 0.4s ease;
+  transition: width 0.4s ease, background-color 0.3s ease; 
 }
 
 /* Progress text */
@@ -91,6 +82,7 @@
   margin-top: 0.25rem;
   text-align: right;
   user-select: none;
+  transition: color 0.3s ease; 
 }
 
 /* Status badge base */
@@ -105,18 +97,19 @@
   user-select: none;
   border: 1px solid var(--primary-blue);
   color: var(--primary-blue);
-  background-color: transparent;
+  background-color: transparent; 
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; /* Add transitions */
 }
 
 /* Status variations using only shades of primary blue */
 .status-completed {
-  background-color: rgba(54, 134, 255, 0.15);
+  background-color: color-mix(in srgb, var(--primary-blue) 15%, transparent); /* More flexible shade */
   color: var(--primary-blue);
   border-color: var(--primary-blue);
 }
 
 .status-in-progress {
-  background-color: rgba(54, 134, 255, 0.1);
+  background-color: color-mix(in srgb, var(--primary-blue) 10%, transparent); /* More flexible shade */
   color: var(--primary-blue);
   border-color: var(--primary-blue);
 }
@@ -133,19 +126,20 @@
   border-top: 1px solid var(--border-light);
   display: flex;
   justify-content: flex-end;
-  background-color: var(--background-light);
+  background-color: var(--background-secondary); /* Use secondary for footer background */
+  transition: background-color 0.3s ease, border-color 0.3s ease; /* Add transitions */
 }
 
 /* View course button */
 .view-course-btn {
   background-color: var(--primary-blue);
   border: none;
-  color: var(--text-light);
+  color: var(--text-dark); /* Changed to text-dark for consistency on dark backgrounds */
   padding: 0.5rem 1rem;
   border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Add color transition */
   user-select: none;
   font-size: 0.9rem;
 }

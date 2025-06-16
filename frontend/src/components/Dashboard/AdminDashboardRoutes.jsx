@@ -1,13 +1,15 @@
-import { Routes, Route } from 'react-router-dom';
-import Courses from '../../pages/adminDashbord/Courses';
-import NotFoundPage from '../../pages/NotFoundPage'; 
-import Dashboard from '../../pages/adminDashbord/Dashboard';
-import Students from '../../pages/adminDashbord/Students';
-import Profile from '../../pages/studentDashboard/Profile'; // Assuming Admin profile also uses this or similar
-import SendNotification from '../../pages/adminDashbord/SendNotification';
-import { useAuth } from '../../context/AuthContext'; // <--- IMPORT useAuth hook
-import LoadingSpinner from '../common/LoadingSpinner'; // Optional: If you want to show a loading spinner
-
+import { Routes, Route } from "react-router-dom";
+import Courses from "../../pages/adminDashbord/Courses";
+import NotFoundPage from "../../pages/NotFoundPage";
+import Dashboard from "../../pages/adminDashbord/Dashboard";
+import Students from "../../pages/adminDashbord/Students";
+import Profile from "../../pages/studentDashboard/Profile";
+import SendNotification from "../../pages/adminDashbord/SendNotification";
+import { useAuth } from "../../context/AuthContext";
+import LoadingSpinner from "../common/LoadingSpinner";
+import AddProgram from "../AdminDashboar/AddProgram";
+import AddProgramV1 from "../AdminDashboar/AddProgramV1";
+import AddCourse from "../AdminDashboar/AddCourse";
 const AdminDashboardRoutes = () => {
   const { user } = useAuth(); // <--- GET user from AuthContext
 
@@ -16,33 +18,35 @@ const AdminDashboardRoutes = () => {
   if (!user) {
     // You could render a loading spinner, or redirect to login
     // console.log("AdminDashboardRoutes: User not available yet, or not logged in.");
-    return <div><LoadingSpinner/></div>;
+    return (
+      <div>
+        <LoadingSpinner />
+      </div>
+    );
   }
-  
+
   // Optional: Add a check for admin role if your AuthContext provides it
   // if (!user.isAdmin) { // Assuming your user object has an isAdmin property or similar
   //   return <p>Access Denied: You are not authorized to view this section.</p>;
   //   // Or redirect to a different page
   // }
 
-
   return (
     <Routes>
-      {/* Default dashboard page: /admin/dashboard */}
       <Route index element={<Dashboard />} />
-
-      {/* Specific dashboard pages */}
       <Route path="dashboard" element={<Dashboard />} />
       <Route path="courses" element={<Courses />} />
       <Route path="students" element={<Students />} />
-      {/* Assuming Profile is a shared component or needs user prop for admin as well */}
-      <Route path="profile" element={<Profile user={user} />} /> 
-      {/* Correctly pass the user prop to SendNotification */}
-      <Route path="send-notification" element={<SendNotification user={user} />} />
-      
-
-  
-      <Route path="*" element={<NotFoundPage />} /> {/* Render your general 404 page for sub-routes */}
+      <Route path="profile" element={<Profile user={user} />} />
+      <Route
+        path="send-notification"
+        element={<SendNotification user={user} />}
+      />
+      <Route path="add-program" element={<AddProgram />} />
+      <Route path="add-programV1" element={<AddProgramV1 />} />
+      <Route path="add-course" element={<AddCourse />} />
+      <Route path="*" element={<NotFoundPage />} />{" "}
+      {/* Render your general 404 page for sub-routes */}
     </Routes>
   );
 };

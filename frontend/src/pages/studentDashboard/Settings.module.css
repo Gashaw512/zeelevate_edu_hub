@@ -1,71 +1,138 @@
 /* --- src/pages/Settings.module.css --- */
 
 .container {
-    padding: 1.5rem;
+  padding: 1.5rem;
+}
+
+.heading {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary); /* Use variable */
+  margin-bottom: 1.5rem;
+}
+
+.card {
+  background: var(--background-secondary); /* Use variable */
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px var(--shadow-color-light); /* Use variable for shadow */
+  border: 1px solid var(--border-light); /* Added for consistency */
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary); /* Use variable */
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+  &:first-of-type {
+    margin-top: 0;
   }
-  
-  .heading {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--text-dark);
-    margin-bottom: 1.5rem;
+}
+
+.flexRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-light); /* Use variable */
+
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
   }
-  
-  .card {
-    background: var(--background-light);
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 4px 12px rgba(34, 34, 34, 0.08);
-    max-width: 40rem;
-    margin: 0 auto;
+}
+
+.label {
+  color: var(--text-primary); /* Use variable */
+  font-size: 1rem;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  cursor: pointer;
+}
+
+.settingDescription {
+  font-size: 0.875rem;
+  color: var(--text-secondary); /* Use variable */
+  margin: 0;
+}
+
+.checkbox {
+  height: 1.5rem;
+  width: 1.5rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--border-light); /* Use variable */
+  accent-color: var(--primary-blue); /* Use variable for accent */
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.linkButton {
+  background: none;
+  border: none;
+  color: var(--primary-blue); /* Use variable */
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: var(--background-muted); /* Use variable for hover background */
   }
-  
-  .sectionTitle {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--text-dark);
-    margin-bottom: 1rem;
-    margin-top: 2rem;
+}
+
+.buttonContainer {
+  margin-top: 2.5rem;
+  text-align: center;
+}
+
+.button {
+  padding: 0.75rem 1.75rem;
+  background-color: var(--primary-blue); /* Use variable */
+  color: var(--text-light); /* Use variable */
+  border-radius: 0.5rem;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, opacity 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: var(--hover-blue); /* Use variable */
   }
-  
-  .flexRow {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
+
+  &:disabled {
+    background-color: var(--text-secondary); /* Use variable */
+    cursor: not-allowed;
+    opacity: 0.7;
   }
-  
-  .label {
-    color: var(--text-secondary); /* replacing gray-700 */
-    font-size: 1rem;
-  }
-  
-  .checkbox {
-    height: 1.25rem;
-    width: 1.25rem;
-    border-radius: 0.25rem;
-    border: 1px solid var(--border-light);
-    accent-color: var(--primary-blue);
-    cursor: pointer;
-  }
-  
-  .buttonContainer {
-    margin-top: 2rem;
-    text-align: center;
-  }
-  
-  .button {
-    padding: 0.75rem 1.5rem;
-    background-color: var(--primary-blue);
-    color: var(--text-light);
-    border-radius: 0.5rem;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-  }
-  
-  .button:hover {
-    background-color: var(--hover-blue);
-  }
-  
+}
+
+/* --- Feedback Messages --- */
+.loadingMessage {
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--text-secondary); /* Use variable */
+  padding: 2rem;
+}
+
+.errorMessage {
+  color: var(--error-red); /* Use variable */
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.successMessage {
+  color: var(--success-green); /* Use variable */
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}

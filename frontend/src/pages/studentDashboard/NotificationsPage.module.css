@@ -1,15 +1,21 @@
+/* --- src/pages/Notifications.module.css --- */
 
 .notificationsPageContainer {
   padding: 2.5rem;
-  background-color: var(--background-muted); 
-  min-height: calc(100vh - 4rem); 
+  /* Use background-muted, which adapts to theme */
+  background-color: var(--background-muted);
+  /* Use header-height variable for consistent calculation */
+  min-height: calc(100vh - var(--header-height, 64px));
   border-radius: 1rem;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  /* Use shadow variable for consistency */
+  box-shadow: 0 6px 20px var(--shadow-color-light);
   display: flex;
   flex-direction: column;
-  gap: 2rem; 
-  color: var(--text-dark);
-  font-family: 'Inter', sans-serif;
+  gap: 2rem;
+  /* Use text-primary, which adapts to theme */
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif; /* Ensure font matches global */
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
 }
 
 /* --- Page Header --- */
@@ -18,14 +24,16 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 1.5rem; 
+  gap: 1.5rem;
   padding-bottom: 1rem;
+  /* Use border-light, which adapts to theme */
   border-bottom: 1px solid var(--border-light);
 }
 
 .pageTitle {
   font-size: 2.2rem;
   font-weight: 700;
+  /* Use primary-blue-dark, which adapts to theme */
   color: var(--primary-blue-dark);
   display: flex;
   align-items: center;
@@ -34,17 +42,20 @@
 }
 
 .pageTitleIcon {
+  /* Use primary-blue, which adapts to theme */
   color: var(--primary-blue);
 }
 
 .actionsGroup {
   display: flex;
-  gap: 0.75rem; 
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
 .actionButton {
+  /* Use primary-blue, which adapts to theme */
   background-color: var(--primary-blue);
+  /* Use text-light, which adapts to theme (white/light gray) */
   color: var(--text-light);
   border: none;
   border-radius: 0.75rem;
@@ -56,16 +67,20 @@
   align-items: center;
   gap: 0.5rem;
   transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* Use shadow variable for consistency */
+  box-shadow: 0 2px 8px var(--shadow-color-light);
 }
 
 .actionButton:hover:not(:disabled) {
+  /* Use hover-blue, which adapts to theme */
   background-color: var(--hover-blue);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  /* Use shadow variable for consistency */
+  box-shadow: 0 4px 12px var(--shadow-color-light); /* Lighter shadow on hover */
 }
 
 .actionButton:disabled {
+  /* Use text-muted or a specific disabled background variable if defined */
   background-color: var(--cool-gray);
   cursor: not-allowed;
   opacity: 0.7;
@@ -73,11 +88,13 @@
 }
 
 .dangerButton {
-  background-color: #EF4444; /* Using a vibrant red for danger, from my previous suggestion */
+  /* Use error-red, which adapts to theme */
+  background-color: var(--error-red);
 }
 
 .dangerButton:hover:not(:disabled) {
-  background-color: #DC2626; /* Darker red on hover */
+  /* Use error-red (darker shade if available) or a specific hover variable */
+  background-color: var(--error-red); /* Keep same, or define --error-red-dark in :root */
 }
 
 .spinner {
@@ -85,8 +102,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* --- Filter Tabs --- */
@@ -94,6 +115,7 @@
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1rem;
+  /* Use border-light, which adapts to theme */
   border-bottom: 1px solid var(--border-light);
   padding-bottom: 0.5rem;
 }
@@ -104,6 +126,7 @@
   padding: 0.75rem 1.2rem;
   font-size: 1rem;
   font-weight: 600;
+  /* Use text-muted, which adapts to theme */
   color: var(--text-muted);
   cursor: pointer;
   border-radius: 0.5rem;
@@ -112,27 +135,36 @@
 }
 
 .filterTab:hover:not(.activeTab) {
-  background-color: var(--background-muted); /* Light background on hover */
-  color: var(--text-dark);
+  /* Use background-muted, which adapts to theme */
+  background-color: var(--background-muted);
+  /* Use text-primary, which adapts to theme */
+  color: var(--text-primary);
 }
 
 .filterTab.activeTab {
+  /* Use primary-blue, which adapts to theme */
   color: var(--primary-blue);
-  background-color: var(--background-light);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  border-bottom: 3px solid var(--primary-blue); /* Active tab indicator */
-  padding-bottom: calc(0.75rem - 3px); /* Adjust padding for border */
+  /* Use background-secondary, which adapts to theme */
+  background-color: var(--background-secondary);
+  /* Use shadow variable for consistency */
+  box-shadow: 0 2px 8px var(--shadow-color-light);
+  /* Use primary-blue for indicator, which adapts to theme */
+  border-bottom: 3px solid var(--primary-blue);
+  padding-bottom: calc(0.75rem - 3px);
 }
 
 /* --- Notification List --- */
 .notificationList {
   display: flex;
   flex-direction: column;
-  gap: 0.8rem; /* Spacing between notification items */
-  background-color: var(--background-light);
+  gap: 0.8rem;
+  /* Use background-secondary, which adapts to theme */
+  background-color: var(--background-secondary);
   border-radius: 1rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  /* Use shadow variable for consistency */
+  box-shadow: 0 2px 10px var(--shadow-color-light);
   padding: 1.5rem;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
 }
 
 .notificationItem {
@@ -141,28 +173,36 @@
   justify-content: space-between;
   padding: 1rem 1.2rem;
   border-radius: 0.75rem;
+  /* Use border-light, which adapts to theme */
   border: 1px solid var(--border-light);
   transition: all 0.2s ease;
 }
 
 .notificationItem.unread {
-  background-color: var(--background-muted); /* Slightly different background for unread */
-  border-left: 5px solid var(--primary-blue); /* Stronger accent for unread */
-  padding-left: calc(1.2rem - 5px); /* Adjust padding for border */
+  /* Use background-muted for unread, which adapts to theme */
+  background-color: var(--background-muted);
+  /* Use primary-blue for accent, which adapts to theme */
+  border-left: 5px solid var(--primary-blue);
+  padding-left: calc(1.2rem - 5px);
 }
 
 .notificationItem.unread:hover {
-  background-color: var(--primary-blue-light); /* Lighter blue on hover for unread */
+  /* Use primary-blue-light for hover, which adapts to theme */
+  background-color: var(--primary-blue-light);
   transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  /* Use shadow variable for consistency */
+  box-shadow: 0 2px 8px var(--shadow-color-light);
 }
 
 .notificationItem.read {
-  background-color: var(--background-light);
+  /* Use background-secondary for read, which adapts to theme */
+  background-color: var(--background-secondary);
+  /* Use text-muted, which adapts to theme */
   color: var(--text-muted);
 }
 
 .notificationItem.read:hover {
+  /* Use background-muted for hover, which adapts to theme */
   background-color: var(--background-muted);
 }
 
@@ -170,7 +210,7 @@
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  min-width: 0; /* Important for flex items */
+  min-width: 0;
   margin-right: 1rem;
 }
 
@@ -179,24 +219,28 @@
   line-height: 1.4;
   margin: 0;
   word-wrap: break-word;
-  color: inherit; /* Ensure message color adapts to read/unread */
+  color: inherit; /* Inherits color from parent (.read/.unread) */
 }
 
 .notificationTimestamp {
   font-size: 0.78rem;
-  color: var(--text-muted); /* Muted timestamp */
+  /* Use text-muted, which adapts to theme */
+  color: var(--text-muted);
   margin-top: 0.4rem;
 }
 
 .itemActions {
   display: flex;
   gap: 0.5rem;
-  flex-shrink: 0; /* Prevent actions from shrinking */
+  flex-shrink: 0;
 }
 
 .itemActionButton {
-  background-color: var(--background-light);
+  /* Use background-secondary, which adapts to theme */
+  background-color: var(--background-secondary);
+  /* Use border-light, which adapts to theme */
   border: 1px solid var(--border-light);
+  /* Use text-muted, which adapts to theme */
   color: var(--text-muted);
   border-radius: 0.5rem;
   padding: 0.6rem;
@@ -205,30 +249,38 @@
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  /* Use shadow variable for consistency */
+  box-shadow: 0 1px 3px var(--shadow-color-light);
 }
 
 .itemActionButton:hover {
+  /* Use background-muted, which adapts to theme */
   background-color: var(--background-muted);
+  /* Use primary-blue, which adapts to theme */
   color: var(--primary-blue);
   transform: translateY(-1px);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  /* Use shadow variable for consistency */
+  box-shadow: 0 2px 5px var(--shadow-color-light);
 }
 
 .markReadButton {
-  color: var(--primary-blue); /* Specific color for mark as read */
+  /* Use primary-blue, which adapts to theme */
+  color: var(--primary-blue);
 }
 
 .markReadButton:hover {
+  /* Use primary-blue-light, which adapts to theme */
   background-color: var(--primary-blue-light);
 }
 
 .deleteButton {
-  color: #EF4444; /* Specific color for delete */
+  /* Use error-red, which adapts to theme */
+  color: var(--error-red);
 }
 
 .deleteButton:hover {
-  background-color: rgba(239, 68, 68, 0.1); /* Light red background on hover */
+  /* Use error-red with some opacity for hover, which adapts to theme */
+  background-color: rgba(var(--error-red-rgb), 0.1); /* Requires RGB version of error-red */
 }
 
 /* --- Empty State / Status Container (reused styles) --- */
@@ -237,23 +289,32 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 60vh; /* Adjust height for content area */
-  background-color: var(--background-light);
+  min-height: 60vh;
+  /* Use background-secondary, which adapts to theme */
+  background-color: var(--background-secondary);
   padding: 2rem;
   border-radius: 1rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  color: var(--text-dark);
+  /* Use shadow variable for consistency */
+  box-shadow: 0 4px 10px var(--shadow-color-light);
+  /* Use text-primary, which adapts to theme */
+  color: var(--text-primary);
   text-align: center;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
 }
 
 .errorContainer {
   composes: fullPageStatusContainer;
-  background-color: var(--danger-red);
+  /* Use error-red, which adapts to theme */
+  background-color: var(--error-red);
+  /* Use text-light, which adapts to theme */
   color: var(--text-light);
+  /* This shadow has a fixed RGBA. If you want it to adapt, you'll need a specific shadow variable for error backgrounds. */
   box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .errorIcon {
+  /* Use text-light, which adapts to theme */
   color: var(--text-light);
   margin-bottom: 1.2rem;
 }
@@ -262,10 +323,12 @@
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 1rem;
+  /* Use text-light, which adapts to theme */
   color: var(--text-light);
 }
 
 .errorText {
+  /* Use text-light-alt, which adapts to theme */
   color: var(--text-light-alt);
   text-align: center;
   max-width: 600px;
@@ -281,24 +344,29 @@
   align-items: center;
   justify-content: center;
   padding: 3rem;
+  /* Use background-muted, which adapts to theme */
   background-color: var(--background-muted);
   border-radius: 0.75rem;
+  /* Use border-light, which adapts to theme */
   border: 1px dashed var(--border-light);
   text-align: center;
+  transition: background-color 0.3s ease, border-color 0.3s ease; /* Smooth transitions */
 }
 
 .emptyStateIcon {
+  /* Use cool-gray, which adapts to theme */
   color: var(--cool-gray);
   margin-bottom: 1rem;
 }
 
 .emptyStateText {
   font-size: 1.1rem;
+  /* Use text-muted, which adapts to theme */
   color: var(--text-muted);
   margin: 0;
 }
 
-/* --- Responsive Adjustments --- */
+/* --- Responsive Adjustments (kept same as before) --- */
 @media (max-width: 767px) {
   .notificationsPageContainer {
     padding: 1.5rem;
@@ -313,41 +381,41 @@
 
   .pageTitle {
     font-size: 1.8rem;
-    width: 100%; /* Take full width */
+    width: 100%;
   }
 
   .actionsGroup {
     width: 100%;
-    flex-direction: column; /* Stack buttons vertically */
+    flex-direction: column;
     gap: 0.75rem;
   }
 
   .actionButton {
-    width: 100%; /* Full width buttons when stacked */
+    width: 100%;
     justify-content: center;
     padding: 0.8rem 1rem;
     font-size: 0.9rem;
   }
 
   .filterTabs {
-    flex-direction: column; /* Stack filter tabs */
+    flex-direction: column;
     gap: 0.75rem;
-    padding-bottom: 0; /* Remove bottom padding as border is handled by tab item */
-    border-bottom: none; /* Remove section border */
+    padding-bottom: 0;
+    border-bottom: none;
   }
 
   .filterTab {
     width: 100%;
     text-align: center;
     padding: 0.6rem 1rem;
-    border-bottom: 1px solid var(--border-light); /* Add border to each tab */
+    border-bottom: 1px solid var(--border-light);
   }
   .filterTab:last-child {
-    border-bottom: none; /* No border on last tab */
+    border-bottom: none;
   }
 
   .filterTab.activeTab {
-    border-bottom: 3px solid var(--primary-blue); /* Active tab indicator still applies */
+    border-bottom: 3px solid var(--primary-blue);
     padding-bottom: calc(0.6rem - 3px);
   }
 
@@ -362,12 +430,12 @@
   }
 
   .notificationItem.unread {
-    padding-left: calc(1rem - 5px); /* Adjust for border */
+    padding-left: calc(1rem - 5px);
   }
 
   .notificationContent {
     margin-right: 0;
-    margin-bottom: 0.8rem; /* Space before actions when stacked */
+    margin-bottom: 0.8rem;
   }
 
   .notificationMessage {
@@ -379,8 +447,8 @@
   }
 
   .itemActions {
-    width: 100%; /* Make action buttons take full width */
-    justify-content: space-around; /* Distribute actions evenly */
+    width: 100%;
+    justify-content: space-around;
   }
 
   .itemActionButton {
