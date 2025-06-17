@@ -1,8 +1,8 @@
 .notification-dashboard {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
+ padding: 20px;
+  max-width: 1000px;
+    margin: 0 auto;
   color: #333;
 }
 

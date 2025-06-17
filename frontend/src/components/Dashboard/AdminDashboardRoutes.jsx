@@ -7,9 +7,7 @@ import Profile from "../../pages/studentDashboard/Profile";
 import SendNotification from "../../pages/adminDashbord/SendNotification";
 import { useAuth } from "../../context/AuthContext";
 import LoadingSpinner from "../common/LoadingSpinner";
-import AddProgram from "../AdminDashboar/AddProgram";
-import AddProgramV1 from "../AdminDashboar/AddProgramV1";
-import AddCourse from "../AdminDashboar/AddCourse";
+import Program from "../../pages/adminDashbord/Program"; // Assuming you have a Program component
 const AdminDashboardRoutes = () => {
   const { user } = useAuth(); // <--- GET user from AuthContext
 
@@ -42,9 +40,7 @@ const AdminDashboardRoutes = () => {
         path="send-notification"
         element={<SendNotification user={user} />}
       />
-      <Route path="add-program" element={<AddProgram />} />
-      <Route path="add-programV1" element={<AddProgramV1 />} />
-      <Route path="add-course" element={<AddCourse />} />
+      <Route path="programs" element={<Program />} />
       <Route path="*" element={<NotFoundPage />} />{" "}
       {/* Render your general 404 page for sub-routes */}
     </Routes>

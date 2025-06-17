@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import './SendNotification.module.css';
+import './SendNotification.css';
 import { auth } from "../../firebase/auth"; 
 import { getIdToken } from "firebase/auth"; // Import getIdToken to fetch the token
 import { toast, ToastContainer } from 'react-toastify';
@@ -10,9 +10,9 @@ import { toast, ToastContainer } from 'react-toastify';
 function SendNotification() {
   const [notificationType, setNotificationType] = useState("global");
   const [message, setMessage] = useState("");
-  const [courses, setCourses] = useState([]);
+  const [programs, setPrograms] = useState([]);
   const [students, setStudents] = useState([]);
-  const [selectedCourse, setSelectedCourse] = useState("");
+  const [selectedProgram, setSelectedProgram] = useState("");
   const [selectedStudent, setSelectedStudent] = useState("");
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState("");
@@ -32,14 +32,14 @@ function SendNotification() {
     }, []);
 
   useEffect(() => {
-    if (notificationType === "course") {
-      axios.get("http://localhost:3001/api/admin/courses" , {
+    if (notificationType === "program") {
+      axios.get("http://localhost:3001/api/admin/programs" , {
         headers: {
           Authorization: `Bearer ${authToken}`
         }
       })
-        .then(res => setCourses(res.data.courses || []))
-        .catch(() => setCourses([]));
+        .then(res => setPrograms(res.data.programs || []))
+        .catch(() => setPrograms([]));
     } else if (notificationType === "student") {
       axios.get("http://localhost:3001/api/admin/students"  , {
         headers: {
@@ -57,8 +57,8 @@ function SendNotification() {
     let payload = { message };
     if (notificationType === "global") {
       payload.isGlobal = true;
-    } else if (notificationType === "course" && selectedCourse) {
-      payload.courseId = selectedCourse;
+    } else if (notificationType === "program" && selectedProgram) {
+      payload.programId = selectedProgram;
     } else if (notificationType === "student" && selectedStudent) {
       payload.recipientId = selectedStudent;
     } else {
@@ -117,18 +117,18 @@ function SendNotification() {
               </div>
             </label>
           </div>
-          
-          <div className={`radio-tile ${notificationType === "course" ? "selected" : ""}`}>
+
+          <div className={`radio-tile ${notificationType === "program" ? "selected" : ""}`}>
             <label>
               <input
                 type="radio"
-                value="course"
-                checked={notificationType === "course"}
-                onChange={() => setNotificationType("course")}
+                value="program"
+                checked={notificationType === "program"}
+                onChange={() => setNotificationType("program")}
               />
               <div className="radio-content">
                 <span className="radio-icon">📚</span>
-                <span className="radio-label">Course</span>
+                <span className="radio-label">Program</span>
               </div>
             </label>
           </div>
@@ -149,18 +149,18 @@ function SendNotification() {
           </div>
         </div>
 
-        {notificationType === "course" && (
+        {notificationType === "program" && (
           <div className="select-wrapper">
             <select
               className="custom-select"
-              value={selectedCourse}
-              onChange={(e) => setSelectedCourse(e.target.value)}
+              value={selectedProgram}
+              onChange={(e) => setSelectedProgram(e.target.value)}
             >
-              <option value="">Select a Course</option>
-              {courses.map((c, index) =>
-                c.courseId && (
-                  <option key={index} value={c.courseId}>
-                    {c.courseTitle || c.name}
+              <option value="">Select a Program</option>
+              {programs.map((p, index) =>
+                p.programId && (
+                  <option key={index} value={p.programId}>
+                    {p.title}
                   </option>
                 )
               )}

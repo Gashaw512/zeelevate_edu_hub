@@ -1,6 +1,8 @@
 // src/components/Sidebar/Sidebar.jsx
 import { Link, useLocation } from 'react-router-dom';
-import { Home, BookOpen, User, Settings, LogOut, X, Users, BellDotIcon, PlusCircle } from 'lucide-react'; // Import PlusCircle icon
+import { Home, BookOpen, User, Settings, LogOut, X, Users, BellDotIcon, PlusCircle } from 'lucide-react'; 
+import { FaProjectDiagram } from "react-icons/fa"; // Add this import
+// Import PlusCircle icon
 import styles from './Sidebar.module.css';
 
 const Sidebar = ({ isOpen, toggleSidebar, user, logout, role = 'student' }) => {
@@ -15,10 +17,10 @@ const Sidebar = ({ isOpen, toggleSidebar, user, logout, role = 'student' }) => {
 
   const adminNavItems = [
     { name: 'Dashboard', icon: Home, path: '/admin/dashboard' },
+    { name: 'Programs', icon: FaProjectDiagram, path: '/admin/programs' },
     { name: 'Courses', icon: BookOpen, path: '/admin/courses' },
     { name: 'Students', icon: Users, path: '/admin/students' },
     // NEW: Add Program link
-    { name: 'Add Program', icon: PlusCircle, path: '/admin/add-program' },
     { name: 'Send Notification', icon: BellDotIcon, path: '/admin/send-notification' },
   ];
 
