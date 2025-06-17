@@ -6,14 +6,19 @@ const {
   addCourse,
   updateCourse,
   deleteCourse,
-  getAllPrograms, // New
-  addProgram,     // New
-  updateProgram,  // New
-  deleteProgram,  // New
-  sendCourseNotification,
-  sendGlobalNotification
-} = require('../services/adminService'); // Destructure new service functions
-const crypto = require('crypto'); // Already there
+  getAllPrograms,
+  addProgram,
+  updateProgram,
+  deleteProgram,
+  sendProgramNotification,
+  sendGlobalNotification,
+  sendIndividualNotification, // Import the new service function
+  getStudentById,
+  getAllStudents,
+  updateStudentProfile,
+  getAdminProfile,
+  updateAdminProfile
+} = require('../services/adminService');
 
 const router = express.Router();
 
@@ -79,7 +84,7 @@ router.post('/public/program-by-title', async (req, res) => {
 
     res.json({
       success: true,
-      programId: data.programId,
+      programId: doc.id, // Use doc.id for the programId
       title: data.title,
       price: data.price,
       badge: data.badge,
@@ -95,6 +100,7 @@ router.post('/public/program-by-title', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // Public: Get all courses (without classLink)
 router.get('/public/courses', async (req, res) => {
@@ -133,6 +139,7 @@ router.get('/public/programs/:programId/courses', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // Protect all routes below this line
 router.use(authenticate);
@@ -187,7 +194,7 @@ router.delete('/programs/:id', async (req, res) => {
 });
 
 
-// Admin: Course Management Routes (modified)
+// Admin: Course Management Routes
 router.get('/courses', async (req, res) => {
   try {
     const courses = await getAllCourses(); // Use the service function
@@ -198,7 +205,7 @@ router.get('/courses', async (req, res) => {
   }
 });
 
-// ➕ Add a course (modified)
+// Add a course
 router.post('/add-course', async (req, res) => {
   try {
     // The service layer handles ID generation and program name fetching
@@ -210,7 +217,7 @@ router.post('/add-course', async (req, res) => {
   }
 });
 
-// Update a course (modified)
+// Update a course
 router.put('/courses/:id', async (req, res) => {
   try {
     const courseId = req.params.id;
@@ -223,7 +230,7 @@ router.put('/courses/:id', async (req, res) => {
   }
 });
 
-// Delete a course (modified)
+// Delete a course
 router.delete('/courses/:id', async (req, res) => {
   try {
     const courseId = req.params.id;
@@ -239,36 +246,7 @@ router.delete('/courses/:id', async (req, res) => {
 // Get students and their subcollection enrollments
 router.get('/students', async (req, res) => {
   try {
-    const studentsSnap = await db.collection('students').get();
-
-    const students = [];
-
-    for (const doc of studentsSnap.docs) {
-      const studentData = doc.data();
-      const uid = studentData.uid;
-
-      // Fetch enrollments from subcollection
-      const enrollmentsSnap = await db
-        .collection('students')
-        .doc(uid)
-        .collection('enrollments')
-        .get();
-
-      const enrollments = enrollmentsSnap.docs.map(e => ({
-        id: e.id,
-        ...e.data()
-      }));
-
-      students.push({
-        uid,
-        firstName: studentData.firstName,
-        lastName: studentData.lastName,
-        email: studentData.email,
-        phone: studentData.phone || '',
-        enrollments
-      });
-    }
-
+    const students = await getAllStudents();
     res.json({ success: true, students });
   } catch (err) {
     console.error('Get Students Error:', err);
@@ -276,76 +254,72 @@ router.get('/students', async (req, res) => {
   }
 });
 
+router.get('/students/:uid', async (req, res) => {
+  try {
+    const student = await getStudentById(req.params.uid);
+    res.json(student);
+  } catch (err) {
+    console.error('Get student by ID error:', err);
+    res.status(err.message.includes('not found') ? 404 : 500).json({ error: err.message });
+  }
+});
+
+router.put('/students/:uid/profile', async (req, res) => {
+  try {
+    const result = await updateStudentProfile(req.params.uid, req.body);
+    res.json(result);
+  } catch (err) {
+    console.error('Update student profile error:', err);
+    res.status(err.message.includes('not found') ? 404 : 500).json({ error: err.message });
+  }
+});
+
+// ADMIN PROFILE ROUTES
+router.get('/profile', async (req, res) => {
+  try {
+    const adminProfile = await getAdminProfile(req.user.uid);
+    res.json(adminProfile);
+  } catch (err) {
+    console.error('Get admin profile error:', err);
+    res.status(err.message.includes('not found') || err.message.includes('unauthorized') ? 404 : 500).json({ error: err.message });
+  }
+});
+
+router.put('/profile', async (req, res) => {
+  try {
+    const result = await updateAdminProfile(req.user.uid, req.body);
+    res.json(result);
+  } catch (err) {
+    console.error('Update admin profile error:', err);
+    res.status(err.message.includes('not found') || err.message.includes('unauthorized') ? 404 : 500).json({ error: err.message });
+  }
+});
+
+// REVERTED NOTIFICATION ROUTE
 router.post('/send-notification', async (req, res) => {
   try {
-    const { message, recipientId, isGlobal, courseId } = req.body;
+    const { message, isGlobal, programId, recipientId } = req.body;
     const senderId = req.user.uid;
 
     if (!message) {
-      return res.status(400).json({ error: 'Message is required' });
+      return res.status(400).json({ error: 'Notification message is required' });
     }
 
+    let result;
     if (isGlobal) {
-      const result = await sendGlobalNotification(message, senderId);
-      return res.json({ 
-        success: true, 
-        message: `Global notification sent to ${result.count} students`
-      });
-    } else if (courseId) {
-      // Existing course notification logic
-      const result = await sendCourseNotification(courseId, message, senderId);
-      return res.json({ 
-        success: true, 
-        message: `Notification sent to ${result.count} students in course`
-      });
+      // Global notification
+      result = await sendGlobalNotification(senderId, message);
+    } else if (programId) {
+      // Program-specific notification (formerly course)
+      result = await sendProgramNotification(senderId, programId, message);
     } else if (recipientId) {
-  // Handle individual notification(s)
-  if (Array.isArray(recipientId)) {
-        // Multiple recipients
-        const batch = db.batch();
-        const notificationsRef = db.collection('notifications');
-        const timestamp = admin.firestore.FieldValue.serverTimestamp();
-
-        recipientId.forEach(uid => {
-          // Verify each recipient is a valid student
-          batch.set(notificationsRef.doc(), {
-            message,
-            senderId,
-            recipientId: uid,
-            type: 'individual',
-            createdAt: timestamp,
-            read: false
-          });
-        });
-
-        await batch.commit();
-        return res.json({ 
-          success: true, 
-          message: `Notification sent to ${recipientId.length} recipients`
-        });
-      } else {
-        // Single recipient
-        // First verify the recipient exists
-        const recipientRef = db.collection('students').doc(recipientId);
-        const recipientSnap = await recipientRef.get();
-        
-        if (!recipientSnap.exists) {
-          return res.status(404).json({ error: 'Recipient not found' });
-        }
-
-        await db.collection('notifications').add({
-          message,
-          senderId,
-          recipientId,
-          type: 'individual',
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-          read: false
-        });
-        return res.json({ success: true, message: 'Notification sent' });
-      }
+      // Individual notification (can be single or array of UIDs)
+      result = await sendIndividualNotification(senderId, recipientId, message, programId, 'individual'); // programId might be present for contextual individual notifications
     } else {
-      return res.status(400).json({ error: 'Invalid recipient specification' });
+      return res.status(400).json({ error: 'Invalid notification type. Specify isGlobal, programId, or recipientId.' });
     }
+
+    res.json(result);
   } catch (err) {
     console.error('Send Notification Error:', err);
     res.status(500).json({ error: err.message });
@@ -372,6 +346,5 @@ router.get('/sent-notifications', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 
 module.exports = router;
