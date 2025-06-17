@@ -15,19 +15,43 @@ const ProgramSelection = ({
   onProgramSelect,   // Callback function to handle program selection/deselection
   totalPrice,        // Calculated total price of selected programs
 }) => {
-  // Use totalPrice directly, no need for an intermediate 'computedTotal' constant
-  // const computedTotal = totalPrice;
+  /**
+   * Determines if a program card should be clickable/selectable based on its status.
+   * @param {string} status - The status of the program (e.g., 'available', 'beta', 'unavailable', 'full').
+   * @returns {boolean} True if the program can be selected, false otherwise.
+   */
+  const isProgramSelectable = (status) => {
+    // Only 'available' and 'beta' programs can be selected for now.
+    return status === 'available' || status === 'beta';
+  };
 
   /**
    * Handles click events on the checkbox input.
    * Prevents event propagation to avoid double-triggering from parent div's onClick.
    * @param {Object} e - The event object.
    * @param {string} programId - The ID of the program associated with the checkbox.
+   * @param {string} status - The status of the program.
    */
-  const handleCheckboxClick = (e, programId) => {
+  const handleCheckboxClick = (e, programId, status) => {
     e.stopPropagation(); // Prevent the parent div's onClick from firing simultaneously
-    onProgramSelect(programId);
+    if (isProgramSelectable(status)) {
+      onProgramSelect(programId);
+    }
+    // Else, do nothing if not selectable
   };
+
+  /**
+   * Handles click events on the program card itself.
+   * @param {string} programId - The ID of the program associated with the card.
+   * @param {string} status - The status of the program.
+   */
+  const handleCardClick = (programId, status) => {
+    if (isProgramSelectable(status)) {
+      onProgramSelect(programId);
+    }
+    // Else, do nothing if not selectable
+  };
+
 
   return (
     <div className={styles.programSelectionSection}>
@@ -36,27 +60,37 @@ const ProgramSelection = ({
         {programs.map((program) => {
           // Determine if the current program is selected
           const isSelected = selectedProgramIds.includes(program.programId);
+          const selectable = isProgramSelectable(program.status); // Determine selectability
 
           return (
             <div
               key={program.programId} // Unique key for list rendering, using programId
-              className={`${styles.programCard} ${
-                isSelected ? styles.selected : ""
+              className={`${styles.programCard} ${isSelected ? styles.selected : ""} ${
+                !selectable ? styles.unselectable : "" // Apply unselectable style
               }`}
               // Allow clicking anywhere on the card to select/deselect the program
-              onClick={() => onProgramSelect(program.programId)}
-              tabIndex="0" // Make the card focusable for keyboard navigation
+              onClick={() => handleCardClick(program.programId, program.status)} // Use new handler
+              tabIndex={selectable ? "0" : "-1"} // Only focusable if selectable
               role="checkbox" // Indicate that this div acts like a checkbox
               aria-checked={isSelected} // Announce selection status for accessibility
+              aria-disabled={!selectable} // Announce disabled state for accessibility
             >
+              {/* Badge (e.g., 'Popular', 'New') */}
+              {program.badge && (
+                <div className={styles.programBadge}>
+                  {program.badge}
+                </div>
+              )}
+
               <div className={styles.programHeaderSelection}>
                 <div className={styles.customCheckbox}>
                   <input
                     type="checkbox"
                     id={`program-checkbox-${program.programId}`} // Unique ID for accessibility label
                     checked={isSelected}
-                    onChange={(e) => handleCheckboxClick(e, program.programId)}
+                    onChange={(e) => handleCheckboxClick(e, program.programId, program.status)} // Use new handler
                     className={styles.visuallyHidden} // Hide native checkbox visually
+                    disabled={!selectable} // Disable the native checkbox
                   />
                   <span
                     className={styles.checkboxIndicator}
@@ -88,7 +122,7 @@ const ProgramSelection = ({
                         </li>
                       ))
                     ) : (
-                      <li>No specific courses listed for this program.</li> // More specific fallback
+                      <li>No specific courses listed for this program.</li>
                     )}
                   </ul>
                 </div>
@@ -98,7 +132,8 @@ const ProgramSelection = ({
                 <span className={styles.programPriceLabel}>Program Price:</span>
                 <span className={styles.programPriceAmount}>
                   {/* Safely display price, defaulting to 0.00 if undefined/null */}
-                  ${(program.price ?? 0).toFixed(2)}
+                  {/* Use 'Coming Soon' or 'N/A' for unavailable/full programs */}
+                  {selectable ? `$${(program.price ?? 0).toFixed(2)}` : 'N/A'}
                 </span>
               </div>
 
@@ -106,6 +141,17 @@ const ProgramSelection = ({
               {isSelected && (
                 <div className={styles.cardSelectedOverlay} aria-hidden="true">
                   <CheckIcon />
+                </div>
+              )}
+
+              {/* NEW: Overlay for unselectable programs */}
+              {!selectable && (
+                <div className={styles.unselectableOverlay}>
+                  <p className={styles.unselectableText}>
+                    {program.status === 'unavailable' ? 'Coming Soon' :
+                     program.status === 'full' ? 'Program Full' :
+                     'Not Available'}
+                  </p>
                 </div>
               )}
             </div>
@@ -186,6 +232,7 @@ ProgramSelection.propTypes = {
       title: PropTypes.string.isRequired,
       shortDescription: PropTypes.string, // Optional description
       price: PropTypes.number.isRequired,
+      status: PropTypes.string.isRequired, // Ensure status is always provided
       courses: PropTypes.arrayOf(
         PropTypes.shape({
           courseId: PropTypes.string.isRequired,
