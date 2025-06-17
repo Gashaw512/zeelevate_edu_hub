@@ -17,7 +17,7 @@ const useEnrollmentAndPayment = () => {
       const response = await axios.post(
         'http://localhost:3001/api/payments/create-payment', 
         payload,
-        { timeout: 10000 }
+        { timeout: 60000 }
       );
       
       if (response.data.success && response.data.paymentUrl) {
