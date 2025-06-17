@@ -1,85 +1,102 @@
+// src/hooks/useProgramsFetcher.js
 import { useState, useEffect, useCallback } from 'react';
 
-// This custom hook encapsulates the logic for fetching program data.
 const useProgramsFetcher = (backendApiUrl) => {
   const [programs, setPrograms] = useState([]);
+  const [allCourses, setAllCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchPrograms = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
-    setError(null); // Clear previous errors
+    setError(null);
 
     try {
-      const apiUrl = `${backendApiUrl}/api/admin/public/courses`;
-      console.info('Attempting to fetch programs from:', apiUrl);
+      // --- FETCH PROGRAMS ---
+      const programsApiUrl = `${backendApiUrl}/api/admin/public/programs`;
+      console.info('Attempting to fetch programs from:', programsApiUrl);
+      const programsResponse = await fetch(programsApiUrl);
 
-      const response = await fetch(apiUrl);
-
-      if (!response.ok) {
-        let errorDetail = `Server responded with status: ${response.status}`;
+      if (!programsResponse.ok) {
+        let errorDetail = `HTTP error! Status: ${programsResponse.status}`;
         try {
-          const errorData = await response.json();
-          if (errorData && typeof errorData === 'object' && errorData.message) {
+          const errorData = await programsResponse.json();
+          if (errorData && errorData.message) {
             errorDetail = errorData.message;
-          } else if (response.status === 404) {
-            errorDetail = 'Programs endpoint not found.';
-          } else {
-            errorDetail = `Server responded with status: ${response.status}. Details: ${JSON.stringify(errorData)}`;
           }
         } catch (jsonError) {
-          console.warn('Could not parse error response as JSON for status:', response.status, jsonError);
-          // If JSON parsing fails, use the default status message.
+          console.warn('Could not parse error response as JSON for programs (status was not OK):', jsonError);
         }
-        throw new Error(`API request failed: ${errorDetail}`);
+        throw new Error(`Failed to load programs: ${errorDetail}`);
+      }
+      
+      // --- CRITICAL CORRECTION FOR PROGRAMS DATA STRUCTURE ---
+      const rawProgramsResponseData = await programsResponse.json(); 
+      // Expecting a structure like: { success: true, programs: [...] }
+      const programsArray = rawProgramsResponseData.programs; 
+
+      console.info('Programs fetched successfully:', programsArray);
+
+      // Validate if the 'programs' property is an array
+      if (!Array.isArray(programsArray)) {
+          console.error("API response structure for /admin/public/programs was unexpected. Expected 'programs' property to be an array. Received:", rawProgramsResponseData);
+          setError("Invalid data format for programs. Please try again later.");
+          setPrograms([]); // Ensure it's an array to prevent further errors
+          return; // Exit if programs data is malformed
+      }
+      setPrograms(programsArray); // Set the state with the actual array of programs
+
+      // --- FETCH ALL PUBLIC COURSES ---
+      const coursesApiUrl = `${backendApiUrl}/api/admin/public/courses`;
+      console.info('Attempting to fetch all public courses from:', coursesApiUrl);
+      const coursesResponse = await fetch(coursesApiUrl);
+
+      if (!coursesResponse.ok) {
+        let errorDetail = `HTTP error! Status: ${coursesResponse.status}`;
+        try {
+          const errorData = await coursesResponse.json();
+          if (errorData && errorData.message) {
+            errorDetail = errorData.message;
+          }
+        } catch (jsonError) {
+          console.warn('Could not parse error response as JSON for courses (status was not OK):', jsonError);
+        }
+        throw new Error(`Failed to load courses: ${errorDetail}`);
+      }
+      
+      const rawCoursesResponseData = await coursesResponse.json(); 
+      console.info('All public courses fetched successfully:', rawCoursesResponseData);
+      // Expecting a structure like: { success: true, courses: [...] }
+      const coursesArray = rawCoursesResponseData.courses; 
+
+      console.info('Courses fetched successfully:', coursesArray);
+      // Validate if the 'courses' property is an array
+      if (!Array.isArray(coursesArray)) {
+          console.error("API response structure for /admin/public/courses was unexpected. Expected 'courses' property to be an array. Received:", rawCoursesResponseData);
+          setError("Invalid data format for courses. Please try again later.");
+          setAllCourses([]); // Ensure it's an array to prevent further errors
+          return; // Exit if courses data is malformed
       }
 
-      const rawData = await response.json();
-
-      // Validate the expected data structure for the overall response
-      if (!rawData || !Array.isArray(rawData.courses)) {
-        throw new Error('Invalid data structure received from API: "courses" array is missing or malformed.');
-      }
-
-      const transformedData = rawData.courses.map(course => {
-        // Validate individual course properties
-        if (!course || typeof course.courseId === 'undefined' || !course.courseTitle) {
-          console.warn('Skipping malformed course object received from API:', course);
-          return null; // Return null for malformed courses to be filtered out
-        }
-
-        const parsedPrice = parseFloat(course.price);
-        const fixedPriceValue = isNaN(parsedPrice) ? 0 : parsedPrice; // Fallback to 0 if parsing fails
-
-        return {
-          id: course.courseId,
-          name: course.courseTitle,
-          shortDescription: course.courseDetails || 'No description available.',
-          fixedPrice: fixedPriceValue,
-          courses: [{ id: course.courseId, name: course.courseTitle }], 
-          fullPrice: 0, // Not provided by the API, default to 0
-          badge: null, // Not provided by the API, default to null
-          features: [], // Not provided by the API, default to empty array
-          status: course.status || 'active', // Default to 'active' if not specified
-        };
-      }).filter(Boolean);
-
-      setPrograms(transformedData);
-      console.log('Programs data transformed and set:', transformedData);
+      const processedCourses = coursesArray.map(course => ({
+          ...course,
+          name: course.name || course.courseTitle || '' // Uses 'name' field from your Firebase course schema
+      }));
+      setAllCourses(processedCourses);
 
     } catch (err) {
-      console.error('Failed to fetch program data:', err);
-      setError(`Failed to load program options: ${err.message}. Please try again later.`);
+      console.error('Error in useProgramsFetcher:', err);
+      setError(err.message || "An unexpected error occurred while loading data.");
     } finally {
       setLoading(false);
     }
-  }, [backendApiUrl])
+  }, [backendApiUrl]);
 
   useEffect(() => {
-    fetchPrograms();
-  }, [fetchPrograms]); // Effect runs when fetchPrograms changes (which is only if backendApiUrl changes)
+    fetchData();
+  }, [fetchData]);
 
-  return { programs, loading, error, refetchPrograms: fetchPrograms };
+  return { programs, allCourses, loading, error, refetchPrograms: fetchData };
 };
 
 export default useProgramsFetcher;
