@@ -1,4 +1,3 @@
-// paymentService.js
 const square = require('../config/square-client');
 const { admin, db } = require('../config/firebase-admin');
 const crypto = require('crypto');
@@ -7,6 +6,7 @@ async function createPaymentLink(data) {
 
 const { customerDetails, enrollmentDetails} = data;
 const { programId } = enrollmentDetails;
+const token = crypto.randomUUID(); 
 
   const {
     firstName,
