@@ -33,7 +33,7 @@ async function registerUserAndEnroll(token) {
     }
   }
 
-  // Save student and enrollment
+  // Save student data in 'students' collection
   const studentRef = db.collection('students').doc(userRecord.uid);
   await studentRef.set({
     uid: userRecord.uid,
@@ -42,6 +42,12 @@ async function registerUserAndEnroll(token) {
     email: customerDetails.email,
     phone: customerDetails.phone || ''
     // Add any other student-specific details here
+  });
+
+  // Register user with 'student' role in 'users' collection
+  await db.collection('users').doc(userRecord.uid).set({
+    email: customerDetails.email,
+    role: 'student'
   });
 
   // Save enrollment
@@ -55,17 +61,15 @@ async function registerUserAndEnroll(token) {
   // Delete pending registration
   await pendingRef.delete();
 
-  // --- MODIFICATION HERE: ADDING EMAIL AND PASSWORD TO THE RETURN OBJECT ---
   return {
     success: true,
-    uid: userRecord.uid, // Changed from userId to uid for consistency with Firebase
+    uid: userRecord.uid,
     email: customerDetails.email,
-    password: customerDetails.authPassword, // Returning the password passed for auth
+    password: customerDetails.authPassword,
     programTitle: programData.title
   };
 }
 
-// Keep other functions as they were (getEnrollmentsByUID, getStudentNotifications, etc.)
 async function getEnrollmentsByUID(uid) {
   const enrollmentsSnapshot = await db.collection('students')
     .doc(uid)
@@ -73,11 +77,55 @@ async function getEnrollmentsByUID(uid) {
     .orderBy('enrollmentDate', 'desc')
     .get();
 
-  return enrollmentsSnapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data(),
-    enrollmentDate: doc.data().enrollmentDate.toDate()
+  const enrollmentsWithDetails = await Promise.all(enrollmentsSnapshot.docs.map(async doc => {
+    const enrollmentData = doc.data();
+    let programDetails = {};
+    let enrolledCourses = []; // Initialize array for course details
+
+    // Fetch Program Details
+    if (enrollmentData.programId) {
+      const programSnap = await db.collection('programs').doc(enrollmentData.programId).get();
+      if (programSnap.exists) {
+        const data = programSnap.data();
+        programDetails = {
+          programClassLink: data.classLink || null,
+          programTitle: data.title
+          // Add any other program details from the 'programs' collection you want to expose
+        };
+
+        // Fetch Courses associated with this ProgramId
+        const coursesSnapshot = await db.collection('courses')
+          .where('programIds', 'array-contains', enrollmentData.programId)
+          .get();
+
+        enrolledCourses = coursesSnapshot.docs.map(courseDoc => {
+          const courseData = courseDoc.data();
+          // Selectively include relevant course details from the course document
+          return {
+            courseId: courseData.courseId,
+            name: courseData.name,
+            description: courseData.description,
+            duration: courseData.duration,
+            difficulty: courseData.difficulty,
+            imageUrl: courseData.imageUrl,
+            classLink: courseData.classLink, // Include classLink from course
+            status: courseData.status,
+            // You can add more course-specific fields here if needed
+          };
+        });
+      }
+    }
+
+    return {
+      id: doc.id,
+      ...enrollmentData,
+      enrollmentDate: enrollmentData.enrollmentDate.toDate(), // Convert Timestamp to Date
+      ...programDetails, // Merged program details
+      courses: enrolledCourses // Merged associated course details
+    };
   }));
+
+  return enrollmentsWithDetails;
 }
 
 async function getStudentNotifications(userId) {
@@ -126,11 +174,13 @@ async function markNotificationAsRead(notificationId, userId) {
 
 async function clearAllUserNotifications(userId) {
   try {
+    // Get all notifications for this user
     const notificationsRef = db.collection('notifications');
     const querySnapshot = await notificationsRef
       .where('recipientId', '==', userId)
       .get();
 
+    // Batch delete all matching notifications
     const batch = db.batch();
     querySnapshot.forEach(doc => {
       batch.delete(doc.ref);
