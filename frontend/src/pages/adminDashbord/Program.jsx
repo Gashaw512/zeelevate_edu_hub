@@ -18,6 +18,7 @@ const Program = () => {
     order: 1,
     features: []
   });
+  const [featuresText, setFeaturesText] = useState(''); // Single textarea for features
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -79,7 +80,16 @@ const Program = () => {
     }));
   };
 
-
+  const handleFeaturesChange = (e) => {
+    const text = e.target.value;
+    setFeaturesText(text);
+    // Convert text to array (split by new lines and filter out empty lines)
+    const featuresArray = text.split('\n').filter(line => line.trim() !== '');
+    setFormData(prev => ({
+      ...prev,
+      features: featuresArray
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
