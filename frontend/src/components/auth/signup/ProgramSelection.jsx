@@ -2,84 +2,93 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import styles from "./ProgramSelection.module.css";
+import React from 'react'; // Explicitly import React for functional components
 
+/**
+ * ProgramSelection Component
+ * Displays a list of programs for selection, allowing a single program to be chosen.
+ * It integrates with SignUp.jsx to manage program selection state.
+ */
 const ProgramSelection = ({
-  programs, // Now expects programs to have a 'courses' array on each object
-  selectedProgramIds,
-  onProgramSelect,
-  totalPrice,
+  programs,          // Array of program objects, each including a 'courses' array
+  selectedProgramIds, // Array of currently selected program IDs (expected to be single-element or empty)
+  onProgramSelect,   // Callback function to handle program selection/deselection
+  totalPrice,        // Calculated total price of selected programs
 }) => {
-  const computedTotal = totalPrice; 
+  // Use totalPrice directly, no need for an intermediate 'computedTotal' constant
+  // const computedTotal = totalPrice;
 
+  /**
+   * Handles click events on the checkbox input.
+   * Prevents event propagation to avoid double-triggering from parent div's onClick.
+   * @param {Object} e - The event object.
+   * @param {string} programId - The ID of the program associated with the checkbox.
+   */
   const handleCheckboxClick = (e, programId) => {
-    e.stopPropagation(); 
+    e.stopPropagation(); // Prevent the parent div's onClick from firing simultaneously
     onProgramSelect(programId);
   };
 
   return (
     <div className={styles.programSelectionSection}>
       <div className={styles.programCardsContainer}>
-        {programs.map((program) => { 
-          // Use program.programId for comparison
+        {/* Render a program card for each program in the 'programs' array */}
+        {programs.map((program) => {
+          // Determine if the current program is selected
           const isSelected = selectedProgramIds.includes(program.programId);
 
           return (
             <div
-              // Use program.programId for the key
-              key={program.programId}
+              key={program.programId} // Unique key for list rendering, using programId
               className={`${styles.programCard} ${
                 isSelected ? styles.selected : ""
               }`}
-              // Pass program.programId to handler
+              // Allow clicking anywhere on the card to select/deselect the program
               onClick={() => onProgramSelect(program.programId)}
-              tabIndex="0"
-              role="checkbox"
-              aria-checked={isSelected}
+              tabIndex="0" // Make the card focusable for keyboard navigation
+              role="checkbox" // Indicate that this div acts like a checkbox
+              aria-checked={isSelected} // Announce selection status for accessibility
             >
               <div className={styles.programHeaderSelection}>
                 <div className={styles.customCheckbox}>
                   <input
                     type="checkbox"
-                    // Use program.programId for id and htmlFor
-                    id={program.programId}
+                    id={`program-checkbox-${program.programId}`} // Unique ID for accessibility label
                     checked={isSelected}
                     onChange={(e) => handleCheckboxClick(e, program.programId)}
-                    className={styles.visuallyHidden}
+                    className={styles.visuallyHidden} // Hide native checkbox visually
                   />
                   <span
                     className={styles.checkboxIndicator}
-                    aria-hidden="true"
+                    aria-hidden="true" // Hide from accessibility tree as it's a visual indicator
                   />
                 </div>
 
                 <label
-                  htmlFor={program.programId} // Use program.programId for htmlFor
+                  htmlFor={`program-checkbox-${program.programId}`} // Associate label with the hidden input
                   className={styles.programTitleLabel}
                 >
-                  {/* Use program.title from your data */}
-                  <h4 className={styles.programName}>{program.title}</h4> 
+                  <h4 className={styles.programName}>{program.title}</h4>
                 </label>
               </div>
 
               <p className={styles.programShortDescription}>
-                {/* Ensure program.shortDescription exists or fallback */}
-                {program.shortDescription || 'No description available.'} 
+                {program.shortDescription || 'No description available.'}
               </p>
 
               <div className={styles.programDetailsSummary}>
                 <div className={styles.programCoursesIncluded}>
                   <h5>What's Included:</h5>
                   <ul>
-                    {/* Now program.courses should be correctly populated by SignUp.jsx */}
+                    {/* Conditionally render courses or a fallback message */}
                     {program.courses && program.courses.length > 0 ? (
                       program.courses.map((course) => (
-                        // Use course.courseId for key from your data
-                        <li key={course.courseId}> 
+                        <li key={course.courseId}>
                           {course.name}
-                        </li> 
+                        </li>
                       ))
                     ) : (
-                      <li>No specific courses listed.</li> // Fallback if no courses
+                      <li>No specific courses listed for this program.</li> // More specific fallback
                     )}
                   </ul>
                 </div>
@@ -88,11 +97,12 @@ const ProgramSelection = ({
               <div className={styles.programCardFooter}>
                 <span className={styles.programPriceLabel}>Program Price:</span>
                 <span className={styles.programPriceAmount}>
-                   {/* Use program.price from your data */}
-                   ${program.price?.toFixed(2) || '0.00'} 
+                  {/* Safely display price, defaulting to 0.00 if undefined/null */}
+                  ${(program.price ?? 0).toFixed(2)}
                 </span>
               </div>
 
+              {/* Display a checkmark overlay when the card is selected */}
               {isSelected && (
                 <div className={styles.cardSelectedOverlay} aria-hidden="true">
                   <CheckIcon />
@@ -103,12 +113,16 @@ const ProgramSelection = ({
         })}
       </div>
 
-      <TotalSummary price={computedTotal} />
+      {/* Summary of total price for selected programs */}
+      <TotalSummary price={totalPrice} />
 
+      {/* Link to view all courses details (assumed to be on homepage) */}
       <ViewAllCoursesLink />
     </div>
   );
 };
+
+// --- Helper Components (Kept as is, they are well-defined) ---
 
 const CheckIcon = () => (
   <svg
@@ -141,7 +155,7 @@ const ViewAllCoursesLink = () => {
       <p className={styles.viewCoursesText}>
         Want to see a full breakdown of each program's content?
       </p>
-           <Link
+      <Link
         to="/"
         state={{ scrollTo: "service" }} // Assuming 'service' is an ID on your homepage section
         className={styles.viewAllCoursesLink}
@@ -164,24 +178,25 @@ const ViewAllCoursesLink = () => {
   );
 };
 
+// --- PropTypes for ProgramSelection (Refined for precision) ---
 ProgramSelection.propTypes = {
   programs: PropTypes.arrayOf(
     PropTypes.shape({
-      programId: PropTypes.string.isRequired, // Changed from 'id' to 'programId'
-      title: PropTypes.string.isRequired,     // Changed from 'name' to 'title'
-      shortDescription: PropTypes.string,     // Made optional, as per data observation
-      price: PropTypes.number.isRequired,     // Changed from 'fixedPrice' to 'price'
-      courses: PropTypes.arrayOf(             // Expects a 'courses' array now
+      programId: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      shortDescription: PropTypes.string, // Optional description
+      price: PropTypes.number.isRequired,
+      courses: PropTypes.arrayOf(
         PropTypes.shape({
-          courseId: PropTypes.string.isRequired, // Changed from 'id' to 'courseId'
+          courseId: PropTypes.string.isRequired,
           name: PropTypes.string.isRequired,
         })
-      ).isRequired,
+      ).isRequired, // Ensure 'courses' array is present and is an array of course objects
     })
   ).isRequired,
   selectedProgramIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   onProgramSelect: PropTypes.func.isRequired,
-  totalPrice: PropTypes.number,
+  totalPrice: PropTypes.number.isRequired, // totalPrice is always a number from SignUp's useMemo
 };
 
 export default ProgramSelection;

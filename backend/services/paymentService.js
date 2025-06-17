@@ -7,6 +7,8 @@ async function createPaymentLink(data) {
   const { customerDetails, enrollmentDetails } = data; // Changed from courseDetails to programId
   const token = crypto.randomUUID();
 
+  const { customerDetails, enrollmentDetails} = data;
+const { programId } = enrollmentDetails;
   const {
     firstName,
     lastName,
@@ -14,11 +16,6 @@ async function createPaymentLink(data) {
     password,
     phoneNumber
   } = customerDetails;
-
-  const {
-      programId
-  } = enrollmentDetails
-
 
   const customerName = `${firstName} ${lastName}`;
 
