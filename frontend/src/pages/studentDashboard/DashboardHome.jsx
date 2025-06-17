@@ -1,9 +1,9 @@
-// src/components/DashboardHome/DashboardHome.jsx
-import  { useMemo } from 'react';
+import  { useMemo } from 'react'; 
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useEnrolledCourses } from '../../context/EnrolledCoursesContext';
-import useNotifications from '../../hooks/useNotifications';
+import { useEnrolledCourses } from '../../context/EnrolledCoursesContext'; 
+import useNotifications from '../../hooks/useNotifications'; 
+
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
 // Icons from Lucide React
@@ -13,29 +13,40 @@ import { BookOpen, Bell, User, ChevronRight, Settings, GraduationCap, XCircle, C
 import styles from './DashboardHome.module.css';
 
 const DashboardHome = () => {
-    const { user, loading: authLoading } = useAuth();
+    
+    const { user, loading: authLoading } = useAuth(); // Auth loading state
     const {
         enrolledCourses,
         loadingEnrolledCourses,
         enrolledCoursesError,
-        refetchEnrolledCourses
+        refetchEnrolledCourses // Function to re-trigger course fetch
     } = useEnrolledCourses();
 
-    const { notifications, loading: notificationsLoading, error: notificationsError } = useNotifications(user?.uid);
+    const {
+        notifications,
+        loading: notificationsLoading,
+        error: notificationsError
+    } = useNotifications(user?.uid); // Notifications hook depends on user ID
 
+    // --- Memoized Values for Performance ---
+
+    // Calculate unread notification count
     const unreadNotificationsCount = useMemo(() => {
-        if (notificationsLoading || notificationsError) return 0;
+        // Handle loading/error states for notifications gracefully
+        if (notificationsLoading || notificationsError || !notifications) return 0;
         return notifications.filter(n => !n.read).length;
-    }, [notifications, notificationsLoading, notificationsError]);
+    }, [notifications, notificationsLoading, notificationsError]); // Dependencies for re-calculation
 
-    const userName = user?.displayName || user?.email?.split('@')[0] || 'Student';
-
+    // Derive active courses from the fetched enrolled courses
     const activeCourses = useMemo(() => {
-    
+        // Ensure enrolledCourses is an array before filtering
+        if (!enrolledCourses || !Array.isArray(enrolledCourses)) return [];
+        // Assuming 'active' is a valid status string from your backend
         return enrolledCourses.filter(course => course.status === 'active');
-    }, [enrolledCourses]);
+    }, [enrolledCourses]); // Dependency on enrolledCourses
 
-    // --- Loading State (combined from all sources) ---
+    // --- Combined Loading State ---
+    // Show a full-page spinner if any primary data source is loading
     if (authLoading || loadingEnrolledCourses || notificationsLoading) {
         return (
             <div className={styles.fullPageStatusContainer}>
@@ -44,22 +55,43 @@ const DashboardHome = () => {
         );
     }
 
-    // --- Error State (combined from all sources) ---
+    // --- Combined Error State ---
+    // Display comprehensive error messages if any data fetch fails
     if (notificationsError || enrolledCoursesError) {
         return (
             <div className={styles.errorContainer}>
                 <XCircle size={48} className={styles.errorIcon} />
                 <h2 className={styles.errorHeading}>Oops! Something Went Wrong.</h2>
-                {notificationsError && <p className={styles.errorText}>Notifications: {notificationsError.message || notificationsError}</p>}
-                {enrolledCoursesError && <p className={styles.errorText}>Courses: {enrolledCoursesError.message || enrolledCoursesError}</p>}
-                <p className={styles.errorText}>We couldn't load all parts of your dashboard. Please try again.</p>
-                <button onClick={refetchEnrolledCourses} className={styles.retryButton}>
-                    Retry
-                </button>
+                {/* Display specific error messages if available */}
+                {notificationsError && (
+                    <p className={styles.errorText}>
+                        Notifications: {notificationsError.message || String(notificationsError)}
+                    </p>
+                )}
+                {enrolledCoursesError && (
+                    <p className={styles.errorText}>
+                        Courses: {enrolledCoursesError.message || String(enrolledCoursesError)}
+                    </p>
+                )}
+                <p className={styles.errorText}>
+                    We couldn't load all parts of your dashboard. Please try again.
+                </p>
+                {/* Provide a retry mechanism for enrolled courses specifically if that's the primary issue */}
+                {enrolledCoursesError && ( // Only show retry if courses errored
+                    <button onClick={refetchEnrolledCourses} className={styles.retryButton}>
+                        Retry Courses
+                    </button>
+                )}
+                {/* You might want a general "Retry All" or "Refresh Page" button here too */}
             </div>
         );
     }
 
+    // --- User Name for Display ---
+    // Provides a fallback for display name
+    const userName = user?.displayName || user?.email?.split('@')[0] || 'Student';
+
+    // --- Main Dashboard Render ---
     return (
         <div className={styles.dashboardContainer}>
             {/* Welcome Section */}
@@ -70,14 +102,15 @@ const DashboardHome = () => {
                 <p className={styles.welcomeSubtitle}>
                     Pick up where you left off or explore new opportunities.
                 </p>
+                {/* Conditionally render "Continue Learning" button if there are active courses */}
                 {activeCourses.length > 0 && (
-                    <Link to={`/student/dashboard/courses/${activeCourses[0].id}`} className={styles.primaryActionButton}>
+                    <Link to={`/student/dashboard/courses/${activeCourses[0].courseId}`} className={styles.primaryActionButton}>
                         <GraduationCap size={20} /> Continue Learning
                     </Link>
                 )}
             </div>
 
-            {/* Overview Cards */}
+            {/* Overview Cards Grid */}
             <div className={styles.cardsGrid}>
                 {/* Enrolled Courses Card */}
                 <div className={styles.dashboardCard}>
@@ -103,6 +136,7 @@ const DashboardHome = () => {
                     <p className={styles.cardValue}>{activeCourses.length}</p>
                     <p className={styles.cardDescription}>
                         {activeCourses.length === 1 ? 'course currently active' : 'courses currently active'}
+                    {/* Consider displaying progress bar here for active courses or leading to one */}
                     </p>
                     <Link to="/student/dashboard/courses?filter=active" className={styles.cardLink}>
                         Go to Active <ChevronRight size={18} className={styles.linkIcon} />
@@ -130,19 +164,26 @@ const DashboardHome = () => {
                 <h2 className={styles.latestActivityTitle}>Your Progress at a Glance</h2>
                 {enrolledCourses.length > 0 ? (
                     <div className={styles.activityList}>
+                       
                         {enrolledCourses.slice(0, 3).map(course => (
                             <div key={course.id} className={styles.activityItem}>
                                 <span className={styles.activityCourseTitle}>{course.title}</span>
                                 <span className={`${styles.activityStatus} ${styles[course.status || 'unknown']}`}>
+                                 
                                     {course.status ? (course.status.charAt(0).toUpperCase() + course.status.slice(1)) : 'N/A'}
                                 </span>
-                                <Link to={`/student/dashboard/courses/${course.id}`} className={styles.activityLink}>
+                               
+                                {typeof course.progress === 'number' && course.progress > 0 && (
+                                    <span className={styles.activityProgress}>({course.progress}%)</span>
+                                )}
+                                <Link to={`/student/dashboard/courses/${course.courseId}`} className={styles.activityLink}>
                                     Go to Course <ChevronRight size={16} />
                                 </Link>
                             </div>
                         ))}
                     </div>
                 ) : (
+                    // Empty state for no enrolled courses
                     <div className={styles.emptyState}>
                         <p>You haven't enrolled in any courses yet. Start your learning journey today!</p>
                         <Link to="/programs" className={styles.enrollNowButton}>Explore Programs</Link>
