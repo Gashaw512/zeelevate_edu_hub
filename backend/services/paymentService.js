@@ -4,15 +4,9 @@ const { admin, db } = require('../config/firebase-admin');
 const crypto = require('crypto');
 
 async function createPaymentLink(data) {
-<<<<<<< HEAD
+
   const { customerDetails, enrollmentDetails} = data;
 const { programId } = enrollmentDetails;
-
-=======
-  const { customerDetails, enrollmentDetails } = data; // Changed from courseDetails to programId
->>>>>>> 75bbb39b170a8e7b8c43cc79bcff504170a7818c
-  const token = crypto.randomUUID();
-
   const {
     firstName,
     lastName,
@@ -20,12 +14,6 @@ const { programId } = enrollmentDetails;
     password,
     phoneNumber
   } = customerDetails;
-
-  const {
-      programId
-  } = enrollmentDetails
-
-
   const customerName = `${firstName} ${lastName}`;
 
   // ✅ 1. Check if email is already registered (no change)
