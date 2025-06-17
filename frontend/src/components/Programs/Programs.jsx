@@ -25,7 +25,7 @@ const Programs = () => {
             <span className={styles.buttonPrice}>${programPrice}/mo</span>
           </>
         );
-      case 'unavailable':
+      case 'inactive':
         return "Courses Coming Soon";
       case 'full':
         return "Program Full";
