@@ -10,8 +10,9 @@ const {
   addProgram,
   updateProgram,
   deleteProgram,
-  sendProgramNotification, // New dedicated service function
-  sendGlobalNotification,  // New dedicated service function
+  sendProgramNotification,
+  sendGlobalNotification,
+  sendIndividualNotification, // Import the new service function
   getStudentById,
   getAllStudents,
   updateStudentProfile,
@@ -294,113 +295,36 @@ router.put('/profile', async (req, res) => {
   }
 });
 
-// NEW NOTIFICATION ROUTES
-router.post('/send-program-notification', async (req, res) => {
+// REVERTED NOTIFICATION ROUTE
+router.post('/send-notification', async (req, res) => {
   try {
-    const { programId, message } = req.body;
-    const senderId = req.user.uid;
-
-    if (!programId || !message) {
-      return res.status(400).json({ error: 'Program ID and message are required' });
-    }
-
-    const result = await sendProgramNotification(senderId, programId, message);
-    res.json(result);
-  } catch (err) {
-    console.error('Send Program Notification Error:', err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-router.post('/send-global-notification', async (req, res) => {
-  try {
-    const { message } = req.body;
+    const { message, isGlobal, programId, recipientId } = req.body;
     const senderId = req.user.uid;
 
     if (!message) {
-      return res.status(400).json({ error: 'Message is required' });
+      return res.status(400).json({ error: 'Notification message is required' });
     }
 
-    const result = await sendGlobalNotification(senderId, message);
+    let result;
+    if (isGlobal) {
+      // Global notification
+      result = await sendGlobalNotification(senderId, message);
+    } else if (programId) {
+      // Program-specific notification (formerly course)
+      result = await sendProgramNotification(senderId, programId, message);
+    } else if (recipientId) {
+      // Individual notification (can be single or array of UIDs)
+      result = await sendIndividualNotification(senderId, recipientId, message, programId, 'individual'); // programId might be present for contextual individual notifications
+    } else {
+      return res.status(400).json({ error: 'Invalid notification type. Specify isGlobal, programId, or recipientId.' });
+    }
+
     res.json(result);
   } catch (err) {
-    console.error('Send Global Notification Error:', err);
+    console.error('Send Notification Error:', err);
     res.status(500).json({ error: err.message });
   }
 });
-
-router.post('/send-individual-notification', async (req, res) => {
-  try {
-    const { recipientId, message, programId, type } = req.body;
-
-    if (!recipientId || !message) {
-      return res.status(400).json({ error: 'Recipient ID and message are required' });
-    }
-
-    const senderId = req.user.uid;
-    const timestamp = admin.firestore.FieldValue.serverTimestamp();
-
-    // Handle array of recipientIds for batch individual notifications
-    if (Array.isArray(recipientId)) {
-      const batch = db.batch();
-      const notificationsRef = db.collection('notifications');
-
-      for (const uid of recipientId) {
-        // Optional: Verify each recipient is a valid student if needed,
-        // but for batch, we might skip individual checks for performance unless critical.
-        // For now, assuming UIDs provided are valid or will be handled gracefully by frontend.
-        batch.set(notificationsRef.doc(), {
-          message,
-          senderId,
-          recipientId: uid,
-          type: type || 'individual', // Default to 'individual' if type is not provided
-          ...(programId && type === 'program' && { programId }), // Add programId if type is 'program'
-          createdAt: timestamp,
-          read: false
-        });
-      }
-      await batch.commit();
-      return res.json({
-        success: true,
-        message: `Notification sent to ${recipientId.length} recipients`
-      });
-    } else {
-      // Single recipient
-      // First verify the recipient exists
-      const recipientRef = db.collection('students').doc(recipientId);
-      const recipientSnap = await recipientRef.get();
-
-      if (!recipientSnap.exists) {
-        return res.status(404).json({ error: 'Recipient not found' });
-      }
-
-      const notificationData = {
-        message,
-        senderId,
-        recipientId,
-        type: type || 'individual',
-        createdAt: timestamp,
-        read: false
-      };
-
-      if (type === 'program' && programId) {
-        const programSnap = await db.collection('programs').doc(programId).get();
-        if (!programSnap.exists) {
-          return res.status(404).json({ error: 'Program not found' });
-        }
-        notificationData.programId = programId;
-        notificationData.programTitle = programSnap.data().title; // Store program title for context
-      }
-
-      await db.collection('notifications').add(notificationData);
-      return res.json({ success: true, message: 'Notification sent' });
-    }
-  } catch (err) {
-    console.error('Send Individual Notification Error:', err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
 
 // Get all sent notifications (for admin dashboard)
 router.get('/sent-notifications', async (req, res) => {
