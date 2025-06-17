@@ -18,7 +18,6 @@ const Program = () => {
     order: 1,
     features: []
   });
-  const [featuresText, setFeaturesText] = useState(''); // Single textarea for features
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -51,7 +50,7 @@ const Program = () => {
       });
 
       setProgram(response.data.programs.map(program => ({
-        id: program.programId,
+        id: program.id,
         title: program.title || '',
         price: program.price || '',
         badge: program.badge || '',
@@ -61,7 +60,7 @@ const Program = () => {
         order: program.order || 1,
         features: program.features || []
       })));
-      
+
       setError('');
     } catch (err) {
       setError('Failed to fetch programs. Please try again.');
@@ -80,16 +79,7 @@ const Program = () => {
     }));
   };
 
-  const handleFeaturesChange = (e) => {
-    const text = e.target.value;
-    setFeaturesText(text);
-    // Convert text to array (split by new lines and filter out empty lines)
-    const featuresArray = text.split('\n').filter(line => line.trim() !== '');
-    setFormData(prev => ({
-      ...prev,
-      features: featuresArray
-    }));
-  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -109,14 +99,14 @@ const Program = () => {
           submissionData,
           { headers: { Authorization: `Bearer ${authToken}` } }
         );
-        toast.info('Program updated successfully!');
+        toast.success('Program updated successfully!');
       } else {
         await axios.post(
           'http://localhost:3001/api/admin/add-program',
           submissionData,
           { headers: { Authorization: `Bearer ${authToken}` } }
         );
-        toast.info('Program added successfully!');
+        toast.success('Program added successfully!');
       }
       
       // Reset form
@@ -156,6 +146,7 @@ const Program = () => {
     });
     // Convert features array to text (one per line)
     setFeaturesText(program.features.join('\n'));
+    console.log('Editing program:', program.id);
     setEditingId(program.id);
     document.querySelector('.course-form')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -173,7 +164,7 @@ const Program = () => {
       await axios.delete(`http://localhost:3001/api/admin/programs/${programToDelete.id}`, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
-      toast.info('Program deleted successfully');
+      toast.success('Program deleted successfully');
       fetchProgram();
     } catch (err) {
       const errorMsg = 'Failed to delete program. Please try again.';

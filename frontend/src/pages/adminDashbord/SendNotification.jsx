@@ -15,7 +15,8 @@ function SendNotification() {
   const [selectedProgram, setSelectedProgram] = useState("");
   const [selectedStudent, setSelectedStudent] = useState("");
   const [loading, setLoading] = useState(false);
-  const [feedback, setFeedback] = useState("");
+
+
     const [authToken, setAuthToken] = useState('');
 
 
@@ -52,7 +53,10 @@ function SendNotification() {
   }, [notificationType]);
 
   const handleSubmit = async () => {
-    if (!message.trim()) return setFeedback("Please enter a message.");
+      if (!message.trim()) {
+    toast.error("❌ Notification message cannot be empty!");
+    return; // Exit early if message is empty
+  }
 
     let payload = { message };
     if (notificationType === "global") {
@@ -62,18 +66,20 @@ function SendNotification() {
     } else if (notificationType === "student" && selectedStudent) {
       payload.recipientId = selectedStudent;
     } else {
-      return setFeedback("Please complete the required fields.");
+      return setError("Please complete the required fields.");
     }
 
     setLoading(true);
     try {
-      await axios.post("http://localhost:3001/api/admin/send-notification", payload, { headers: { Authorization: `Bearer ${authToken}` } });
-      toast.info("✅ Notification sent successfully!");
-      setMessage("");
-      setSelectedCourse("");
-      setSelectedStudent("");
-    } catch (error) {
-      toast.info("❌ Failed to send notification.");
+     const response = await axios.post("http://localhost:3001/api/admin/send-notification", payload, { headers: { Authorization: `Bearer ${authToken}` } });
+     setMessage("");
+     setSelectedProgram("");
+     setSelectedStudent("");
+      toast.success("✅ Notification sent successfully!");
+
+    }
+     catch (err) {
+      toast.error("❌ Failed to send notification.");
     } finally {
       setLoading(false);
     }
@@ -189,11 +195,12 @@ function SendNotification() {
         
         <div className="message-box">
           <textarea
-            className="message-input"
+            className={`message-input ${!message.trim() ? "input-error" : ""}`}
             placeholder="Enter your notification message..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             rows="5"
+            required
           />
           <div className="message-counter">{message.length}/500</div>
         </div>
@@ -211,11 +218,6 @@ function SendNotification() {
           </span>
         </button>
 
-        {feedback && (
-          <div className={`feedback ${feedback.type || "info"}`}>
-            {feedback.message}
-          </div>
-        )}
       </div>
     </div>
   </div>

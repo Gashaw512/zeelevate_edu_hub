@@ -194,7 +194,21 @@
   border-top-color: white;
   animation: spin 1s ease-in-out infinite;
 }
+.error-message {
+  color: #e74c3c;
+  background-color: #fadbd8;
+  padding: 0.8rem;
+  border-radius: 5px;
+  margin-top: 0.5rem;
+}
 
+.success-message {
+  color: #27ae60;
+  background-color: #d5f5e3;
+  padding: 0.8rem;
+  border-radius: 5px;
+  margin-top: 0.5rem;
+}
 @keyframes spin {
   to { transform: rotate(360deg); }
 }

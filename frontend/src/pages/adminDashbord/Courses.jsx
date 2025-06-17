@@ -124,14 +124,14 @@ const Courses = () => {
           formData,
           { headers: { Authorization: `Bearer ${authToken}` } }
         );
-        toast.info('Course updated successfully!');
+        toast.success('Course updated successfully!');
       } else {
         await axios.post(
           'http://localhost:3001/api/admin/add-course',
           formData,
           { headers: { Authorization: `Bearer ${authToken}` } }
         );
-        toast.info('Course added successfully!');
+        toast.success('Course added successfully!');
       }
       
       setFormData({
