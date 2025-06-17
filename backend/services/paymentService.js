@@ -4,7 +4,7 @@ const { admin, db } = require('../config/firebase-admin');
 const crypto = require('crypto');
 
 async function createPaymentLink(data) {
-  const { customerDetails, programId } = data; // Changed from courseDetails to programId
+  const { customerDetails, enrollmentDetails} = data;
   const token = crypto.randomUUID();
 
   const {
