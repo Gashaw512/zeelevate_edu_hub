@@ -1,19 +1,158 @@
-/* --- src/pages/Courses.module.css --- */
+/* src/pages/studentDashboard/Courses.module.css */
 
 .container {
-  padding: 1.5rem;
+    padding: 2.5rem; /* Increased padding for more breathing room */
+    background-color: var(--background-muted); /* Using a muted background for the page */
+    min-height: calc(100vh - var(--header-height, 64px)); /* Ensures it fills the viewport height below header */
+    border-radius: 1rem; /* Slightly rounded corners for the main container */
+    box-shadow: 0 6px 20px var(--shadow-color-light); /* Soft shadow for depth */
+    color: var(--text-primary); /* Ensures text color adapts to light/dark mode */
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions for theme changes */
 }
 
 .heading {
-  font-size: 2rem;
-  font-weight: 700;
-  /* Replaced hardcoded color with a CSS variable for dark mode compatibility */
-  color: var(--text-primary); /* This will be #222222 in light mode, and #f8f8f8 in dark mode */
-  margin-bottom: 1.5rem;
+    font-size: 2.8rem; /* Larger, more impactful heading */
+    font-weight: 800; /* Extra bold for prominence */
+    color: var(--primary-blue-dark); /* A strong, primary blue color for the heading */
+    margin-bottom: 2.5rem; /* More space below the heading */
+    text-align: center; /* Center the heading */
 }
 
+/* --- Status Containers (Loading, Error, No Courses Found) --- */
+/* This styling applies to the div with className={styles.statusContainer} */
+.statusContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px; /* Ensures the status message area has sufficient height */
+    background-color: var(--background-secondary); /* A slightly different background for status boxes */
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 15px var(--shadow-color-light); /* Soft shadow for status boxes */
+    text-align: center; /* Center text within the status box */
+    gap: 1rem; /* Space between icon and message */
+}
+
+.statusMessage {
+    font-size: 1.2rem;
+    color: var(--text-secondary); /* A softer text color */
+    line-height: 1.5;
+}
+
+/* Styling for the error icon (XCircle from Lucide React) */
+.errorIcon {
+    color: var(--error-red); /* A distinct red for errors */
+    animation: bounceIn 0.8s ease-out; /* Simple entry animation */
+}
+
+/* Styling for the info icon (Info from Lucide React) */
+.infoIcon {
+    color: var(--primary-blue); /* Your main primary color for info messages */
+    animation: fadeIn 0.8s ease-out; /* Simple entry animation */
+}
+
+/* Styling for the "explore programs" link within the status message */
+.exploreLink {
+    color: var(--primary-blue); /* Use your primary blue for links */
+    text-decoration: none; /* Remove default underline */
+    font-weight: 600; /* Make the link text bold */
+    transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+
+.exploreLink:hover {
+    text-decoration: underline; /* Underline on hover for better UX */
+    color: var(--hover-blue); /* Change color on hover */
+}
+
+
+/* --- Grid for Course Cards --- */
+/* This is your existing .grid, slightly adjusted for consistency */
 .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adaptive grid columns */
+    gap: 1.5rem; /* Space between cards */
+    margin-top: 2rem; /* Space above the grid, after the heading/status */
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 992px) {
+    .container {
+        padding: 2rem;
+    }
+    .heading {
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1.5rem;
+    }
+    .heading {
+        font-size: 2.2rem;
+        margin-bottom: 1.5rem;
+    }
+    .grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjust min card width */
+        gap: 1rem;
+    }
+    .statusContainer {
+        min-height: 250px;
+        padding: 1.5rem;
+    }
+    .statusMessage {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 1rem;
+    }
+    .heading {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+    .grid {
+        grid-template-columns: 1fr; /* Stack cards vertically on very small screens */
+        gap: 1rem;
+    }
+    .statusContainer {
+        min-height: 200px;
+        padding: 1rem;
+    }
+    .statusMessage {
+        font-size: 0.9rem;
+    }
+}
+
+/* --- Basic Animations (Optional, but enhances UX) --- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+    }
 }

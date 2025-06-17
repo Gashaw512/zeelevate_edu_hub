@@ -1,16 +1,15 @@
 import { Routes, Route } from 'react-router-dom';
-// import { useAuth } from '../../context/AuthContext'; // Not strictly needed here if pages get user from useAuth
 
 import DashboardHome from '../../pages/studentDashboard/DashboardHome';
-import Courses from '../../pages/studentDashboard/Courses';
+import Courses from '../../pages/studentDashboard/Courses'; // This component likely lists all courses
+import CourseDetail from './/CourseDetail'; // <--- NEW IMPORT: CourseDetail Component
 import Profile from '../../pages/studentDashboard/Profile';
 import SettingsPage from '../../pages/studentDashboard/Settings';
-import NotFoundPage from '../../pages/NotFoundPage'; // If you want a specific 404 for dashboard sub-routes
+import NotFoundPage from '../../pages/NotFoundPage';
 import NotificationsPage from '../../pages/studentDashboard/NotificationsPage';
+// import ExplorePrograms from '../../pages/ExplorePrograms'; 
 
 const StudentDashboardRoutes = () => {
-  // const { user } = useAuth(); // If individual dashboard pages use useAuth, this isn't strictly necessary here.
-
   return (
     <Routes>
       {/* Default dashboard page: /student/dashboard */}
@@ -18,15 +17,18 @@ const StudentDashboardRoutes = () => {
 
       {/* Specific dashboard pages */}
       <Route path="courses" element={<Courses />} />
+      {/* NEW ROUTE: For individual course pages. :courseId will capture the ID from the URL */}
+      <Route path="courses/:courseId" element={<CourseDetail />} /> 
+      
       <Route path="profile" element={<Profile />} />
       <Route path="settings" element={<SettingsPage />} />
       <Route path="notifications" element={<NotificationsPage />} />
-     
-
-      {/* Add more dashboard routes here as needed */}
+      
+      {/* Route for "Explore Programs" - ensure this matches the Link in DashboardHome */}
+      {/* <Route path="/programs" element={<ExplorePrograms />} /> */}
 
       {/* Catch-all for unknown nested dashboard routes within /student/dashboard/ */}
-      <Route path="*" element={<NotFoundPage />} /> {/* Render your general 404 page for sub-routes */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 };

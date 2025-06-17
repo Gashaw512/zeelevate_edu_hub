@@ -67,7 +67,7 @@ const AuthForm = ({
 AuthForm.propTypes = {
   formData: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
-  onBlur: PropTypes.func.isRequired, 
+  onBlur: PropTypes.func, 
   submitButtonText: PropTypes.string,
   disabled: PropTypes.bool,
   fieldsConfig: PropTypes.arrayOf(
