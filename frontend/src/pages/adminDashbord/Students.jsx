@@ -13,9 +13,8 @@ const Students = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCourse, setSelectedCourse] = useState('all');
+  const [selectedProgram, setSelectedProgram] = useState('all');
   const [sortConfig, setSortConfig] = useState({ key: 'enrollmentDate', direction: 'desc' });
-  //const authToken = localStorage.getItem('token') || '';
 
   useEffect(() => {
     fetchStudents();
@@ -23,16 +22,16 @@ const Students = () => {
 
   useEffect(() => {
     filterAndSortStudents();
-  }, [students, searchTerm, selectedCourse, sortConfig]);
+  }, [students, searchTerm, selectedProgram, sortConfig]);
 
   const fetchStudents = async () => {
     try {
       setLoading(true);
-          const currentUser = auth.currentUser;
-    if (!currentUser) throw new Error("User not authenticated");
+      const currentUser = auth.currentUser;
+      if (!currentUser) throw new Error("User not authenticated");
 
-    // Get fresh token from Firebase
-    const authToken = await getIdToken(currentUser, true); 
+      // Get fresh token from Firebase
+      const authToken = await getIdToken(currentUser, true); 
 
       const response = await axios.get('http://localhost:3001/api/admin/students', {
         headers: {
@@ -46,16 +45,12 @@ const Students = () => {
           uid: student.uid,
           email: student.email,
           phone: student.phone || 'N/A',
-          courseId: enrollment.course_id,
-          courseTitle: enrollment.course_title,
-          courseDetails: enrollment.courseDetails || 'No details available',
-          amountPaid: enrollment.amount_paid || 0,
-          enrollmentDate: enrollment.enrollment_date 
-            ? new Date(enrollment.enrollment_date._seconds * 1000)
+          programId: enrollment.programId,
+          programTitle: enrollment.programTitle,
+          status: enrollment.status || 'N/A',
+          enrollmentDate: enrollment.enrollmentDate 
+            ? new Date(enrollment.enrollmentDate._seconds * 1000)
             : null,
-          classStartDate: enrollment.classStartDate || 'Not scheduled',
-          classDuration: enrollment.classDuration || 'N/A',
-          classLink: enrollment.classLink || 'N/A'
         }));
       });
       
@@ -73,18 +68,18 @@ const Students = () => {
   const filterAndSortStudents = () => {
     let result = [...students];
     
-    // Filter by search term (email or course title)
+    // Filter by search term (email or program title)
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       result = result.filter(student => 
         student.email.toLowerCase().includes(term) || 
-        student.courseTitle.toLowerCase().includes(term)
+        student.programTitle.toLowerCase().includes(term)
       );
     }
     
-    // Filter by course
-    if (selectedCourse !== 'all') {
-      result = result.filter(student => student.courseId === selectedCourse);
+    // Filter by program
+    if (selectedProgram !== 'all') {
+      result = result.filter(student => student.programId === selectedProgram);
     }
     
     // Sorting
@@ -111,14 +106,14 @@ const Students = () => {
     setSortConfig({ key, direction });
   };
 
-  const getUniqueCourses = () => {
-    const courses = {};
+  const getUniquePrograms = () => {
+    const programs = {};
     students.forEach(student => {
-      if (!courses[student.courseId]) {
-        courses[student.courseId] = student.courseTitle;
+      if (!programs[student.programId]) {
+        programs[student.programId] = student.programTitle;
       }
     });
-    return courses;
+    return programs;
   };
 
   const formatDate = (date) => {
@@ -143,7 +138,7 @@ const Students = () => {
 
   return (
     <div className="students-page">
-       <ToastContainer 
+      <ToastContainer 
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -166,7 +161,7 @@ const Students = () => {
         <div className="search-control">
           <input
             type="text"
-            placeholder="Search by email or course..."
+            placeholder="Search by email or program..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
@@ -174,15 +169,15 @@ const Students = () => {
         </div>
         
         <div className="filter-control">
-          <label htmlFor="course-filter">Filter by Course:</label>
+          <label htmlFor="program-filter">Filter by Program:</label>
           <select
-            id="course-filter"
-            value={selectedCourse}
-            onChange={(e) => setSelectedCourse(e.target.value)}
-            className="course-select"
+            id="program-filter"
+            value={selectedProgram}
+            onChange={(e) => setSelectedProgram(e.target.value)}
+            className="program-select"
           >
-            <option value="all">All Courses</option>
-            {Object.entries(getUniqueCourses()).map(([id, title]) => (
+            <option value="all">All Programs</option>
+            {Object.entries(getUniquePrograms()).map(([id, title]) => (
               <option key={id} value={id}>{title}</option>
             ))}
           </select>
@@ -200,17 +195,15 @@ const Students = () => {
                   <th onClick={() => requestSort('email')}>
                     Student Email {sortConfig.key === 'email' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
                   </th>
-                  <th onClick={() => requestSort('courseTitle')}>
-                    Course {sortConfig.key === 'courseTitle' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                  <th onClick={() => requestSort('programTitle')}>
+                    Program {sortConfig.key === 'programTitle' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
                   </th>
-                  <th onClick={() => requestSort('amountPaid')}>
-                    Amount Paid {sortConfig.key === 'amountPaid' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                  <th onClick={() => requestSort('status')}>
+                    Status {sortConfig.key === 'status' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
                   </th>
                   <th onClick={() => requestSort('enrollmentDate')}>
                     Enrollment Date {sortConfig.key === 'enrollmentDate' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
                   </th>
-                  <th>Class Details</th>
-                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -221,34 +214,13 @@ const Students = () => {
                       <div className="student-phone">{student.phone}</div>
                     </td>
                     <td>
-                      <div className="course-title">{student.courseTitle}</div>
-                      <div className="course-details">{student.courseDetails}</div>
+                      <div className="program-title">{student.programTitle}</div>
                     </td>
-                    <td className="amount-paid">
-                      ${typeof student.amountPaid === 'number' 
-                        ? student.amountPaid.toFixed(2) 
-                        : student.amountPaid}
+                    <td className="status">
+                      {student.status}
                     </td>
                     <td className="enrollment-date">
                       {formatDate(student.enrollmentDate)}
-                    </td>
-                    <td>
-                      <div className="class-start-date">Starts: {student.classStartDate}</div>
-                      <div className="class-duration">Duration: {student.classDuration}</div>
-                    </td>
-                    <td>
-                      {student.classLink !== 'N/A' ? (
-                        <a 
-                          href={student.classLink} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="class-link"
-                        >
-                          Join Class
-                        </a>
-                      ) : (
-                        <span className="no-link">N/A</span>
-                      )}
                     </td>
                   </tr>
                 ))}

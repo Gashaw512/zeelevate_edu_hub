@@ -4,26 +4,28 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Courses.css';
 import { getIdToken } from "firebase/auth";
-import { auth } from "../../firebase/auth"; // adjust path as needed
+import { auth } from "../../firebase/auth"; 
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
+  const [programs, setPrograms] = useState([]);
+  const [selectedProgramFilter, setSelectedProgramFilter] = useState('');
   const [formData, setFormData] = useState({
-    courseTitle: '',
-    courseDetails: '',
-    price: '',
-    registrationDeadline: '',
-    classStartDate: '',
-    classDuration: '',
+    name: '',
+    description: '',
+    duration: '',
+    difficulty: 'Beginner',
+    imageUrl: '',
     classLink: '',
-    status: 'active' // default status
+    status: 'active',
+    order: '',
+    programIds: []
   });
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [courseToDelete, setCourseToDelete] = useState(null);
-  //const authToken = localStorage.getItem('token') || '';
   const [authToken, setAuthToken] = useState('');
 
   useEffect(() => {
@@ -31,18 +33,31 @@ const Courses = () => {
       const currentUser = auth.currentUser;
       if (!currentUser) throw new Error("User not authenticated");
 
-      // Get fresh token from Firebase
       const token = await getIdToken(currentUser, true); 
       setAuthToken(token);
+      fetchPrograms(token);
       fetchCourses(token);
     };
     fetchData();
   }, []);
 
+  const fetchPrograms = async (token = authToken) => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/admin/programs', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setPrograms(response.data.programs);
+    } catch (err) {
+      setError('Failed to fetch programs. Please try again.');
+      console.error('Error fetching programs:', err);
+    }
+  };
+
   const fetchCourses = async (token = authToken) => {
     try {
       setLoading(true);
-
       const response = await axios.get('http://localhost:3001/api/admin/courses', {
         headers: {
           Authorization: `Bearer ${token}`
@@ -51,14 +66,16 @@ const Courses = () => {
       
       setCourses(response.data.courses.map(course => ({
         id: course.courseId,
-        courseTitle: course.courseTitle || '',
-        courseDetails: course.courseDetails || '',
-        price: course.price || '',
-        registrationDeadline: course.registrationDeadline || '',
-        classStartDate: course.classStartDate || '',
-        classDuration: course.classDuration || '',
+        name: course.name || '',
+        description: course.description || '',
+        duration: course.duration || '',
+        difficulty: course.difficulty || 'Beginner',
+        imageUrl: course.imageUrl || '',
         classLink: course.classLink || '',
-        status: course.status || 'active'
+        status: course.status || 'active',
+        order: course.order || '',
+        programIds: course.programIds || [],
+        programNames: course.programNames || []
       })));
       
       setError('');
@@ -79,6 +96,22 @@ const Courses = () => {
     }));
   };
 
+  const handleProgramSelection = (programId) => {
+    setFormData(prev => {
+      if (prev.programIds.includes(programId)) {
+        return {
+          ...prev,
+          programIds: prev.programIds.filter(id => id !== programId)
+        };
+      } else {
+        return {
+          ...prev,
+          programIds: [...prev.programIds, programId]
+        };
+      }
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -91,25 +124,26 @@ const Courses = () => {
           formData,
           { headers: { Authorization: `Bearer ${authToken}` } }
         );
-        toast.info('Course updated successfully!');
+        toast.success('Course updated successfully!');
       } else {
         await axios.post(
           'http://localhost:3001/api/admin/add-course',
           formData,
           { headers: { Authorization: `Bearer ${authToken}` } }
         );
-        toast.info('Course added successfully!');
+        toast.success('Course added successfully!');
       }
       
       setFormData({
-        courseTitle: '',
-        courseDetails: '',
-        price: '',
-        registrationDeadline: '',
-        classStartDate: '',
-        classDuration: '',
+        name: '',
+        description: '',
+        duration: '',
+        difficulty: 'Beginner',
+        imageUrl: '',
         classLink: '',
-        status: 'active' // reset to default
+        status: 'active',
+        order: '',
+        programIds: []
       });
       setEditingId(null);
       fetchCourses();
@@ -125,17 +159,17 @@ const Courses = () => {
 
   const handleEdit = (course) => {
     setFormData({
-      courseTitle: course.courseTitle,
-      courseDetails: course.courseDetails,
-      price: course.price,
-      registrationDeadline: course.registrationDeadline,
-      classStartDate: course.classStartDate,
-      classDuration: course.classDuration,
+      name: course.name,
+      description: course.description,
+      duration: course.duration,
+      difficulty: course.difficulty,
+      imageUrl: course.imageUrl,
       classLink: course.classLink,
-      status: course.status || 'active' 
+      status: course.status || 'active',
+      order: course.order,
+      programIds: course.programIds || []
     });
     setEditingId(course.id);
-    // Scroll to form
     document.querySelector('.course-form')?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -171,6 +205,17 @@ const Courses = () => {
     setCourseToDelete(null);
   };
 
+  const filteredCourses = selectedProgramFilter 
+    ? courses.filter(course => course.programIds.includes(selectedProgramFilter))
+    : courses;
+
+  const getProgramNames = (programIds) => {
+    return programIds.map(id => {
+      const program = programs.find(p => p.programId === id);
+      return program ? program.title : 'Unknown Program';
+    }).join(', ');
+  };
+
   return (
     <div className="courses-container">
       <ToastContainer 
@@ -185,12 +230,11 @@ const Courses = () => {
         pauseOnHover
       />
       
-      {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h3>Confirm Deletion</h3>
-            <p>Are you sure you want to delete the course "{courseToDelete?.courseTitle}"?</p>
+            <p>Are you sure you want to delete the course "{courseToDelete?.name}"?</p>
             <p className="warning-text">This action cannot be undone.</p>
             <div className="modal-actions">
               <button 
@@ -220,7 +264,6 @@ const Courses = () => {
         </div>
       )}
       
-      {/* Course Form */}
       <div className="course-form">
         <h2 className="form-title">
           {editingId ? 'Edit Course' : 'Add New Course'}
@@ -228,35 +271,34 @@ const Courses = () => {
         <form onSubmit={handleSubmit}>
           <div className="form-grid">
             <div className="form-group">
-              <label className="form-label">Course Title</label>
+              <label className="form-label">Course Name</label>
               <input
                 type="text"
-                name="courseTitle"
-                value={formData.courseTitle}
+                name="name"
+                value={formData.name}
                 onChange={handleInputChange}
                 className="form-input"
                 required
               />
             </div>
             <div className="form-group">
-              <label className="form-label">Price ($)</label>
+              <label className="form-label">Order</label>
               <input
                 type="number"
-                name="price"
-                value={formData.price}
+                name="order"
+                value={formData.order}
                 onChange={handleInputChange}
                 className="form-input"
                 required
-                step="0.01"
               />
             </div>
           </div>
           
           <div className="form-group">
-            <label className="form-label">Course Details</label>
+            <label className="form-label">Description</label>
             <textarea
-              name="courseDetails"
-              value={formData.courseDetails}
+              name="description"
+              value={formData.description}
               onChange={handleInputChange}
               className="form-textarea"
               rows="3"
@@ -266,53 +308,30 @@ const Courses = () => {
           
           <div className="form-grid three-column">
             <div className="form-group">
-              <label className="form-label">Registration Deadline</label>
-              <input
-                type="date"
-                name="registrationDeadline"
-                value={formData.registrationDeadline}
-                onChange={handleInputChange}
-                className="form-input"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Class Start Date</label>
-              <input
-                type="date"
-                name="classStartDate"
-                value={formData.classStartDate}
-                onChange={handleInputChange}
-                className="form-input"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Class Duration (days)</label>
+              <label className="form-label">Duration (days)</label>
               <input
                 type="number"
-                name="classDuration"
-                value={formData.classDuration}
+                name="duration"
+                value={formData.duration}
                 onChange={handleInputChange}
                 className="form-input"
                 required
               />
             </div>
-          </div>
-          
-          <div className="form-grid two-column-uneven">
             <div className="form-group">
-              <label className="form-label">Class Link</label>
-              <input
-                type="url"
-                name="classLink"
-                value={formData.classLink}
+              <label className="form-label">Difficulty</label>
+              <select
+                name="difficulty"
+                value={formData.difficulty}
                 onChange={handleInputChange}
                 className="form-input"
                 required
-              />
+              >
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+              </select>
             </div>
-
             <div className="form-group">
               <label className="form-label">Status</label>
               <select
@@ -327,6 +346,51 @@ const Courses = () => {
               </select>
             </div>
           </div>
+          
+          <div className="form-grid two-column-uneven">
+            <div className="form-group">
+              <label className="form-label">Image URL</label>
+              <input
+                type="url"
+                name="imageUrl"
+                value={formData.imageUrl}
+                onChange={handleInputChange}
+                className="form-input"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Class Link</label>
+              <input
+                type="url"
+                name="classLink"
+                value={formData.classLink}
+                onChange={handleInputChange}
+                className="form-input"
+                required
+              />
+            </div>
+          </div>
+          
+          <div className="form-group">
+            <label className="form-label">Programs</label>
+            <div className="programs-checkbox-container">
+              {programs.map(program => (
+                <div key={program.programId} className="program-checkbox">
+                  <input
+                    type="checkbox"
+                    id={`program-${program.programId}`}
+                    checked={formData.programIds.includes(program.programId)}
+                    onChange={() => handleProgramSelection(program.programId)}
+                  />
+                  <label htmlFor={`program-${program.programId}`}>
+                    {program.title}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+          
           <div className="form-actions">
             <button
               type="submit"
@@ -342,13 +406,15 @@ const Courses = () => {
                 onClick={() => {
                   setEditingId(null);
                   setFormData({
-                    courseTitle: '',
-                    courseDetails: '',
-                    price: '',
-                    registrationDeadline: '',
-                    classStartDate: '',
-                    classDuration: '',
-                    classLink: ''
+                    name: '',
+                    description: '',
+                    duration: '',
+                    difficulty: 'Beginner',
+                    imageUrl: '',
+                    classLink: '',
+                    status: 'active',
+                    order: '',
+                    programIds: []
                   });
                 }}
                 className="cancel-btn"
@@ -360,38 +426,59 @@ const Courses = () => {
         </form>
       </div>
       
-      {/* Courses List */}
       <div className="courses-list">
-        <h2 className="list-title">Current Courses</h2>
+        <div className="list-header">
+          <h2 className="list-title">Current Courses</h2>
+          <div className="program-filter">
+            <label htmlFor="program-filter">Filter by Program:</label>
+            <select
+              id="program-filter"
+              value={selectedProgramFilter}
+              onChange={(e) => setSelectedProgramFilter(e.target.value)}
+            >
+              <option value="">All Programs</option>
+              {programs.map(program => (
+                <option key={program.programId} value={program.programId}>
+                  {program.title}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        
         {loading && courses.length === 0 ? (
           <div className="loading-placeholder">Loading courses...</div>
-        ) : courses.length === 0 ? (
-          <div className="empty-placeholder">No courses found</div>
+        ) : filteredCourses.length === 0 ? (
+          <div className="empty-placeholder">
+            {selectedProgramFilter ? 'No courses found in selected program' : 'No courses found'}
+          </div>
         ) : (
           <div className="table-container">
             <table className="courses-table">
               <thead>
                 <tr>
-                  <th>Title</th>
-                  <th>Price</th>
-                  <th>Status</th>
-                  <th>Start Date</th>
+                  <th>Name</th>
+                  <th>Description</th>
                   <th>Duration</th>
+                  <th>Difficulty</th>
+                  <th>Status</th>
+                  <th>Programs</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {courses.map(course => (
+                {filteredCourses.map(course => (
                   <tr key={course.id}>
-                    <td>{course.courseTitle || 'Untitled'}</td>
-                    <td>{course.price ? `$${course.price}` : 'Free'}</td>
+                    <td>{course.name || 'Untitled'}</td>
+                    <td className="description-cell">{course.description || 'No description'}</td>
+                    <td>{course.duration ? `${course.duration} days` : 'Not set'}</td>
+                    <td>{course.difficulty || 'Not set'}</td>
                     <td>
                       <span className={`status-badge ${course.status === 'active' ? 'active' : 'inactive'}`}>
                         {course.status || 'active'}
                       </span>
                     </td>
-                    <td>{course.classStartDate || 'Not set'}</td>
-                    <td>{course.classDuration ? `${course.classDuration} days` : 'Not set'}</td>
+                    <td>{getProgramNames(course.programIds)}</td>
                     <td className="action-buttons">
                       <button
                         onClick={() => handleEdit(course)}

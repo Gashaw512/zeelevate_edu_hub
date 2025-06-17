@@ -1,265 +1,227 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import styles from './SendNotification.module.css'; // Import CSS module
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import './SendNotification.css';
+import { auth } from "../../firebase/auth"; 
+import { getIdToken } from "firebase/auth"; // Import getIdToken to fetch the token
+import { toast, ToastContainer } from 'react-toastify';
 
-const SendNotification = ({ user }) => {
-  // State for form inputs
-  const [message, setMessage] = useState('');
-  const [recipientId, setRecipientId] = useState('');
-  const [isGlobal, setIsGlobal] = useState(false);
 
-  // State for UI feedback
+
+function SendNotification() {
+  const [notificationType, setNotificationType] = useState("global");
+  const [message, setMessage] = useState("");
+  const [programs, setPrograms] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [selectedProgram, setSelectedProgram] = useState("");
+  const [selectedStudent, setSelectedStudent] = useState("");
   const [loading, setLoading] = useState(false);
-  const [responseMessage, setResponseMessage] = useState({ type: '', text: '' }); // { type: 'success' | 'error', text: '...' }
-  const [validationErrors, setValidationErrors] = useState({}); // Stores validation errors for each field
 
-  // Refs for input focus management
-  const messageRef = useRef(null);
-  const recipientIdRef = useRef(null);
 
-  // Environment variable for backend URL
-  const BACKEND_API_URL = import.meta.env.VITE_BACKEND_URL;
+    const [authToken, setAuthToken] = useState('');
 
-  // Effect to automatically clear response messages after a delay
+
+    useEffect(() => {
+      const fetchData = async () => {
+        const currentUser = auth.currentUser;
+        if (!currentUser) throw new Error("User not authenticated");
+  
+        // Get fresh token from Firebase
+        const token = await getIdToken(currentUser, true); 
+        setAuthToken(token);
+      };
+      fetchData();
+    }, []);
+
   useEffect(() => {
-    if (responseMessage.text) {
-      const timer = setTimeout(() => {
-        setResponseMessage({ type: '', text: '' });
-      }, 5000); // Clear message after 5 seconds
-      return () => clearTimeout(timer);
+    if (notificationType === "program") {
+      axios.get("http://localhost:3001/api/admin/programs" , {
+        headers: {
+          Authorization: `Bearer ${authToken}`
+        }
+      })
+        .then(res => setPrograms(res.data.programs || []))
+        .catch(() => setPrograms([]));
+    } else if (notificationType === "student") {
+      axios.get("http://localhost:3001/api/admin/students"  , {
+        headers: {
+          Authorization: `Bearer ${authToken}`
+        }
+      })
+        .then(res => setStudents(res.data.students || []))
+        .catch(() => setStudents([]));
     }
-  }, [responseMessage]);
+  }, [notificationType]);
 
-  /**
-   * Performs client-side validation.
-   * @returns {boolean} True if form is valid, false otherwise.
-   */
-  const validateForm = useCallback(() => {
-    const errors = {};
-    if (!message.trim()) {
-      errors.message = 'Notification message is required.';
-    }
-    if (!isGlobal && !recipientId.trim()) {
-      errors.recipientId = 'Recipient ID is required for user-specific notifications.';
-    }
-    if (isGlobal && recipientId.trim()) {
-      errors.recipientId = 'Recipient ID cannot be specified for global notifications.';
-    }
+  const handleSubmit = async () => {
+      if (!message.trim()) {
+    toast.error("❌ Notification message cannot be empty!");
+    return; // Exit early if message is empty
+  }
 
-    setValidationErrors(errors); // Update validation errors state
-    return Object.keys(errors).length === 0; // Return true if no errors
-  }, [message, recipientId, isGlobal]);
-
-  /**
-   * Handles the submission of the notification form.
-   * Sends a POST request to the backend API.
-   */
-  const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
-
-    setResponseMessage({ type: '', text: '' }); // Clear previous response messages
-    setValidationErrors({}); // Clear previous validation errors
-
-    // Run client-side validation
-    const isValid = validateForm();
-    if (!isValid) {
-      // Focus on the first invalid field for better UX
-      if (validationErrors.message && messageRef.current) {
-        messageRef.current.focus();
-      } else if (validationErrors.recipientId && recipientIdRef.current) {
-        recipientIdRef.current.focus();
-      }
-      setResponseMessage({ type: 'error', text: 'Please correct the highlighted errors.' });
-      return;
+    let payload = { message };
+    if (notificationType === "global") {
+      payload.isGlobal = true;
+    } else if (notificationType === "program" && selectedProgram) {
+      payload.programId = selectedProgram;
+    } else if (notificationType === "student" && selectedStudent) {
+      payload.recipientId = selectedStudent;
+    } else {
+      return setError("Please complete the required fields.");
     }
 
     setLoading(true);
-
     try {
-      const apiEndpoint = `${BACKEND_API_URL}/api/send-notification`; // Use dynamic backend URL
+     const response = await axios.post("http://localhost:3001/api/admin/send-notification", payload, { headers: { Authorization: `Bearer ${authToken}` } });
+     setMessage("");
+     setSelectedProgram("");
+     setSelectedStudent("");
+      toast.success("✅ Notification sent successfully!");
 
-      const idToken = await user?.getIdToken();
-
-      if (!idToken) {
-        throw new Error("Authentication token not available. Please log in as an administrator.");
-      }
-
-      const response = await fetch(apiEndpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({
-          message: message.trim(), // Send trimmed message
-          recipientId: isGlobal ? null : recipientId.trim(),
-          isGlobal,
-        }),
-      });
-
-      if (!response.ok) {
-        let errorText = 'Failed to send notification.';
-        try {
-          const errorData = await response.json();
-          errorText = errorData.message || errorText;
-        } catch (jsonError) {
-          errorText = response.statusText || `Server error: ${response.status}`;
-        }
-        throw new Error(errorText);
-      }
-
-      setResponseMessage({ type: 'success', text: 'Notification sent successfully!' });
-      // Clear the form fields after successful submission
-      setMessage('');
-      setRecipientId('');
-      setIsGlobal(false); // Reset global checkbox
-
-      // Optionally, focus back on message input after successful send
-      if (messageRef.current) {
-        messageRef.current.focus();
-      }
-
-    } catch (error) {
-      console.error("Error sending notification via API:", error);
-      setResponseMessage({ type: 'error', text: `Failed to send notification: ${error.message}` });
+    }
+     catch (err) {
+      toast.error("❌ Failed to send notification.");
     } finally {
       setLoading(false);
     }
-  }, [message, recipientId, isGlobal, user, validateForm, validationErrors, BACKEND_API_URL]);
+  };
 
   return (
-    <div className={styles.sendNotificationContainer}>
-      <h2 className={styles.pageTitle}>Send New Notification</h2>
-      <p className={styles.pageDescription}>Compose and send notifications to specific users or broadcast globally.</p>
+  <div className="notification-dashboard">
+    <ToastContainer 
+      position="top-right"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      toastClassName="custom-toast"
+      progressClassName="custom-progress"
+    />
+    
+    <div className="notification-card">
+      <h2 className="notification-title">
+        <span className="notification-icon">📢</span>
+        Send Notification
+      </h2>
 
-      <form onSubmit={handleSubmit} className={styles.notificationForm} noValidate>
-        {/* Notification Message Input */}
-        <div className={styles.formGroup}>
-          <label htmlFor="message" className={styles.label}>
-            Notification Message: <span className={styles.requiredIndicator}>*</span>
-          </label>
-          <textarea
-            id="message"
-            ref={messageRef}
-            className={`${styles.textarea} ${validationErrors.message ? styles.inputError : ''}`}
-            value={message}
-            onChange={(e) => {
-              setMessage(e.target.value);
-              // Clear error when user starts typing again
-              if (validationErrors.message) {
-                setValidationErrors(prev => ({ ...prev, message: undefined }));
-              }
-            }}
-            rows="5"
-            placeholder="Type your notification message here..."
-            required
-            aria-required="true"
-            aria-describedby={validationErrors.message ? "message-error" : undefined}
-            aria-invalid={!!validationErrors.message}
-          />
-          {validationErrors.message && (
-            <p id="message-error" className={styles.errorMessageText} role="alert">
-              {validationErrors.message}
-            </p>
-          )}
-        </div>
-
-        {/* Global Notification Checkbox */}
-        <div className={styles.formGroup}>
-          <input
-            type="checkbox"
-            id="isGlobal"
-            className={styles.checkbox}
-            checked={isGlobal}
-            onChange={(e) => {
-              setIsGlobal(e.target.checked);
-              // Clear recipient ID and its error if switching to global
-              if (e.target.checked) {
-                setRecipientId('');
-                if (validationErrors.recipientId) {
-                  setValidationErrors(prev => ({ ...prev, recipientId: undefined }));
-                }
-              }
-            }}
-            aria-label="Send as global notification (visible to all users)"
-          />
-          <label htmlFor="isGlobal" className={styles.checkboxLabel}>Send as global notification (visible to all users)</label>
-        </div>
-
-        {/* Recipient ID Input (Conditionally rendered) */}
-        {!isGlobal && (
-          <div className={styles.formGroup}>
-            <label htmlFor="recipientId" className={styles.label}>
-              Recipient User ID: <span className={styles.requiredIndicator}>*</span>
+      <div className="notification-controls">
+        <div className="radio-tile-group">
+          <div className={`radio-tile ${notificationType === "global" ? "selected" : ""}`}>
+            <label>
+              <input
+                type="radio"
+                value="global"
+                checked={notificationType === "global"}
+                onChange={() => setNotificationType("global")}
+              />
+              <div className="radio-content">
+                <span className="radio-icon">🌎</span>
+                <span className="radio-label">Global</span>
+              </div>
             </label>
-            <input
-              type="text"
-              id="recipientId"
-              ref={recipientIdRef}
-              className={`${styles.input} ${validationErrors.recipientId ? styles.inputError : ''}`}
-              value={recipientId}
-              onChange={(e) => {
-                setRecipientId(e.target.value);
-                // Clear error when user starts typing again
-                if (validationErrors.recipientId) {
-                  setValidationErrors(prev => ({ ...prev, recipientId: undefined }));
-                }
-              }}
-              placeholder="Enter Firebase User ID (e.g., 'abc123xyz')"
-              required={!isGlobal}
-              aria-required={!isGlobal}
-              aria-describedby={validationErrors.recipientId ? "recipientId-error" : undefined}
-              aria-invalid={!!validationErrors.recipientId}
-            />
-            <p className={styles.inputHint}>
-              This is the unique Firebase User ID for the individual you want to notify.
-            </p>
-            {validationErrors.recipientId && (
-              <p id="recipientId-error" className={styles.errorMessageText} role="alert">
-                {validationErrors.recipientId}
-              </p>
-            )}
+          </div>
+
+          <div className={`radio-tile ${notificationType === "program" ? "selected" : ""}`}>
+            <label>
+              <input
+                type="radio"
+                value="program"
+                checked={notificationType === "program"}
+                onChange={() => setNotificationType("program")}
+              />
+              <div className="radio-content">
+                <span className="radio-icon">📚</span>
+                <span className="radio-label">Program</span>
+              </div>
+            </label>
+          </div>
+          
+          <div className={`radio-tile ${notificationType === "student" ? "selected" : ""}`}>
+            <label>
+              <input
+                type="radio"
+                value="student"
+                checked={notificationType === "student"}
+                onChange={() => setNotificationType("student")}
+              />
+              <div className="radio-content">
+                <span className="radio-icon">👨‍🎓</span>
+                <span className="radio-label">Student</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        {notificationType === "program" && (
+          <div className="select-wrapper">
+            <select
+              className="custom-select"
+              value={selectedProgram}
+              onChange={(e) => setSelectedProgram(e.target.value)}
+            >
+              <option value="">Select a Program</option>
+              {programs.map((p, index) =>
+                p.programId && (
+                  <option key={index} value={p.programId}>
+                    {p.title}
+                  </option>
+                )
+              )}
+            </select>
+            <span className="select-arrow">▼</span>
           </div>
         )}
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className={styles.submitButton}
-          disabled={loading} // Disable button while loading
-          aria-live="polite" // Announce changes to assistive technologies
+        {notificationType === "student" && (
+          <div className="select-wrapper">
+            <select
+              className="custom-select"
+              value={selectedStudent}
+              onChange={(e) => setSelectedStudent(e.target.value)}
+            >
+              <option value="">Select a Student</option>
+              {students.map((s, index) => (
+                <option key={index} value={s.uid}>
+                  {s.email}
+                </option>
+              ))}
+            </select>
+            <span className="select-arrow">▼</span>
+          </div>
+        )}
+        
+        <div className="message-box">
+          <textarea
+            className={`message-input ${!message.trim() ? "input-error" : ""}`}
+            placeholder="Enter your notification message..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            rows="5"
+            required
+          />
+          <div className="message-counter">{message.length}/500</div>
+        </div>
+        
+        <button 
+          className={`send-button ${loading ? "sending" : ""}`} 
+          onClick={handleSubmit} 
+          disabled={loading}
         >
-          {loading ? (
-            <>
-              <span className={styles.spinner} role="status" aria-label="Sending notification"></span> Sending...
-            </>
-          ) : (
-            'Send Notification'
-          )}
+          <span className="button-text">
+            {loading ? "Sending..." : "Send Notification"}
+          </span>
+          <span className="button-icon">
+            {loading ? <div className="spinner"></div> : "✉️"}
+          </span>
         </button>
 
-        {/* Response Message Feedback */}
-        {responseMessage.text && (
-          <p
-            className={`${styles.responseMessage} ${
-              responseMessage.type === 'success' ? styles.successMessage : styles.errorMessage
-            }`}
-            role="alert" // For accessibility
-            aria-atomic="true" // Announce the entire content of the message
-          >
-            {responseMessage.text}
-          </p>
-        )}
-      </form>
+      </div>
     </div>
-  );
-};
-
-SendNotification.propTypes = {
-  user: PropTypes.shape({
-    uid: PropTypes.string.isRequired,
-    getIdToken: PropTypes.func.isRequired,
-  }).isRequired,
-};
+  </div>
+);
+}
 
 export default SendNotification;
