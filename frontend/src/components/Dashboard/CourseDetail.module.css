@@ -1,0 +1,267 @@
+/* src/pages/studentDashboard/CourseDetail.module.css */
+
+/*
+    Assumes 'index.css' is imported globally and its :root variables
+    and body.dark-mode overrides are accessible.
+    These styles are designed to be consistent with DashboardHome.module.css
+*/
+
+/* --- Course Detail Container --- */
+.courseDetailContainer {
+    padding: 2.5rem;
+    background-color: var(--background-muted); /* Consistent with dashboard background */
+    min-height: calc(100vh - var(--header-height, 64px)); /* Adjust for header */
+    border-radius: 1rem;
+    box-shadow: 0 6px 20px var(--shadow-color-light); /* Consistent shadow */
+    display: flex;
+    flex-direction: column;
+    gap: 2rem; /* Spacing between sections */
+    color: var(--text-primary); /* Primary text color */
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* --- Loading/Error/Not Found States (Consistent with DashboardHome) --- */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    background-color: var(--background-muted);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 10px var(--shadow-color-light);
+    color: var(--text-primary);
+    text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.errorText, .notFoundText {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--error-red); /* Use your error-red variable */
+}
+
+/* --- Course Title and Description --- */
+.courseTitle {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary-blue-dark); /* Strong heading color */
+    margin-bottom: 1rem;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.courseDescription {
+    font-size: 1.15rem;
+    color: var(--text-secondary); /* Secondary text for description */
+    margin-bottom: 2rem;
+    line-height: 1.6;
+    text-align: center;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --- Course Information Section --- */
+.courseInfo {
+    background-color: var(--background-secondary); /* Card-like background */
+    padding: 2rem;
+    border-radius: 1.25rem;
+    box-shadow: 0 4px 18px var(--shadow-color-light);
+    border: 1px solid var(--border-light);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid for info */
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.courseInfo p {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.courseInfo strong {
+    color: var(--primary-blue-dark); /* Bold labels */
+}
+
+/* --- Course Image (Optional) --- */
+.courseImageWrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.courseImage {
+    max-width: 100%;
+    height: auto;
+    border-radius: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+
+/* --- Teachable Link Button (similar to primaryActionButton) --- */
+.teachableLinkButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center; /* Center content horizontally */
+    gap: 0.75rem;
+    padding: 1.1rem 2.2rem;
+    background-color: var(--primary-blue);
+    color: var(--text-light);
+    border-radius: 0.75rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.15rem;
+    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: 0 5px 15px var(--shadow-color-light-primary-action);
+    align-self: center; /* Center the button within the flex container */
+    max-width: 300px; /* Limit button width */
+}
+
+.teachableLinkButton:hover {
+    background-color: var(--hover-blue);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px var(--shadow-color-light-primary-action-hover);
+}
+
+.noTeachableLink {
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-top: 1rem;
+}
+
+/* --- Section for Course Content (e.g., Modules, Lessons) --- */
+.courseContentSection {
+    background-color: var(--background-secondary);
+    padding: 2rem;
+    border-radius: 1.25rem;
+    box-shadow: 0 4px 18px var(--shadow-color-light);
+    border: 1px solid var(--border-light);
+    margin-top: 2rem; /* Spacing from previous sections */
+}
+
+.contentSectionTitle {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+}
+
+.moduleList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.moduleList li {
+    background-color: var(--background-muted);
+    border-radius: 0.8rem;
+    padding: 1rem 1.2rem;
+    margin-bottom: 0.8rem;
+    border: 1px solid var(--border-light);
+    color: var(--text-primary);
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.moduleList li:hover {
+    background-color: var(--primary-blue-light);
+}
+
+/* --- Back Button --- */
+.backButtonWrapper {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.backButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--primary-blue-dark);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.8rem 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border-light);
+    background-color: var(--background-secondary);
+    transition: all 0.2s ease-in-out;
+}
+
+.backButton:hover {
+    background-color: var(--hover-blue-light); /* A lighter blue hover for less intense action */
+    color: var(--primary-blue);
+    transform: translateX(-5px);
+    box-shadow: 0 2px 8px var(--shadow-color-light);
+}
+
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 767px) {
+    .courseDetailContainer {
+        padding: 1.5rem;
+        gap: 1.5rem;
+    }
+
+    .courseTitle {
+        font-size: 2rem;
+    }
+
+    .courseDescription {
+        font-size: 1rem;
+    }
+
+    .courseInfo {
+        grid-template-columns: 1fr; /* Stack info items on small screens */
+        padding: 1.5rem;
+    }
+
+    .teachableLinkButton {
+        padding: 0.9rem 1.8rem;
+        font-size: 1rem;
+    }
+
+    .courseContentSection {
+        padding: 1.5rem;
+    }
+
+    .contentSectionTitle {
+        font-size: 1.4rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .courseDetailContainer {
+        padding: 1rem;
+        gap: 1.2rem;
+    }
+
+    .courseTitle {
+        font-size: 1.8rem;
+    }
+
+    .courseDescription {
+        font-size: 0.95rem;
+    }
+
+    .courseInfo {
+        padding: 1.2rem;
+    }
+
+    .teachableLinkButton {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .courseContentSection {
+        padding: 1.2rem;
+    }
+
+    .contentSectionTitle {
+        font-size: 1.25rem;
+    }
+}
