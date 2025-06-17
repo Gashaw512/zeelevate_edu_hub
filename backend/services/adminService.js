@@ -95,7 +95,7 @@ async function addCourse(courseData) {
 
   await newCourseRef.set({
     ...courseData,
-    id: courseId, // Store the ID within the document
+    courseId: courseId, // Store the ID within the document
     programNames: programNames, // Store resolved program names
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     updatedAt: admin.firestore.FieldValue.serverTimestamp()
