@@ -1,7 +1,6 @@
 const { admin, db } = require('../config/firebase-admin');
 const crypto = require('crypto');
 
-// PROGRAM MANAGEMENT FUNCTIONS
 async function getAllPrograms() {
   const snapshot = await db.collection('programs').get();
   return snapshot.docs.map(doc => doc.data());
@@ -59,12 +58,10 @@ async function deleteProgram(programId) {
   const doc = await ref.get();
   if (!doc.exists) throw new Error('Program not found');
 
-  // Optional: Add logic to check if any courses are associated with this program
-  // For now, directly delete the program
   await ref.delete();
 }
 
-// COURSE MANAGEMENT FUNCTIONS (MODIFIED)
+// COURSE MANAGEMENT FUNCTIONS
 async function getAllCourses() {
   const snapshot = await db.collection('courses').get();
   return snapshot.docs.map(doc => doc.data());
@@ -72,34 +69,22 @@ async function getAllCourses() {
 
 async function addCourse(courseData) {
   const {
-    name, // Changed from courseTitle
-    description, // Changed from courseDetails
+    name, // Changed from courseTitle to name
+    description, // Changed from courseDetails to description
     duration, // New field
     difficulty, // New field
     imageUrl, // New field
     classLink,
-    status = 'active', // default to 'active' if not provided
+    status = 'active',
     order, // New field
-    programIds = [], // New field, array of program IDs
+    programIds // New field for associating with programs
   } = courseData;
-
-  // Fetch program names for the provided programIds
-  const programNames = [];
-  if (programIds.length > 0) {
-    const programsSnapshot = await db.collection('programs')
-      .where(admin.firestore.FieldPath.documentId(), 'in', programIds)
-      .get();
-    
-    programsSnapshot.docs.forEach(doc => {
-      programNames.push(doc.data().title);
-    });
-  }
 
   const id = crypto.randomUUID();
 
   const courseRef = db.collection('courses').doc(id);
   await courseRef.set({
-    courseId: id,
+    courseId: id, // Changed from courseId to id consistently
     name,
     description,
     duration: Number(duration),
@@ -108,8 +93,7 @@ async function addCourse(courseData) {
     classLink,
     status,
     order: Number(order),
-    programIds,
-    programNames, // Store program names for easier querying/display
+    programIds: programIds || [], // Ensure it's an array, default to empty
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     updatedAt: admin.firestore.FieldValue.serverTimestamp()
   });
@@ -123,21 +107,7 @@ async function updateCourse(courseId, updatedData) {
   const doc = await ref.get();
   if (!doc.exists) throw new Error('Course not found');
 
-  // If programIds are being updated, re-fetch program names
-  if (updatedData.programIds && Array.isArray(updatedData.programIds)) {
-    const programNames = [];
-    if (updatedData.programIds.length > 0) {
-      const programsSnapshot = await db.collection('programs')
-        .where(admin.firestore.FieldPath.documentId(), 'in', updatedData.programIds)
-        .get();
-      programsSnapshot.docs.forEach(programDoc => {
-        programNames.push(programDoc.data().title);
-      });
-    }
-    updatedData.programNames = programNames;
-  }
-
-  // Ensure duration and order are stored as numbers if updated
+  // Ensure duration and order are numbers if present in updatedData
   if (updatedData.duration !== undefined) {
     updatedData.duration = Number(updatedData.duration);
   }
@@ -145,7 +115,8 @@ async function updateCourse(courseId, updatedData) {
     updatedData.order = Number(updatedData.order);
   }
 
-  updatedData.updatedAt = admin.firestore.FieldValue.serverTimestamp(); // Update timestamp
+  // Update `updatedAt` timestamp
+  updatedData.updatedAt = admin.firestore.FieldValue.serverTimestamp();
 
   await ref.update(updatedData);
 }
@@ -158,191 +129,139 @@ async function deleteCourse(courseId) {
   await ref.delete();
 }
 
-// Existing student and notification functions (no changes needed based on new requirements)
+// STUDENT MANAGEMENT FUNCTIONS
 async function getAllStudents() {
-  const snapshot = await db.collection('enrollments').get();
-  return snapshot.docs.map(doc => doc.data());
-}
-
-async function getStudentsByCourse(courseId) {
-  const enrollmentsSnapshot = await db.collectionGroup('enrollments')
-    .where('course_id', '==', courseId)
-    .get();
-  
-  const studentIds = [...new Set(enrollmentsSnapshot.docs.map(doc => doc.ref.parent.parent.id))];
-  
-  if (studentIds.length === 0) return [];
-  
-  const studentsSnapshot = await db.collection('students')
-    .where(admin.firestore.FieldPath.documentId(), 'in', studentIds)
-    .get();
-  
-  return studentsSnapshot.docs.map(doc => ({
+  const snapshot = await db.collection('students').get();
+  return snapshot.docs.map(doc => ({
     uid: doc.id,
     ...doc.data()
   }));
 }
 
-async function sendGlobalNotification(message, senderId) {
-  try {
-    // Get all student IDs
-    const studentsSnapshot = await db.collection('students').get();
-    const studentIds = studentsSnapshot.docs.map(doc => doc.id);
-
-    if (studentIds.length === 0) {
-      throw new Error('No students found in the system');
-    }
-
-    // Batch write notifications
-    const batch = db.batch();
-    const notificationsRef = db.collection('notifications');
-    const timestamp = admin.firestore.FieldValue.serverTimestamp();
-
-    studentIds.forEach(studentId => {
-      batch.set(notificationsRef.doc(), {
-        message,
-        senderId,
-        recipientId: studentId,
-        type: 'global',
-        createdAt: timestamp,
-        read: false
-      });
-    });
-
-    await batch.commit();
-    return { success: true, count: studentIds.length };
-  } catch (err) {
-    console.error('Global notification error:', err);
-    throw err;
-  }
-}
-async function sendCourseNotification(courseId, message, senderId) {
-  try {
-    // Verify course exists
-    const courseRef = db.collection('courses').doc(courseId);
-    const courseSnap = await courseRef.get();
-    
-    if (!courseSnap.exists) {
-      throw new Error('Course not found');
-    }
-
-    // Get all students with enrollments in this course
-    const enrollmentsQuery = db.collectionGroup('enrollments')
-      .where('course_id', '==', courseId);
-
-    const enrolledStudents = new Set();
-    const batch = db.batch();
-    const notificationsRef = db.collection('notifications');
-    const timestamp = admin.firestore.FieldValue.serverTimestamp();
-
-    // Process in batches to avoid memory issues
-    let querySnapshot = await enrollmentsQuery.get();
-    
-    querySnapshot.forEach(doc => {
-      const studentId = doc.ref.parent.parent.id;
-      enrolledStudents.add(studentId);
-      
-      // Add notification for each student
-      batch.set(notificationsRef.doc(), {
-        message,
-        senderId,
-        recipientId: studentId,
-        courseId,
-        type: 'course',
-        createdAt: timestamp,
-        read: false,
-        courseTitle: courseSnap.data().courseTitle // Include course title for reference
-      });
-    });
-
-    if (enrolledStudents.size === 0) {
-      throw new Error('No students enrolled in this course');
-    }
-
-    await batch.commit();
-    return { 
-      success: true, 
-      count: enrolledStudents.size,
-      courseTitle: courseSnap.data().courseTitle
-    };
-  } catch (err) {
-    console.error('Course notification error:', err);
-    
-    // Fallback method if collectionGroup query fails
-    if (err.code === 9 || err.message.includes('FAILED_PRECONDITION')) {
-      return await fallbackCourseNotification(courseId, message, senderId);
-    }
-    throw err;
-  }
+async function getStudentById(uid) {
+  const studentRef = db.collection('students').doc(uid);
+  const doc = await studentRef.get();
+  if (!doc.exists) throw new Error('Student not found');
+  return { uid: doc.id, ...doc.data() };
 }
 
-async function fallbackCourseNotification(courseId, message, senderId) {
+async function updateStudentProfile(uid, updatedData) {
+  const studentRef = db.collection('students').doc(uid);
+  const doc = await studentRef.get();
+  if (!doc.exists) throw new Error('Student not found');
+
+  await studentRef.update(updatedData);
+  return { success: true, message: 'Student profile updated successfully' };
+}
+
+// ADMIN PROFILE MANAGEMENT FUNCTIONS
+async function getAdminProfile(uid) {
+  const adminRef = db.collection('users').doc(uid);
+  const doc = await adminRef.get();
+  if (!doc.exists) throw new Error('Admin not found or unauthorized');
+  // Ensure the user is an admin before returning profile
+  if (doc.data().role !== 'admin') {
+    throw new Error('Unauthorized: User is not an admin');
+  }
+  return { uid: doc.id, ...doc.data() };
+}
+
+async function updateAdminProfile(uid, updatedData) {
+  const adminRef = db.collection('users').doc(uid);
+  const doc = await adminRef.get();
+  if (!doc.exists) throw new Error('Admin not found');
+  if (doc.data().role !== 'admin') { // Extra check for security
+    throw new Error('Unauthorized to update this profile');
+  }
+  await adminRef.update(updatedData);
+  return { success: true, message: 'Admin profile updated successfully' };
+}
+
+// NOTIFICATION FUNCTIONS
+
+// Renamed from sendCourseNotification to sendProgramNotification
+async function sendProgramNotification(senderId, programId, message) {
   const studentsSnapshot = await db.collection('students').get();
-  const enrolledStudents = [];
-  const batch = db.batch();
   const notificationsRef = db.collection('notifications');
   const timestamp = admin.firestore.FieldValue.serverTimestamp();
+  const batch = db.batch();
+  let notifiedStudentsCount = 0;
 
-  // Get course data for notification
-  const courseSnap = await db.collection('courses').doc(courseId).get();
-  if (!courseSnap.exists) {
-    throw new Error('Course not found');
+  // Get program data for notification
+  const programSnap = await db.collection('programs').doc(programId).get();
+  if (!programSnap.exists) {
+    throw new Error('Program not found');
   }
+  const programTitle = programSnap.data().title; // Get program title
 
-  // Check each student's enrollments
   for (const studentDoc of studentsSnapshot.docs) {
+    const studentUid = studentDoc.id;
+
+    // Check if the student is enrolled in the specific program
     const enrollmentSnap = await db.collection('students')
-      .doc(studentDoc.id)
+      .doc(studentUid)
       .collection('enrollments')
-      .where('course_id', '==', courseId)
+      .where('programId', '==', programId)
       .limit(1)
       .get();
-    
+
     if (!enrollmentSnap.empty) {
-      enrolledStudents.push(studentDoc.id);
-      
       batch.set(notificationsRef.doc(), {
         message,
         senderId,
-        recipientId: studentDoc.id,
-        courseId,
-        type: 'course',
+        recipientId: studentUid,
+        programId, // Include programId
+        programTitle, // Include programTitle
+        type: 'program', // Type is 'program'
         createdAt: timestamp,
         read: false,
-        courseTitle: courseSnap.data().courseTitle
       });
+      notifiedStudentsCount++;
     }
   }
 
-  if (enrolledStudents.length === 0) {
-    throw new Error('No students enrolled in this course');
+  if (notifiedStudentsCount === 0) {
+    throw new Error('No students enrolled in this program');
   }
 
   await batch.commit();
-  return { 
-    success: true, 
-    count: enrolledStudents.length,
-    courseTitle: courseSnap.data().courseTitle,
-    usedFallback: true
+  return {
+    success: true,
+    count: notifiedStudentsCount,
+    programTitle, // Return program title
   };
 }
 
 
+async function sendGlobalNotification(senderId, message) {
+  const notificationsRef = db.collection('notifications');
+  const timestamp = admin.firestore.FieldValue.serverTimestamp();
+
+  await notificationsRef.add({
+    message,
+    senderId,
+    isGlobal: true, // Mark as global notification
+    createdAt: timestamp,
+    read: false,
+  });
+
+  return { success: true, message: 'Global notification sent successfully' };
+}
+
 module.exports = {
-  // Programs
   getAllPrograms,
   addProgram,
   updateProgram,
   deleteProgram,
-  // Courses
   getAllCourses,
   addCourse,
   updateCourse,
   deleteCourse,
-  // Students and Notifications
   getAllStudents,
-  getStudentsByCourse,
-  sendCourseNotification,
+  getStudentById,
+  updateStudentProfile,
+  getAdminProfile,
+  updateAdminProfile,
+  sendProgramNotification,
   sendGlobalNotification,
-  fallbackCourseNotification
 };
