@@ -60,7 +60,7 @@ const CourseCard = ({ course }) => {
             />
             <div className={styles['card-content']}>
                 <h3 className={styles['card-title']}>{title}</h3>
-                <p className={styles['card-instructor']}>Instructor: {instructor || 'Unknown'}</p>
+                {/* <p className={styles['card-instructor']}>Instructor: {instructor || 'Unknown'}</p> */}
 
                 {/* Display Difficulty and Duration */}
                 {/* Adding these directly as paragraphs or spans */}

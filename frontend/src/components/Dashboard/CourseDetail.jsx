@@ -62,7 +62,7 @@ const CourseDetail = () => {
 
       <div className={styles.courseInfo}>
         <p><strong>Program:</strong> {course.programTitle || 'N/A'}</p>
-        <p><strong>Instructor:</strong> {course.instructor || 'Not specified'}</p>
+        {/* <p><strong>Instructor:</strong> {course.instructor || 'Not specified'}</p> */}
         <p><strong>Difficulty:</strong> {course.difficulty ? (course.difficulty.charAt(0).toUpperCase() + course.difficulty.slice(1)) : 'N/A'}</p>
         <p><strong>Duration:</strong> {course.duration ? `${course.duration} minutes` : 'N/A'}</p>
         <p><strong>Your Progress:</strong> {typeof course.progress === 'number' ? `${course.progress}%` : 'N/A'}</p>
