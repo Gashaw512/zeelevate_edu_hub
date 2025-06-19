@@ -30,21 +30,29 @@ const useProgramsFetcher = (backendApiUrl) => {
         throw new Error(`Failed to load programs: ${errorDetail}`);
       }
       
-      // --- CRITICAL CORRECTION FOR PROGRAMS DATA STRUCTURE ---
       const rawProgramsResponseData = await programsResponse.json(); 
-      // Expecting a structure like: { success: true, programs: [...] }
       const programsArray = rawProgramsResponseData.programs; 
 
-      console.info('Programs fetched successfully:', programsArray);
-
-      // Validate if the 'programs' property is an array
       if (!Array.isArray(programsArray)) {
           console.error("API response structure for /admin/public/programs was unexpected. Expected 'programs' property to be an array. Received:", rawProgramsResponseData);
           setError("Invalid data format for programs. Please try again later.");
-          setPrograms([]); // Ensure it's an array to prevent further errors
-          return; // Exit if programs data is malformed
+          setPrograms([]); 
+          return;
       }
-      setPrograms(programsArray); // Set the state with the actual array of programs
+
+      // --- CRITICAL FIX: CONVERT PROGRAM PRICES TO NUMBERS HERE ---
+      const processedPrograms = programsArray.map(program => ({
+          ...program,
+          // Ensure price is converted to a number.
+          // Using Number() is generally robust. parseFloat() can also be used.
+          // If price might be missing or null, add a fallback, though PropTypes should catch it.
+          price: typeof program.price === 'string' || typeof program.price === 'number'
+                 ? Number(program.price) // Convert if string or just keep if number
+                 : 0 // Default to 0 if price is null, undefined, or other unexpected type
+      }));
+
+      console.info('Programs fetched and processed successfully:', processedPrograms);
+      setPrograms(processedPrograms); // Set the state with the processed array of programs
 
       // --- FETCH ALL PUBLIC COURSES ---
       const coursesApiUrl = `${backendApiUrl}/api/admin/public/courses`;
@@ -65,17 +73,13 @@ const useProgramsFetcher = (backendApiUrl) => {
       }
       
       const rawCoursesResponseData = await coursesResponse.json(); 
-      console.info('All public courses fetched successfully:', rawCoursesResponseData);
-      // Expecting a structure like: { success: true, courses: [...] }
       const coursesArray = rawCoursesResponseData.courses; 
 
-      console.info('Courses fetched successfully:', coursesArray);
-      // Validate if the 'courses' property is an array
       if (!Array.isArray(coursesArray)) {
           console.error("API response structure for /admin/public/courses was unexpected. Expected 'courses' property to be an array. Received:", rawCoursesResponseData);
           setError("Invalid data format for courses. Please try again later.");
-          setAllCourses([]); // Ensure it's an array to prevent further errors
-          return; // Exit if courses data is malformed
+          setAllCourses([]);
+          return;
       }
 
       const processedCourses = coursesArray.map(course => ({
