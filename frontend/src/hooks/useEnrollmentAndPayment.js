@@ -14,8 +14,9 @@ const useEnrollmentAndPayment = () => {
     setError(null);
     
     try {
+      const BACKEND_API_URL = import.meta.env.VITE_BACKEND_URL;
       const response = await axios.post(
-        'http://localhost:3001/api/payments/create-payment', 
+        `${BACKEND_API_URL}/api/payments/create-payment`,
         payload,
         { timeout: 60000 }
       );
