@@ -43,7 +43,7 @@ const Courses = () => {
 
   const fetchPrograms = async (token = authToken) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/admin/programs', {
+      const response = await axios.get('/api/admin/programs', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -58,7 +58,7 @@ const Courses = () => {
   const fetchCourses = async (token = authToken) => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:3001/api/admin/courses', {
+      const response = await axios.get('/api/admin/courses', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -120,14 +120,14 @@ const Courses = () => {
       setLoading(true);
       if (editingId) {
         await axios.put(
-          `http://localhost:3001/api/admin/courses/${editingId}`,
+          `/api/admin/courses/${editingId}`,
           formData,
           { headers: { Authorization: `Bearer ${authToken}` } }
         );
         toast.success('Course updated successfully!');
       } else {
         await axios.post(
-          'http://localhost:3001/api/admin/add-course',
+          '/api/admin/add-course',
           formData,
           { headers: { Authorization: `Bearer ${authToken}` } }
         );
@@ -183,7 +183,7 @@ const Courses = () => {
     
     try {
       setLoading(true);
-      await axios.delete(`http://localhost:3001/api/admin/courses/${courseToDelete.id}`, {
+      await axios.delete(`/api/admin/courses/${courseToDelete.id}`, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
       toast.info('Course deleted successfully');

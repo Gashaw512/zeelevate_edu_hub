@@ -34,7 +34,7 @@ function SendNotification() {
 
   useEffect(() => {
     if (notificationType === "program") {
-      axios.get("http://localhost:3001/api/admin/programs" , {
+      axios.get("/api/admin/programs" , {
         headers: {
           Authorization: `Bearer ${authToken}`
         }
@@ -42,7 +42,7 @@ function SendNotification() {
         .then(res => setPrograms(res.data.programs || []))
         .catch(() => setPrograms([]));
     } else if (notificationType === "student") {
-      axios.get("http://localhost:3001/api/admin/students"  , {
+      axios.get("/api/admin/students"  , {
         headers: {
           Authorization: `Bearer ${authToken}`
         }
@@ -71,7 +71,7 @@ function SendNotification() {
 
     setLoading(true);
     try {
-     const response = await axios.post("http://localhost:3001/api/admin/send-notification", payload, { headers: { Authorization: `Bearer ${authToken}` } });
+     const response = await axios.post("/api/admin/send-notification", payload, { headers: { Authorization: `Bearer ${authToken}` } });
      setMessage("");
      setSelectedProgram("");
      setSelectedStudent("");

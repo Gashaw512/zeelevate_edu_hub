@@ -39,7 +39,7 @@ const CheckoutPage = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:3001/create-payment', {
+      const response = await axios.post('/create-payment', {
         courseType: course.id,
         customerDetails: {
           firstName,
