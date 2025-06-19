@@ -37,10 +37,10 @@ const Dashboard = () => {
     const authToken = await getIdToken(currentUser, true); 
 
       const [coursesResponse, studentsResponse] = await Promise.all([
-        axios.get('http://localhost:3001/api/admin/courses', {
+        axios.get('/api/admin/courses', {
           headers: { Authorization: `Bearer ${authToken}` }
         }),
-        axios.get('http://localhost:3001/api/admin/students', {
+        axios.get('/api/admin/students', {
           headers: { Authorization: `Bearer ${authToken}` }
         })
       ]);

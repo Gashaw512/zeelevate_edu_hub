@@ -44,7 +44,7 @@ const Program = () => {
     try {
       setLoading(true);
 
-      const response = await axios.get('http://localhost:3001/api/admin/programs', {
+      const response = await axios.get('/api/admin/programs', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -105,14 +105,14 @@ const Program = () => {
 
       if (editingId) {
         await axios.put(
-          `http://localhost:3001/api/admin/programs/${editingId}`,
+          `/api/admin/programs/${editingId}`,
           submissionData,
           { headers: { Authorization: `Bearer ${authToken}` } }
         );
         toast.success('Program updated successfully!');
       } else {
         await axios.post(
-          'http://localhost:3001/api/admin/add-program',
+          '/api/admin/add-program',
           submissionData,
           { headers: { Authorization: `Bearer ${authToken}` } }
         );
@@ -171,7 +171,7 @@ const Program = () => {
     
     try {
       setLoading(true);
-      await axios.delete(`http://localhost:3001/api/admin/programs/${programToDelete.id}`, {
+      await axios.delete(`/api/admin/programs/${programToDelete.id}`, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
       toast.success('Program deleted successfully');

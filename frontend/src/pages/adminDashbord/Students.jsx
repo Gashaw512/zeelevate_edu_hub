@@ -33,7 +33,7 @@ const Students = () => {
       // Get fresh token from Firebase
       const authToken = await getIdToken(currentUser, true); 
 
-      const response = await axios.get('http://localhost:3001/api/admin/students', {
+      const response = await axios.get('/api/admin/students', {
         headers: {
           Authorization: `Bearer ${authToken}`
         }
