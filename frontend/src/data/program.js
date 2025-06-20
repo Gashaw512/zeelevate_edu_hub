@@ -1,4 +1,4 @@
-// data/program.jsx
+
 const DUMMY_PROGRAM_DATA = [
   {
     id: 'teen-program-1', // Unique ID for each program
