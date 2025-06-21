@@ -1,13 +1,11 @@
 // src/context/NotificationsContext.js
-import { createContext, useContext } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useAuth } from './AuthContext';
-import useNotifications, { NOTIFICATION_MESSAGES as HookMessages } from '../hooks/useNotifications'; // Renamed to avoid conflict
+import useNotifications, { NOTIFICATION_MESSAGES as HookMessages } from '../hooks/useNotifications';
 
-// Create the context
-const NotificationsContext = createContext(null);
+const NotificationsContext = createContext(undefined);
 
-// Custom hook to consume the context
 export const useNotificationsContext = () => {
   const context = useContext(NotificationsContext);
   if (context === undefined) {
@@ -16,46 +14,36 @@ export const useNotificationsContext = () => {
   return context;
 };
 
-// Provider component that wraps your application or parts of it
 export const NotificationsProvider = ({ children }) => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
-  const {
-    notifications,
-    loading,
-    error,
-    clearing,
-    markingAll,
-    toastMessage,
-    requiresConfirmation,
-    notificationToDeleteId,
-    markAsRead,
-    markAllAsRead,
-    requestClearAllConfirmation,
-    confirmClearAllNotifications,
-    requestDeleteConfirmation,
-    confirmDeleteNotification,
-    cancelConfirmation,
-  } = useNotifications(user?.uid);
+  const userId = useMemo(() => (authLoading || !user?.uid ? null : user.uid), [authLoading, user]);
 
-  const value = {
-    notifications,
-    loading,
-    error,
-    clearing,
-    markingAll,
-    toastMessage,
-    requiresConfirmation,
-    notificationToDeleteId,
-    markAsRead,
-    markAllAsRead,
-    requestClearAllConfirmation,
-    confirmClearAllNotifications,
-    requestDeleteConfirmation,
-    confirmDeleteNotification,
-    cancelConfirmation,
-    NOTIFICATION_MESSAGES: HookMessages // Provide the original messages object as part of context value
-  };
+  // Conditionally call useNotifications only if userId exists
+  const notificationsState = userId
+    ? useNotifications(userId)
+    : {
+        notifications: [],
+        loading: authLoading,
+        error: null,
+        clearing: false,
+        markingAll: false,
+        toastMessage: null,
+        requiresConfirmation: null,
+        notificationToDeleteId: null,
+        markAsRead: () => {},
+        markAllAsRead: () => {},
+        requestClearAllConfirmation: () => {},
+        confirmClearAllNotifications: () => {},
+        requestDeleteConfirmation: () => {},
+        confirmDeleteNotification: () => {},
+        cancelConfirmation: () => {},
+      };
+
+  const value = useMemo(() => ({
+    ...notificationsState,
+    NOTIFICATION_MESSAGES: HookMessages,
+  }), [notificationsState]);
 
   return (
     <NotificationsContext.Provider value={value}>
@@ -68,7 +56,6 @@ NotificationsProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-// Explicitly export NOTIFICATION_MESSAGES from this context file
-export { HookMessages as NOTIFICATION_MESSAGES }; // <--- ADD THIS LINE
+export { HookMessages as NOTIFICATION_MESSAGES };
 
 export default NotificationsContext;

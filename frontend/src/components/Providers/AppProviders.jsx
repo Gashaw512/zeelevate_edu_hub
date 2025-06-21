@@ -1,36 +1,37 @@
-// src/components/AppProviders.js
 import PropTypes from 'prop-types';
-import { AuthProvider } from '../../context/AuthContext';
+import { AuthProvider, useAuth } from '../../context/AuthContext';
 import { ProgramsProvider } from '../../context/ProgramsContext';
 import { EnrolledCoursesProvider } from '../../context/EnrolledCoursesContext';
-
 import { NotificationsProvider } from '../../context/NotificationsContext';
 import { SettingsProvider } from '../../context/SettingsContext';
+import React from 'react';
 
-/**
- * @typedef {object} AppProvidersProps
- * @property {React.ReactNode} children - The child components to be wrapped by the providers.
- */
+const NotificationsWrapper = ({ children }) => {
+  const { loading } = useAuth();
 
-/**
- * AppProviders component.
- * Wraps the application with all necessary context providers.
- *
- * @param {AppProvidersProps} props - The component props.
- * @returns {JSX.Element} The JSX element.
- */
+  if (loading) {
+    // Show nothing or a lightweight spinner, or simply null to avoid premature NotificationsProvider mount
+    return null;
+  }
+
+  return <NotificationsProvider>{children}</NotificationsProvider>;
+};
+
+NotificationsWrapper.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
 const AppProviders = ({ children }) => {
   return (
     <ProgramsProvider>
       <AuthProvider>
-          <NotificationsProvider> 
-            <EnrolledCoursesProvider>
-              <SettingsProvider>
-{children}
-              </SettingsProvider>
-            </EnrolledCoursesProvider>
-          </NotificationsProvider>
-       
+        <NotificationsWrapper>
+          <EnrolledCoursesProvider>
+            <SettingsProvider>
+              {children}
+            </SettingsProvider>
+          </EnrolledCoursesProvider>
+        </NotificationsWrapper>
       </AuthProvider>
     </ProgramsProvider>
   );
