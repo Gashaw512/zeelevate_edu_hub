@@ -1,170 +1,140 @@
-import { forwardRef, useImperativeHandle, useMemo, useCallback } from "react";
-import PropTypes from "prop-types";
-import AuthForm from "../../common/AuthForm";
-// import styles from "./AccountDetailsForm.module.css";
-import useFormValidation from "../../../hooks/useFormValidation";
+import { forwardRef, useImperativeHandle, useMemo, useCallback } from 'react';
+import PropTypes from 'prop-types';
+import AuthForm from '../../common/AuthForm';
+import useFormValidation from '../../../hooks/useFormValidation';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
-const AccountDetailsForm = forwardRef(
-  ({ formData, onFormChange, isSubmitting }, ref) => {
-    // Define the configuration for form fields and their validation rules.
-    // This configuration is memoized to prevent unnecessary re-creations on re-renders.
-    const enrollmentFieldsConfig = useMemo(
-      () => [
-        {
-          name: "fName",
-          label: "First Name",
-          type: "text",
-          required: true,
-          autoComplete: "given-name",
-          placeholder: "John",
-          regex: /^[a-zA-Z]{2,}(?:[' -][a-zA-Z]{2,})*$/, // Allows for hyphens/apostrophes
-          minLength: 2,
-          maxLength: 50,
-          errorMessage:
-            "First name must contain only letters and be at least 2 characters.",
-          inputMode: "text",
-          hint: "Use alphabetic characters only. E.g., John, Anne-Marie.",
-        },
-        {
-          name: "lName",
-          label: "Last Name",
-          type: "text",
-          required: true,
-          autoComplete: "family-name",
-          placeholder: "Doe",
-          regex: /^[a-zA-Z]{2,}(?:[' -][a-zA-Z]{2,})*$/, // Same as above
-          minLength: 2,
-          maxLength: 50,
-          errorMessage:
-            "Last name must contain only letters and be at least 2 characters.",
-          inputMode: "text",
-          hint: "Use alphabetic characters only. E.g., Doe, O’Connor.",
-        },
-        {
-          name: "email",
-          label: "Email Address",
-          type: "email",
-          required: true,
-          autoComplete: "email",
-          placeholder: "example@domain.com",
-          regex: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, // Basic but reliable pattern
-          maxLength: 254, // As per email standards
-          inputMode: "email",
-          errorMessage:
-            "Please enter a valid email address (e.g., example@domain.com).",
-          hint: "Use a valid business or personal email.",
-        },
-
-        {
-          name: "phoneNumber",
-          label: "Phone Number",
-          type: "tel",
-          required: true,
-          autoComplete: "tel",
-          placeholder: "+1234567890",
-          regex: /^\+?[1-9]\d{7,14}$/,
-          errorMessage:
-            "Please enter a valid phone number in international format (e.g., +1234567890).",
-          maxLength: 16, 
-          inputMode: "tel", 
-          hint: "Use international format including country code (e.g., +251912345678)",
-        },
-
-   {
-  name: 'password',
-  label: 'Password',
-  type: 'password',
-  required: true,
-  autoComplete: 'new-password',
-  placeholder: '••••••••',
-  minLength: 8,
-  maxLength: 128,
-  regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}\[\]|\\:;"'<>,.?/~`]).{8,}$/,
-  errorMessage:
-    'Password must be at least 8 characters and include uppercase, lowercase, number, and special character.',
-  hint: 'Use a mix of upper/lowercase letters, numbers, and symbols.',
-  inputMode: 'text' 
-},
-{
-  name: 'confirmPassword',
-  label: 'Confirm Password',
-  type: 'password',
-  required: true,
-  autoComplete: 'new-password',
-  placeholder: '••••••••',
-  matches: 'password', 
-  errorMessage: 'Passwords do not match.',
-  hint: 'Please re-enter the password exactly as above.',
-  inputMode: 'text'
-},
-
-      ],
-      []
-    );
-
-    
-    const {
-      fieldErrors, 
-      isValid, 
-      validate, 
-      handleFieldChange, 
-      handleBlur, 
-      resetValidation,
-    } = useFormValidation(formData, enrollmentFieldsConfig);
-
- 
-    const combinedOnChange = useCallback(
-      (e) => {
-        handleFieldChange(e); 
-        onFormChange(e); 
+const AccountDetailsForm = forwardRef(({ formData, onFormChange, isSubmitting }, ref) => {
+  const enrollmentFieldsConfig = useMemo(() => [
+    {
+      name: 'fName',
+      label: 'First Name',
+      type: 'text',
+      required: true,
+      autoComplete: 'given-name',
+      placeholder: 'John',
+      regex: /^[a-zA-Z]{2,}(?:[' -][a-zA-Z]{2,})*$/,
+      minLength: 2,
+      maxLength: 50,
+      errorMessage: 'First name must be at least 2 characters and contain only letters.',
+      inputMode: 'text',
+      hint: 'Only letters, spaces, hyphens or apostrophes. E.g., John, Anne-Marie.',
+    },
+    {
+      name: 'lName',
+      label: 'Last Name',
+      type: 'text',
+      required: true,
+      autoComplete: 'family-name',
+      placeholder: 'Doe',
+      regex: /^[a-zA-Z]{2,}(?:[' -][a-zA-Z]{2,})*$/,
+      minLength: 2,
+      maxLength: 50,
+      errorMessage: 'Last name must be at least 2 characters and contain only letters.',
+      inputMode: 'text',
+      hint: 'Only letters, spaces, hyphens or apostrophes. E.g., O’Connor.',
+    },
+    {
+      name: 'email',
+      label: 'Email Address',
+      type: 'email',
+      required: true,
+      autoComplete: 'email',
+      placeholder: 'example@domain.com',
+      regex: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
+      maxLength: 254,
+      inputMode: 'email',
+      errorMessage: 'Please enter a valid email address.',
+      hint: 'Use a valid business or personal email.',
+    },
+    {
+      name: 'phoneNumber',
+      label: 'Phone Number',
+      type: 'tel',
+      required: true,
+      autoComplete: 'tel',
+      placeholder: '+251912345678',
+      validator: (value) => {
+        if (!value) return 'Phone number is required.';
+        try {
+          const phone = parsePhoneNumberFromString(value);
+          if (!phone?.isValid()) {
+            return 'Enter a valid phone number with country code.';
+          }
+        } catch {
+          return 'Phone number format is invalid.';
+        }
+        return null;
       },
-      [handleFieldChange, onFormChange]
-    );
+      inputMode: 'tel',
+      hint: 'Use international format including country code (e.g., +251912345678).',
+    },
+    {
+      name: 'password',
+      label: 'Password',
+      type: 'password',
+      required: true,
+      autoComplete: 'new-password',
+      placeholder: '••••••••',
+      minLength: 8,
+      maxLength: 128,
+      regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}\[\]|\\:;"'<>,.?/~`]).{8,}$/,
+      errorMessage: 'Must include uppercase, lowercase, number, and symbol.',
+      hint: 'At least 8 characters. Include uppercase, lowercase, number, and symbol.',
+      inputMode: 'text',
+    },
+    {
+      name: 'confirmPassword',
+      label: 'Confirm Password',
+      type: 'password',
+      required: true,
+      autoComplete: 'new-password',
+      placeholder: '••••••••',
+      matches: 'password',
+      errorMessage: 'Passwords do not match.',
+      hint: 'Re-enter the exact same password.',
+      inputMode: 'text',
+    }
+  ], []);
 
-  
-    const combinedOnBlur = useCallback(
-      (e) => {
-        handleBlur(e);
-      },
-      [handleBlur]
-    );
+  const {
+    fieldErrors,
+    isValid,
+    validate,
+    handleFieldChange,
+    handleBlur,
+    resetValidation,
+  } = useFormValidation(formData, enrollmentFieldsConfig);
 
-   
-    useImperativeHandle(ref, () => ({
-      /**
-       * Triggers a full form validation and returns its validity.
-       * Useful for form submission.
-       * @returns {boolean} True if the form is valid, false otherwise.
-       */
-      triggerFormValidation: () => {
-   
-        return validate();
-      },
-      /**
-       * Resets all validation errors and touched states, making the form appear clean.
-       */
-      resetFormValidation: resetValidation,
-    }));
+  const combinedOnChange = useCallback((e) => {
+    handleFieldChange(e);
+    onFormChange(e);
+  }, [handleFieldChange, onFormChange]);
 
-    return (
-      <div className="initial-details-section">
-       
-        <AuthForm
-          formData={formData}
-          onChange={combinedOnChange} 
-          onBlur={combinedOnBlur} 
-          fieldsConfig={enrollmentFieldsConfig} 
-          errors={fieldErrors} 
-          disabled={isSubmitting} 
-        />
-      </div>
-    );
-  }
-);
+  const combinedOnBlur = useCallback((e) => {
+    handleBlur(e);
+  }, [handleBlur]);
 
+  useImperativeHandle(ref, () => ({
+    triggerFormValidation: () => validate(),
+    resetFormValidation: resetValidation,
+  }));
 
-AccountDetailsForm.displayName = "AccountDetailsForm";
+  return (
+    <div className="initial-details-section">
+      <AuthForm
+        formData={formData}
+        onChange={combinedOnChange}
+        onBlur={combinedOnBlur}
+        fieldsConfig={enrollmentFieldsConfig}
+        errors={fieldErrors}
+        disabled={isSubmitting}
+      />
+    </div>
+  );
+});
 
+AccountDetailsForm.displayName = 'AccountDetailsForm';
 
 AccountDetailsForm.propTypes = {
   formData: PropTypes.object.isRequired,
