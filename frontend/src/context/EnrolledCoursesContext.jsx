@@ -1,11 +1,10 @@
 // src/context/EnrolledCoursesContext.js
 import { createContext, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { useAuth } from './AuthContext'; // Assuming AuthContext is defined here
+import { useAuth } from './AuthContext';
 import useEnrolledCoursesFetcher from '../hooks/useEnrolledCoursesFetcher';
 
-
-const EnrolledCoursesContext = createContext(null);
+const EnrolledCoursesContext = createContext(undefined); // changed from null for stricter checking
 
 export const useEnrolledCourses = () => {
   const context = useContext(EnrolledCoursesContext);
@@ -15,22 +14,30 @@ export const useEnrolledCourses = () => {
   return context;
 };
 
-
 export const EnrolledCoursesProvider = ({ children }) => {
-  const { user } = useAuth(); // Get user from AuthContext
+  const { user } = useAuth();
+
+  const isLoggedIn = Boolean(user?.uid);
 
   const {
     enrolledCourses,
     loadingEnrolledCourses,
     enrolledCoursesError,
-    refetchEnrolledCourses
-  } = useEnrolledCoursesFetcher(user?.uid); // This is where the hook is called
+    refetchEnrolledCourses,
+  } = isLoggedIn
+    ? useEnrolledCoursesFetcher(user.uid)
+    : {
+        enrolledCourses: [],
+        loadingEnrolledCourses: false,
+        enrolledCoursesError: null,
+        refetchEnrolledCourses: () => {},
+      };
 
   const value = {
     enrolledCourses,
     loadingEnrolledCourses,
     enrolledCoursesError,
-    refetchEnrolledCourses
+    refetchEnrolledCourses,
   };
 
   return (
@@ -43,5 +50,3 @@ export const EnrolledCoursesProvider = ({ children }) => {
 EnrolledCoursesProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
-
-export default EnrolledCoursesContext;
