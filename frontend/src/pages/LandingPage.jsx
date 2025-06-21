@@ -1,11 +1,10 @@
-// Import Components
 import  { useEffect } from 'react';
 import Navbar from "../components/Navbar/Navbar";
 import TextBox from "../components/TextBox/TextBox";
 import Footer from "../components/Footer/Footer";
 import Contact from "../components/ContactComponent/ContactComponent";
 import About from "../components/AboutUsBox/AboutUsBox";
-// import Team from "../components/Team/Team";
+
 import { useLocation, useNavigate } from 'react-router-dom';
 import Cta from "../components/Cta/Cta";
 import Programs from "../components/Programs/Programs";
@@ -27,12 +26,7 @@ import { useScrollToSection } from '../hooks/useScrollToSection';
  */
 const LandingPage = () => {
 
- const { handleNavigationAndScroll } = useScrollToSection(); // this runs the useEffect inside the hook
-
-
-
-
-  // THIS IS THE CRUCIAL PART FOR `location.state.scrollTo`
+ const { handleNavigationAndScroll } = useScrollToSection(); 
 
 
   return (
