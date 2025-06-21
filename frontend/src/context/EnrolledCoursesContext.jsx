@@ -1,10 +1,9 @@
-// src/context/EnrolledCoursesContext.js
 import { createContext, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useAuth } from './AuthContext';
 import useEnrolledCoursesFetcher from '../hooks/useEnrolledCoursesFetcher';
 
-const EnrolledCoursesContext = createContext(undefined); // changed from null for stricter checking
+const EnrolledCoursesContext = createContext(undefined);
 
 export const useEnrolledCourses = () => {
   const context = useContext(EnrolledCoursesContext);
@@ -19,19 +18,13 @@ export const EnrolledCoursesProvider = ({ children }) => {
 
   const isLoggedIn = Boolean(user?.uid);
 
+ 
   const {
     enrolledCourses,
     loadingEnrolledCourses,
     enrolledCoursesError,
     refetchEnrolledCourses,
-  } = isLoggedIn
-    ? useEnrolledCoursesFetcher(user.uid)
-    : {
-        enrolledCourses: [],
-        loadingEnrolledCourses: false,
-        enrolledCoursesError: null,
-        refetchEnrolledCourses: () => {},
-      };
+  } = useEnrolledCoursesFetcher(isLoggedIn ? user.uid : null);
 
   const value = {
     enrolledCourses,

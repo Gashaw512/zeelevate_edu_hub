@@ -1,5 +1,5 @@
 // src/components/Navbar/Navbar.jsx
-import { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styles from './Navbar.module.css';
 import logo from "/images/logo.png";
 import { navLinks } from "../../data/navbarLinks";
@@ -186,4 +186,4 @@ Navbar.propTypes = {
   // No direct props for Navbar in this current setup.
 };
 
-export default Navbar;
+export default React.memo(Navbar);

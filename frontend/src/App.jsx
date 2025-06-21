@@ -7,14 +7,14 @@ import './index.css';
 
 const App = () => {
   return (
-    <AppProviders>
-      <Router> 
-        <SessionChecker /> 
+    <Router>
+      <AppProviders>
+        <SessionChecker />
         <Routes>
           <Route path="*" element={<AppRoutes />} />
         </Routes>
-      </Router>
-    </AppProviders>
+      </AppProviders>
+    </Router>
   );
 };
 

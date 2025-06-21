@@ -1,4 +1,3 @@
-// src/context/NotificationsContext.js
 import React, { createContext, useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useAuth } from './AuthContext';
@@ -17,12 +16,13 @@ export const useNotificationsContext = () => {
 export const NotificationsProvider = ({ children }) => {
   const { user, loading: authLoading } = useAuth();
 
-  const userId = useMemo(() => (authLoading || !user?.uid ? null : user.uid), [authLoading, user]);
+  // Always call the hook - pass userId or null
+  const notificationsState = useNotifications(user?.uid ?? null);
 
-  // Conditionally call useNotifications only if userId exists
-  const notificationsState = userId
-    ? useNotifications(userId)
-    : {
+  // If no user or loading, override with fallback empty/default values:
+  const value = useMemo(() => {
+    if (authLoading || !user?.uid) {
+      return {
         notifications: [],
         loading: authLoading,
         error: null,
@@ -38,12 +38,15 @@ export const NotificationsProvider = ({ children }) => {
         requestDeleteConfirmation: () => {},
         confirmDeleteNotification: () => {},
         cancelConfirmation: () => {},
+        NOTIFICATION_MESSAGES: HookMessages,
       };
+    }
 
-  const value = useMemo(() => ({
-    ...notificationsState,
-    NOTIFICATION_MESSAGES: HookMessages,
-  }), [notificationsState]);
+    return {
+      ...notificationsState,
+      NOTIFICATION_MESSAGES: HookMessages,
+    };
+  }, [authLoading, user, notificationsState]);
 
   return (
     <NotificationsContext.Provider value={value}>
