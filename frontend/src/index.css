@@ -1,17 +1,24 @@
-/* Import Google font 'Outfit' */
+/* --------------------------------------------------------
+   Import Google Font 'Outfit'
+-------------------------------------------------------- */
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
-/* TailwindCSS directives */
+/* --------------------------------------------------------
+   Tailwind CSS Directives
+-------------------------------------------------------- */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Component-specific styles */
+/* --------------------------------------------------------
+   Component-Specific Styles
+-------------------------------------------------------- */
 @import './components/Navbar/Navbar.css';
-@import './styles/sidebar-overrides.css'; /* Ensure this comes after other component-level styles if it needs to override them */
+/* @import './styles/sidebar-overrides.css'; */  /* Optional import if needed later */
 
-
-/* --- Universal Box-Sizing & Font Family --- */
+/* --------------------------------------------------------
+   Base Reset & Font Family
+-------------------------------------------------------- */
 * {
   margin: 0;
   padding: 0;
@@ -22,116 +29,109 @@
 html, body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* Prevent horizontal scrollbar issues */
+  overflow-x: hidden;
 }
 
-
-/* --- CSS Variables (Light Mode Defaults) --- */
-/* These variables will be applied by default (light mode) */
+/* --------------------------------------------------------
+   CSS Variables - Light Mode Defaults
+-------------------------------------------------------- */
 :root {
-  /* Background Colors */
-  --background-primary: #F5F5F5; /* Main page background */
-  --background-secondary: #FFFFFF; /* Card/Panel background, used in Settings, Header, etc. */
-  --background-muted: #F7F9FC; /* Slightly off-white for subtle backgrounds (e.g., hover states for light elements) */
+  /* Background */
+  --background-primary: #F5F5F5;
+  --background-secondary: #FFFFFF;
+  --background-muted: #F7F9FC;
 
-  /* Text Colors */
-  --text-primary: #222222; /* Main dark text color */
-  --text-secondary: #666666; /* Muted/secondary text color (for descriptions, etc.) */
-  --text-light: #FFFFFF; /* White text, for use on dark backgrounds (e.g., buttons, hero text) */
-  --text-light-alt: #F0F0F0; /* Slightly off-white for softer light text */
+  /* Text */
+  --text-primary: #222222;
+  --text-secondary: #666666;
+  --text-light: #FFFFFF;
+  --text-light-alt: #F0F0F0;
 
-  /* Brand/Accent Colors */
-  --primary-blue: #3686FF; /* Your main brand blue */
-  --primary-blue-dark: #265EC1; /* Darker shade for hover/active */
-  --primary-blue-light: #7CAEFF; /* Lighter shade */
+  /* Brand Colors */
+  --primary-blue: #3686FF;
+  --primary-blue-dark: #265EC1;
+  --primary-blue-light: #7CAEFF;
 
-  /* Interaction Colors */
-  --hover-blue: #2c73e8; /* Specific hover state for blue elements */
-  --active-blue: #265ec1; /* Specific active state for blue elements */
+  /* Interactions */
+  --hover-blue: #2c73e8;
+  --active-blue: #265ec1;
 
-  /* Border Colors */
-  --border-light: #D1D5DB; /* Light border color */
-  --border-dark: #374151; /* Darker border, specifically for sidebar (if not using light text) */
+  /* Borders */
+  --border-light: #D1D5DB;
+  --border-dark: #374151;
 
-  /* Sidebar Specific Colors (these can be different from general background/text) */
-  --sidebar-bg: #1f2937; /* Dark gray sidebar background */
-  --sidebar-text: #f8f8f8; /* Light text for sidebar */
+  /* Sidebar */
+  --sidebar-bg: #1f2937;
+  --sidebar-text: #f8f8f8;
 
-  /* Feedback/Status Colors */
+  /* Status Feedback */
   --success-green: #22c55e;
   --error-red: #ef4444;
   --warning-orange: #ffc107;
 
-  /* Other */
-  --shadow-color-light: rgba(34, 34, 34, 0.08); /* Light mode shadow */
-  --shadow-color-dark-subtle: rgba(0, 0, 0, 0.15); /* For general use with dark mode */
+  /* Shadows */
+  --shadow-color-light: rgba(34, 34, 34, 0.08);
+  --shadow-color-dark-subtle: rgba(0, 0, 0, 0.15);
 
-
-  /* Dashboard Layout Specifics (ensure these match your layout.js / sidebar widths) */
+  /* Layout Sizes */
   --collapsed-sidebar-width: 70px;
   --expanded-sidebar-width: 280px;
-  --header-height: 64px; /* Assuming your Header has a fixed height */
+  --header-height: 64px;
 }
 
-/* --- Dark Mode Overrides --- */
-/* When the 'dark-mode' class is applied to the body */
+/* --------------------------------------------------------
+   Dark Mode Overrides (requires `body.dark-mode`)
+-------------------------------------------------------- */
 body.dark-mode {
-  /* Background Overrides */
-  --background-primary: #1a202c; /* Dark main page background */
-  --background-secondary: #2d3748; /* Darker card/panel background */
-  --background-muted: #2f3c4c; /* Slightly darker muted background (e.g., hover states for dark elements) */
+  --background-primary: #1a202c;
+  --background-secondary: #2d3748;
+  --background-muted: #2f3c4c;
 
-  /* Text Overrides */
-  --text-primary: #f8f8f8; /* Light text for dark backgrounds */
-  --text-secondary: #a0aec0; /* Muted light text */
-  --text-light: #FFFFFF; /* White text, for use on primary blue, etc. */
-  --text-light-alt: #e2e8f0; /* Slightly off-white for softer light text in dark mode */
+  --text-primary: #f8f8f8;
+  --text-secondary: #a0aec0;
+  --text-light: #FFFFFF;
+  --text-light-alt: #e2e8f0;
 
-
-  /* Brand/Accent Overrides */
-  --primary-blue: #63b3ed; /* Adjusted blue for better contrast in dark mode */
+  --primary-blue: #63b3ed;
   --primary-blue-dark: #4299e1;
   --primary-blue-light: #90cdf4;
 
-  /* Interaction Overrides */
   --hover-blue: #4299e1;
   --active-blue: #3182ce;
 
-  /* Border Overrides */
-  --border-light: #4a5568; /* Darker borders */
-  --border-dark: #617d98; /* Adjust for dark mode if distinct from light's border-dark */
+  --border-light: #4a5568;
+  --border-dark: #617d98;
 
-  /* Sidebar Specific Overrides (if different in dark mode) */
-  --sidebar-bg: #1f2937; /* Can remain same or adjust to deeper dark mode */
+  --sidebar-bg: #1f2937;
   --sidebar-text: #f8f8f8;
-  --sidebar-border: #374151; /* If sidebar has its own border that needs dark mode adj */
+  --sidebar-border: #374151;
 
-  /* Feedback/Status Overrides (adjust for dark backgrounds) */
   --success-green: #48bb78;
   --error-red: #fc8181;
   --warning-orange: #fbd38d;
 
-  /* Other */
-  --shadow-color-light: rgba(0, 0, 0, 0.4); /* Stronger, darker shadow in dark mode */
-  --shadow-color-dark-subtle: rgba(0, 0, 0, 0.25); /* Subtle dark shadow */
+  --shadow-color-light: rgba(0, 0, 0, 0.4);
+  --shadow-color-dark-subtle: rgba(0, 0, 0, 0.25);
 }
 
-/* --- Base Body Styles (Use Variables) --- */
+/* --------------------------------------------------------
+   Base Body Styles
+-------------------------------------------------------- */
 body {
   background: var(--background-primary);
   color: var(--text-primary);
-  /* Smooth transition for theme change */
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-
-/* --- General Utility Styles (Use Variables) --- */
+/* --------------------------------------------------------
+   Utility Elements
+-------------------------------------------------------- */
 a {
   text-decoration: none;
-  color: inherit; /* Inherit text color from parent, which will be variable-controlled */
+  color: inherit;
   line-height: 1;
   cursor: pointer;
-  transition: color 0.3s ease; /* Smooth transition for links too */
+  transition: color 0.3s ease;
 }
 
 .container {
@@ -140,10 +140,11 @@ a {
   max-width: 100%;
 }
 
+/* --------------------------------------------------------
+   Button Styles
+-------------------------------------------------------- */
 .btn {
-  /* Use variable for background */
   background: var(--background-secondary);
-  /* Use variable for text color */
   color: var(--text-primary);
   padding: 14px 25px;
   font-size: 16px;
@@ -158,9 +159,7 @@ a {
 }
 
 .btn:hover {
-  /* Use variable for hover background */
   background: var(--background-muted);
-  /* Text color remains primary on hover */
   color: var(--text-primary);
 }
 
@@ -169,20 +168,21 @@ a {
   margin-left: 10px;
 }
 
-/* Specific "dark-themed" button that is *always* dark, regardless of global theme */
-/* If this button should also adapt, you'd define new variables like --btn-dark-bg, etc. */
+/* Dark-Themed Button */
 .btn.dark-btn {
-  background: var(--primary-blue-dark); /* Using a primary blue shade for this button */
-  color: var(--text-light); /* White text on this specific dark button */
+  background: var(--primary-blue-dark);
+  color: var(--text-light);
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .btn.dark-btn:hover {
-  background: var(--hover-blue); /* A slightly adjusted blue for hover */
+  background: var(--hover-blue);
   color: var(--text-light);
 }
 
-/* --- Media Queries --- */
+/* --------------------------------------------------------
+   Responsive Utilities
+-------------------------------------------------------- */
 @media (max-width: 1200px) {
   .container {
     padding-left: 5%;
@@ -194,11 +194,10 @@ a {
   }
 }
 
+/* --------------------------------------------------------
+   Hero Section
+-------------------------------------------------------- */
 .hero-wrapper {
-  /* For hero-wrapper, if it's a fixed background, it might not change with dark mode.
-     If you want it to, you'd need dark mode versions of the image or different overlay.
-     Consider using a variable for the rgba overlay color if you want the overlay to change.
-  */
   background: linear-gradient(rgba(8, 0, 58, 0.7), rgba(8, 0, 58, 0.7)),
               url('/images/pp3.png');
   background-size: cover;
@@ -207,11 +206,13 @@ a {
   min-height: 100vh;
 }
 
-/* Dashboard Layout Specifics - Keep these outside global CSS as advised */
+/* --------------------------------------------------------
+   Dashboard Layout - Add in Component or Layout File
+-------------------------------------------------------- */
 /*
 @media (min-width: 1024px) {
   .main-content {
-    margin-left: var(--expanded-sidebar-width, 280px); // Or dynamically set by JS
+    margin-left: var(--expanded-sidebar-width);
   }
 }
 */
