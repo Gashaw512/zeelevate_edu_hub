@@ -1,16 +1,16 @@
+// src/hooks/useFormValidation.js
 import { useState, useCallback, useEffect, useRef } from 'react';
 
 /**
- * Validates a form based on configuration.
- * 
- * @param {Object} formData - Key/value pairs of form fields
- * @param {Array<Object>} fieldsConfig - Configuration array for each field
+ * Validates a form based on field configuration rules.
+ *
+ * @param {Object} formData - Current form field values.
+ * @param {Array<Object>} fieldsConfig - Rules for each field.
  */
 const useFormValidation = (formData, fieldsConfig) => {
   const [fieldErrors, setFieldErrors] = useState({});
   const [touchedFields, setTouchedFields] = useState({});
   const [isValid, setIsValid] = useState(false);
-
   const isInitialRender = useRef(true);
 
   const validateForm = useCallback(() => {
@@ -30,63 +30,66 @@ const useFormValidation = (formData, fieldsConfig) => {
         regex,
         matches,
         validator,
-        errorMessage
+        errorMessage,
       } = field;
 
-      const value = formData[name];
+      const rawValue = formData[name];
+      const value =
+        typeof rawValue === 'string' ? rawValue.trim() : rawValue;
+
       let error = null;
 
-      // === Required check ===
-      const isEmpty = 
+      // === Required Field ===
+      const isEmpty =
         value === null ||
         value === undefined ||
-        (typeof value === 'string' && value.trim() === '') ||
+        (typeof value === 'string' && value === '') ||
         (Array.isArray(value) && value.length === 0);
 
       if (required && isEmpty) {
         error = errorMessage || `${label} is required.`;
       }
 
-      // === Type-specific validation ===
-      if (!error && type === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-        error = errorMessage || 'Please enter a valid email address.';
+      // === Type: Email ===
+      if (!error && type === 'email' && value) {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(value)) {
+          error = errorMessage || 'Please enter a valid email address.';
+        }
       }
 
+      // === Type: Name ===
       if (!error && type === 'name' && value) {
         const nameRegex = regex || /^[a-zA-Z\s'-]+$/;
         if (!nameRegex.test(value)) {
-          error = errorMessage || `${label} can only contain letters, spaces, apostrophes, or hyphens.`;
+          error = errorMessage || `${label} must contain only letters and valid characters.`;
         }
       }
 
-      // === String length constraints ===
+      // === String length check ===
       if (!error && typeof value === 'string') {
         if (minLength && value.length < minLength) {
           error = errorMessage || `${label} must be at least ${minLength} characters.`;
-        }
-        if (!error && maxLength && value.length > maxLength) {
+        } else if (maxLength && value.length > maxLength) {
           error = errorMessage || `${label} must be no more than ${maxLength} characters.`;
         }
       }
 
-      // === Numeric constraints ===
+      // === Numeric min/max ===
       if (!error && typeof value === 'number' && !isNaN(value)) {
         if (min !== undefined && value < min) {
           error = errorMessage || `${label} must be at least ${min}.`;
-        }
-        if (!error && max !== undefined && value > max) {
+        } else if (max !== undefined && value > max) {
           error = errorMessage || `${label} must be no more than ${max}.`;
         }
       }
 
-      // === Regex validation ===
-      if (!error && regex && type !== 'name' && type !== 'email' && value) {
-        if (!regex.test(value)) {
-          error = errorMessage || `${label} format is invalid.`;
-        }
+      // === Regex (custom formats like phone) ===
+      if (!error && regex && value && !regex.test(value)) {
+        error = errorMessage || `${label} format is invalid.`;
       }
 
-      // === Matches another field ===
+      // === Match another field ===
       if (!error && matches && value !== formData[matches]) {
         const matchLabel = fieldsConfig.find(f => f.name === matches)?.label || matches;
         error = errorMessage || `${label} must match ${matchLabel}.`;
@@ -111,7 +114,7 @@ const useFormValidation = (formData, fieldsConfig) => {
     return valid;
   }, [formData, fieldsConfig]);
 
-  // Debounced validation on input change
+  // Debounced auto-validation
   useEffect(() => {
     if (isInitialRender.current) {
       isInitialRender.current = false;
@@ -120,7 +123,7 @@ const useFormValidation = (formData, fieldsConfig) => {
 
     const timeout = setTimeout(() => {
       validateForm();
-    }, 300);
+    }, 300); // debounce delay
 
     return () => clearTimeout(timeout);
   }, [formData, fieldsConfig, validateForm]);
@@ -141,6 +144,7 @@ const useFormValidation = (formData, fieldsConfig) => {
     isInitialRender.current = true;
   }, []);
 
+  // Only show errors for touched fields
   const displayedErrors = Object.keys(fieldErrors).reduce((acc, key) => {
     if (touchedFields[key]) {
       acc[key] = fieldErrors[key];
@@ -149,13 +153,13 @@ const useFormValidation = (formData, fieldsConfig) => {
   }, {});
 
   return {
-    fieldErrors: displayedErrors,   // Shown errors (for touched fields)
-    allErrors: fieldErrors,         // All errors (useful for final form check)
-    isValid,                        // Whether the form is valid
-    validate: validateForm,         // Manually trigger validation (e.g. on submit)
-    handleFieldChange,              // Use in input onChange
-    handleBlur,                     // Use in input onBlur
-    resetValidation,               // Reset all validation state
+    fieldErrors: displayedErrors,   // visible errors (touched fields only)
+    allErrors: fieldErrors,         // all errors (useful on submission)
+    isValid,                        // entire form validity
+    validate: validateForm,         // manual trigger
+    handleFieldChange,              // to be passed to input `onChange`
+    handleBlur,                     // to be passed to input `onBlur`
+    resetValidation                 // reset state
   };
 };
 

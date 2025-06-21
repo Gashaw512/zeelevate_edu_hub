@@ -1,100 +1,96 @@
-import { forwardRef, useImperativeHandle, useMemo, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import AuthForm from '../../common/AuthForm';
-import useFormValidation from '../../../hooks/useFormValidation';
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import { forwardRef, useImperativeHandle, useMemo, useCallback } from "react";
+import PropTypes from "prop-types";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
+import AuthForm from "../../common/AuthForm";
+import useFormValidation from "../../../hooks/useFormValidation";
 
 const AccountDetailsForm = forwardRef(({ formData, onFormChange, isSubmitting }, ref) => {
   const enrollmentFieldsConfig = useMemo(() => [
     {
-      name: 'fName',
-      label: 'First Name',
-      type: 'text',
+      name: "fName",
+      label: "First Name",
+      type: "text",
       required: true,
-      autoComplete: 'given-name',
-      placeholder: 'John',
+      autoComplete: "given-name",
+      placeholder: "John",
       regex: /^[a-zA-Z]{2,}(?:[' -][a-zA-Z]{2,})*$/,
       minLength: 2,
       maxLength: 50,
-      errorMessage: 'First name must be at least 2 characters and contain only letters.',
-      inputMode: 'text',
-      hint: 'Only letters, spaces, hyphens or apostrophes. E.g., John, Anne-Marie.',
+      errorMessage: "First name must be at least 2 characters and contain only letters.",
+      hint: "Only letters, spaces, hyphens or apostrophes (e.g., John, Anne-Marie).",
+      inputMode: "text",
     },
     {
-      name: 'lName',
-      label: 'Last Name',
-      type: 'text',
+      name: "lName",
+      label: "Last Name",
+      type: "text",
       required: true,
-      autoComplete: 'family-name',
-      placeholder: 'Doe',
+      autoComplete: "family-name",
+      placeholder: "Doe",
       regex: /^[a-zA-Z]{2,}(?:[' -][a-zA-Z]{2,})*$/,
       minLength: 2,
       maxLength: 50,
-      errorMessage: 'Last name must be at least 2 characters and contain only letters.',
-      inputMode: 'text',
-      hint: 'Only letters, spaces, hyphens or apostrophes. E.g., O’Connor.',
+      errorMessage: "Last name must be at least 2 characters and contain only letters.",
+      hint: "Only letters, spaces, hyphens or apostrophes (e.g., O’Connor).",
+      inputMode: "text",
     },
     {
-      name: 'email',
-      label: 'Email Address',
-      type: 'email',
+      name: "email",
+      label: "Email Address",
+      type: "email",
       required: true,
-      autoComplete: 'email',
-      placeholder: 'example@domain.com',
+      autoComplete: "email",
+      placeholder: "example@domain.com",
       regex: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
       maxLength: 254,
-      inputMode: 'email',
-      errorMessage: 'Please enter a valid email address.',
-      hint: 'Use a valid business or personal email.',
+      errorMessage: "Please enter a valid email address.",
+      hint: "Use a valid email (e.g., name@domain.com).",
+      inputMode: "email",
     },
     {
-      name: 'phoneNumber',
-      label: 'Phone Number',
-      type: 'tel',
+      name: "phoneNumber",
+      label: "Phone Number",
+      type: "tel",
       required: true,
-      autoComplete: 'tel',
-      placeholder: '+251912345678',
+      autoComplete: "tel",
+      placeholder: "+251912345678",
       validator: (value) => {
-        if (!value) return 'Phone number is required.';
-        try {
-          const phone = parsePhoneNumberFromString(value);
-          if (!phone?.isValid()) {
-            return 'Enter a valid phone number with country code.';
-          }
-        } catch {
-          return 'Phone number format is invalid.';
+        const phone = parsePhoneNumberFromString(value || '');
+        if (!phone || !phone.isValid()) {
+          return "Enter a valid phone number in international format (e.g., +251912345678).";
         }
         return null;
       },
-      inputMode: 'tel',
-      hint: 'Use international format including country code (e.g., +251912345678).',
+      errorMessage: "Phone number is invalid.",
+      hint: "Include country code (e.g., +251...).",
+      inputMode: "tel",
     },
     {
-      name: 'password',
-      label: 'Password',
-      type: 'password',
+      name: "password",
+      label: "Password",
+      type: "password",
       required: true,
-      autoComplete: 'new-password',
-      placeholder: '••••••••',
+      autoComplete: "new-password",
+      placeholder: "••••••••",
       minLength: 8,
       maxLength: 128,
       regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}\[\]|\\:;"'<>,.?/~`]).{8,}$/,
-      errorMessage: 'Must include uppercase, lowercase, number, and symbol.',
-      hint: 'At least 8 characters. Include uppercase, lowercase, number, and symbol.',
-      inputMode: 'text',
+      errorMessage: "Password must be at least 8 characters and include uppercase, lowercase, number, and symbol.",
+      hint: "Include a mix of uppercase, lowercase, numbers, and symbols.",
+      inputMode: "text",
     },
     {
-      name: 'confirmPassword',
-      label: 'Confirm Password',
-      type: 'password',
+      name: "confirmPassword",
+      label: "Confirm Password",
+      type: "password",
       required: true,
-      autoComplete: 'new-password',
-      placeholder: '••••••••',
-      matches: 'password',
-      errorMessage: 'Passwords do not match.',
-      hint: 'Re-enter the exact same password.',
-      inputMode: 'text',
-    }
+      autoComplete: "new-password",
+      placeholder: "••••••••",
+      matches: "password",
+      errorMessage: "Passwords do not match.",
+      hint: "Re-enter the same password as above.",
+      inputMode: "text",
+    },
   ], []);
 
   const {
@@ -134,7 +130,7 @@ const AccountDetailsForm = forwardRef(({ formData, onFormChange, isSubmitting },
   );
 });
 
-AccountDetailsForm.displayName = 'AccountDetailsForm';
+AccountDetailsForm.displayName = "AccountDetailsForm";
 
 AccountDetailsForm.propTypes = {
   formData: PropTypes.object.isRequired,
