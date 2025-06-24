@@ -10,33 +10,20 @@ import NavItem from "../common/NavItem";
 import AuthNavigation from "./AuthNavigation";
 import { FaBars, FaTimes } from "react-icons/fa";
 
-/**
- * Navbar component: Handles main navigation with sticky behavior,
- * mobile menu toggling, smooth scroll or route navigation,
- * and conditional rendering of auth links.
- */
 const Navbar = () => {
   const [isSticky, setIsSticky] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
-
-  // Destructure handler from the custom hook (named import)
   const { handleNavigationAndScroll } = useScrollToSection();
 
-  // Toggle mobile menu visibility
   const toggleMobileMenu = useCallback(() => {
     setIsMobileMenuOpen((prev) => !prev);
   }, []);
 
-  // Close mobile menu (pass to child components to close menu on link click)
   const closeMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(false);
   }, []);
 
-  /**
-   * Handles clicks on nav items, differentiating between scroll and route links.
-   * Closes mobile menu after click.
-   */
   const handleNavbarItemClick = useCallback(
     (event, targetIdOrPath, linkType) => {
       handleNavigationAndScroll(event, targetIdOrPath, linkType, closeMobileMenu);
@@ -44,15 +31,13 @@ const Navbar = () => {
     [handleNavigationAndScroll, closeMobileMenu]
   );
 
-  // Sticky navbar logic: Adds sticky class when scrolled past threshold
   useEffect(() => {
     const onScroll = () => setIsSticky(window.scrollY > 50);
     window.addEventListener("scroll", onScroll);
-    onScroll(); // initialize on mount
+    onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Lock scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = isMobileMenuOpen ? "hidden" : "";
     return () => {
@@ -60,7 +45,6 @@ const Navbar = () => {
     };
   }, [isMobileMenuOpen]);
 
-  // Scroll to hash on initial load if present (enhancement for direct hash links)
   useEffect(() => {
     if (location.hash) {
       const id = location.hash.substring(1);
@@ -92,12 +76,31 @@ const Navbar = () => {
         <img src={logo} alt="Zeelevate Company Logo" className={styles.logoImg} />
       </div>
 
-      {/* Navigation Links */}
+      {/* Navigation Links with Close Button inside for Mobile */}
       <ul
         className={`${styles.navbarNav} ${
           isMobileMenuOpen ? styles.showMobileMenu : styles.hideMobileMenu
         }`}
       >
+        {/* Mobile Menu Header with Close Icon */}
+        <div className={styles.mobileMenuHeader}>
+          <div
+            className={styles.menuIcon}
+            role="button"
+            tabIndex={0}
+            aria-label="Close mobile navigation menu"
+            onClick={toggleMobileMenu}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                toggleMobileMenu();
+              }
+            }}
+          >
+            <FaTimes />
+          </div>
+        </div>
+
         {navLinks.map(({ label, id, to, type, linkProps }) => (
           <li key={label} className={styles.navItem}>
             <NavItem
@@ -111,26 +114,28 @@ const Navbar = () => {
           </li>
         ))}
 
-        {/* Authentication Links (Sign In, Sign Up, Logout, etc.) */}
+        {/* Authentication Links */}
         <AuthNavigation onLinkClick={closeMobileMenu} />
       </ul>
 
-      {/* Mobile menu toggle button */}
-      <div
-        className={styles.menuIcon}
-        role="button"
-        tabIndex={0}
-        aria-label="Toggle mobile navigation menu"
-        onClick={toggleMobileMenu}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            toggleMobileMenu();
-          }
-        }}
-      >
-        {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
-      </div>
+      {/* Mobile menu toggle button (Hamburger) - hidden on mobile since inside menu now */}
+      {!isMobileMenuOpen && (
+        <div
+          className={styles.menuIcon}
+          role="button"
+          tabIndex={0}
+          aria-label="Open mobile navigation menu"
+          onClick={toggleMobileMenu}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              toggleMobileMenu();
+            }
+          }}
+        >
+          <FaBars />
+        </div>
+      )}
     </nav>
   );
 };
