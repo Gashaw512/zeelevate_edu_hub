@@ -1,7 +1,17 @@
+/* src/index.css */
+
 /* --------------------------------------------------------
-   Import Google Font 'Outfit'
+   Import Google Font 'Outfit' (and 'Segoe UI' if used globally)
 -------------------------------------------------------- */
+/*
+   For optimal performance, consider preloading fonts:
+   <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
+   <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
+   ... and adjust @font-face rules for local hosting.
+*/
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+/* If Segoe UI is not a system font and you rely on it, import it or use a web-safe stack */
+/* @import url('https://fonts.googleapis.com/css2?family=Segoe+UI&display=swap'); */
 
 /* --------------------------------------------------------
    Tailwind CSS Directives
@@ -11,67 +21,85 @@
 @tailwind utilities;
 
 /* --------------------------------------------------------
-   Component-Specific Styles
+   Component-Specific Imports (for CSS Modules)
+   These should generally be imported within their respective React components,
+   not here, unless they contain globally affecting overrides.
+   Keeping them here suggests a non-modular approach for those files.
 -------------------------------------------------------- */
-@import './components/Navbar/Navbar.css';
-/* @import './styles/sidebar-overrides.css'; */  /* Optional import if needed later */
+@import './components/Navbar/Navbar.css'; /* Assuming this is a global Navbar.css, not a module */
+/* @import './styles/sidebar-overrides.css'; */ /* Optional import if needed later */
 
 /* --------------------------------------------------------
    Base Reset & Font Family
 -------------------------------------------------------- */
-* {
+*,
+*::before,
+*::after { /* Use universal selector with pseudo-elements for robust reset */
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Outfit", sans-serif;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
+html {
+  /* Smooth scrolling for anchor links */
+  scroll-behavior: smooth;
+  /* Define base font size for rem units */
+  font-size: 16px; /* 1rem = 16px */
+}
+
+body {
+  font-family: "Outfit", sans-serif; /* Primary global font */
+  background: var(--background-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden; /* Prevent horizontal scroll bar */
+  line-height: 1.5; /* Default line height for better readability */
+  -webkit-font-smoothing: antialiased; /* Better font rendering on macOS */
+  -moz-osx-font-smoothing: grayscale; /* Better font rendering on macOS */
 }
 
 /* --------------------------------------------------------
-   CSS Variables - Light Mode Defaults
+   CSS Variables - Light Mode Defaults (Centralized)
+   Removed duplicate variables from AboutUsBox.module.css
 -------------------------------------------------------- */
 :root {
   /* Background */
-  --background-primary: #F5F5F5;
-  --background-secondary: #FFFFFF;
-  --background-muted: #F7F9FC;
+  --background-primary: #F5F5F5;     /* Main page background */
+  --background-secondary: #FFFFFF;    /* Card/block background */
+  --background-muted: #F7F9FC;      /* Section background (e.g., About Us) */
 
   /* Text */
-  --text-primary: #222222;
-  --text-secondary: #666666;
-  --text-light: #FFFFFF;
-  --text-light-alt: #F0F0F0;
+  --text-primary: #222222;           /* Main text color */
+  --text-secondary: #666666;         /* Muted text, descriptions */
+  --text-light: #FFFFFF;            /* Text on dark backgrounds */
+  --text-light-alt: #F0F0F0;         /* Slightly off-white text */
 
   /* Brand Colors */
   --primary-blue: #3686FF;
   --primary-blue-dark: #265EC1;
   --primary-blue-light: #7CAEFF;
+  --accent-cyan: #00D9FF;           /* Highlight color, section underline */
 
   /* Interactions */
   --hover-blue: #2c73e8;
   --active-blue: #265ec1;
 
-  /* Borders */
-  --border-light: #D1D5DB;
-  --border-dark: #374151;
+  /* Borders & Shadows */
+  --border-light: #D1D5DB;          /* Light border for cards/elements */
+  --border-dark: #374151;           /* Darker border for dark mode */
+  --shadow-color-light: rgba(34, 34, 34, 0.08); /* General light shadow */
+  --shadow-color-dark-subtle: rgba(0, 0, 0, 0.15); /* Slightly darker shadow */
 
-  /* Sidebar */
+  /* Sidebar (if applicable) */
   --sidebar-bg: #1f2937;
   --sidebar-text: #f8f8f8;
+  --sidebar-border: #374151; /* Added for consistency */
 
   /* Status Feedback */
-  --success-green: #22c55e;
-  --error-red: #ef4444;
-  --warning-orange: #ffc107;
-
-  /* Shadows */
-  --shadow-color-light: rgba(34, 34, 34, 0.08);
-  --shadow-color-dark-subtle: rgba(0, 0, 0, 0.15);
+  --success-green: #22c55e; /* Updated from #28a745 to match Tailwind default better */
+  --error-red: #ef4444;    /* Updated from #dc3545 to match Tailwind default better */
+  --warning-orange: #ffc107; /* Consistent with previous yellow */
+  --cool-gray: #A0AEC0;     /* From AboutUsBox.module.css, keep if used */
 
   /* Layout Sizes */
   --collapsed-sidebar-width: 70px;
@@ -80,7 +108,7 @@ html, body {
 }
 
 /* --------------------------------------------------------
-   Dark Mode Overrides (requires `body.dark-mode`)
+   Dark Mode Overrides (requires `body.dark-mode` class)
 -------------------------------------------------------- */
 body.dark-mode {
   --background-primary: #1a202c;
@@ -100,9 +128,9 @@ body.dark-mode {
   --active-blue: #3182ce;
 
   --border-light: #4a5568;
-  --border-dark: #617d98;
+  --border-dark: #617d98; /* Use this if you have specific dark borders */
 
-  --sidebar-bg: #1f2937;
+  --sidebar-bg: #1f2937; /* Often same as light mode or slightly different */
   --sidebar-text: #f8f8f8;
   --sidebar-border: #374151;
 
@@ -115,99 +143,92 @@ body.dark-mode {
 }
 
 /* --------------------------------------------------------
-   Base Body Styles
--------------------------------------------------------- */
-body {
-  background: var(--background-primary);
-  color: var(--text-primary);
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* --------------------------------------------------------
-   Utility Elements
+   Global Utility Elements & Helpers
 -------------------------------------------------------- */
 a {
   text-decoration: none;
-  color: inherit;
+  color: inherit; /* Inherit color from parent by default */
   line-height: 1;
   cursor: pointer;
   transition: color 0.3s ease;
 }
 
+a:hover {
+  /* No default hover state here, let components define their own */
+}
+
+/* Global content container for consistent padding */
 .container {
   padding-left: 10%;
   padding-right: 10%;
-  max-width: 100%;
+  max-width: 100%; /* Ensures it doesn't exceed viewport width */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* --------------------------------------------------------
-   Button Styles
+   Button Styles (Global)
 -------------------------------------------------------- */
 .btn {
   background: var(--background-secondary);
   color: var(--text-primary);
-  padding: 14px 25px;
-  font-size: 16px;
-  border-radius: 30px;
+  padding: 0.875rem 1.5625rem; /* 14px 25px converted to rem */
+  font-size: 1rem; /* 16px converted to rem */
+  border-radius: 1.875rem; /* 30px converted to rem */
   cursor: pointer;
-  border: 0;
-  outline: 0;
+  border: none; /* Use 'none' instead of 0 for clarity */
+  outline: none; /* Use 'none' instead of 0 for clarity */
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease; /* Add transform for potential hover effects */
+  will-change: background-color, color, transform;
 }
 
 .btn:hover {
   background: var(--background-muted);
-  color: var(--text-primary);
+  color: var(--text-primary); /* Keep text color consistent on hover unless specified */
+  transform: translateY(-2px); /* Subtle lift on hover */
 }
 
 .btn img {
-  width: 20px;
-  margin-left: 10px;
+  width: 1.25rem; /* 20px converted to rem */
+  margin-left: 0.625rem; /* 10px converted to rem */
+  flex-shrink: 0; /* Prevent image from shrinking */
 }
 
 /* Dark-Themed Button */
 .btn.dark-btn {
   background: var(--primary-blue-dark);
   color: var(--text-light);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  /* Optimization: Re-specify properties for transition */
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  will-change: background-color, color, transform;
 }
 
 .btn.dark-btn:hover {
   background: var(--hover-blue);
-  color: var(--text-light);
+  color: var(--text-light); /* Keep text light on hover */
+  transform: translateY(-2px);
 }
 
 /* --------------------------------------------------------
-   Responsive Utilities
--------------------------------------------------------- */
-@media (max-width: 1200px) {
-  .container {
-    padding-left: 5%;
-    padding-right: 5%;
-  }
-
-  .btn {
-    padding: 14px 22px;
-  }
-}
-
-/* --------------------------------------------------------
-   Hero Section
+   Hero Section (Global, if applicable)
 -------------------------------------------------------- */
 .hero-wrapper {
   background: linear-gradient(rgba(8, 0, 58, 0.7), rgba(8, 0, 58, 0.7)),
-              url('/images/pp3.png');
-  background-size: cover;
-  background-position: center;
+              url('/images/pp3.png') center/cover no-repeat; /* Shorthand for background properties */
   width: 100%;
   min-height: 100vh;
+  display: flex; /* Often hero sections are flex for content alignment */
+  align-items: center;
+  justify-content: center;
+  position: relative; /* If content needs to be positioned within */
+  overflow: hidden; /* Important if background moves/is animated */
 }
 
 /* --------------------------------------------------------
-   Dashboard Layout - Add in Component or Layout File
+   Dashboard Layout (Example)
 -------------------------------------------------------- */
 /*
 @media (min-width: 1024px) {
@@ -216,3 +237,34 @@ a {
   }
 }
 */
+
+/* --------------------------------------------------------
+   Global Responsive Utilities
+-------------------------------------------------------- */
+@media (max-width: 1200px) {
+  .container {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+
+  .btn {
+    padding: 0.875rem 1.375rem; /* 14px 22px converted to rem */
+  }
+}
+
+/* Basic font size adjustments for smaller screens globally */
+@media (max-width: 768px) {
+  html {
+    font-size: 15px; /* Reduce base font size slightly on tablets */
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 14px; /* Reduce base font size further on mobile */
+  }
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
