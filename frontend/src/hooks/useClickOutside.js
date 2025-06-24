@@ -1,4 +1,3 @@
-// hooks/useClickOutside.js
 import { useEffect, useRef } from 'react';
 
 const useClickOutside = (callback, active = true) => {

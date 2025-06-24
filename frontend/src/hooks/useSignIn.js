@@ -1,5 +1,5 @@
 // src/hooks/useSignIn.js
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 
 const useSignIn = () => {
@@ -7,23 +7,25 @@ const useSignIn = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      await login(formData.email, formData.password);
-    } catch {
-      // Error handled by AuthContext - no local error set here
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      setIsSubmitting(true);
+      try {
+        await login(formData.email, formData.password);
+      } catch {
+        // authError is handled globally in AuthContext
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [formData.email, formData.password, login]
+  );
 
   return {
     formData,

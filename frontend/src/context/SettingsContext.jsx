@@ -1,27 +1,26 @@
 // src/context/SettingsContext.js
 import { createContext, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { useAuth } from './AuthContext'; // Import AuthContext to get userId
-import useSettings from '../hooks/useSettings'; // Import the useSettings hook
+import { useAuth } from './AuthContext';
+import useSettings from '../hooks/useSettings';
 
-// Create the context
+// Create context
 const SettingsContext = createContext(null);
 
-// Custom hook to consume the context
+// Hook to consume SettingsContext
 export const useSettingsContext = () => {
   const context = useContext(SettingsContext);
-  if (context === undefined) {
-    throw new Error('useSettingsContext must be used within a SettingsProvider');
+  if (!context) {
+    throw new Error('useSettingsContext must be used within a <SettingsProvider>');
   }
   return context;
 };
 
-// Provider component that wraps your application or parts of it
+// Provider Component
 export const SettingsProvider = ({ children }) => {
-  const { user } = useAuth(); // Get user from AuthContext
-  const userId = user?.uid; // Extract userId for the hook
+  const { user } = useAuth();
+  const userId = user?.uid;
 
-  // Use the useSettings hook to get all settings logic and data
   const {
     settings,
     loading,
@@ -29,22 +28,21 @@ export const SettingsProvider = ({ children }) => {
     error,
     successMessage,
     saveSettings,
-    MESSAGES, // Pass the messages object from the hook
+    MESSAGES,
   } = useSettings(userId);
 
-  // The value that will be provided to consumers of this context
-  const value = {
+  const contextValue = {
     settings,
     loading,
     saving,
     error,
     successMessage,
     saveSettings,
-    MESSAGES, // Include MESSAGES directly in the context value
+    MESSAGES,
   };
 
   return (
-    <SettingsContext.Provider value={value}>
+    <SettingsContext.Provider value={contextValue}>
       {children}
     </SettingsContext.Provider>
   );
@@ -53,7 +51,3 @@ export const SettingsProvider = ({ children }) => {
 SettingsProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
-
-// Export the default settings and messages directly from here as well, if needed elsewhere
-// import { DEFAULT_SETTINGS, MESSAGES as HookMessages } from '../hooks/useSettings';
-// export { DEFAULT_SETTINGS, HookMessages as SETTINGS_MESSAGES }; // If you need to expose them globally

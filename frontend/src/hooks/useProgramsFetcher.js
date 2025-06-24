@@ -12,44 +12,40 @@ const useProgramsFetcher = (backendApiUrl) => {
     setError(null);
 
     try {
-      // --- Fetch Public Programs ---
+      // Fetch Public Programs
       const programsRes = await fetch(`${backendApiUrl}/api/admin/public/programs`);
       if (!programsRes.ok) {
-        const { message } = await programsRes.json().catch(() => ({}));
-        throw new Error(`Failed to load programs: ${message || programsRes.statusText}`);
+        const errorData = await programsRes.json().catch(() => ({}));
+        throw new Error(`Failed to load programs: ${errorData.message || programsRes.statusText}`);
       }
 
-      const { programs: rawPrograms } = await programsRes.json();
-      if (!Array.isArray(rawPrograms)) {
+      const programsData = await programsRes.json();
+      if (!Array.isArray(programsData.programs)) {
         throw new Error("Invalid format: 'programs' should be an array.");
       }
 
-      const processedPrograms = rawPrograms.map(program => ({
+      const processedPrograms = programsData.programs.map(program => ({
         ...program,
-        price: typeof program.price === 'string' || typeof program.price === 'number'
-          ? Number(program.price)
-          : 0,
+        price: Number(program.price) || 0,
       }));
-
       setPrograms(processedPrograms);
 
-      // --- Fetch Public Courses ---
+      // Fetch Public Courses
       const coursesRes = await fetch(`${backendApiUrl}/api/admin/public/courses`);
       if (!coursesRes.ok) {
-        const { message } = await coursesRes.json().catch(() => ({}));
-        throw new Error(`Failed to load courses: ${message || coursesRes.statusText}`);
+        const errorData = await coursesRes.json().catch(() => ({}));
+        throw new Error(`Failed to load courses: ${errorData.message || coursesRes.statusText}`);
       }
 
-      const { courses: rawCourses } = await coursesRes.json();
-      if (!Array.isArray(rawCourses)) {
+      const coursesData = await coursesRes.json();
+      if (!Array.isArray(coursesData.courses)) {
         throw new Error("Invalid format: 'courses' should be an array.");
       }
 
-      const processedCourses = rawCourses.map(course => ({
+      const processedCourses = coursesData.courses.map(course => ({
         ...course,
         name: course.name || course.courseTitle || '',
       }));
-
       setAllCourses(processedCourses);
 
     } catch (err) {

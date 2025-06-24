@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 const useEnrolledCoursesFetcher = (userId) => {
   const [enrolledCourses, setEnrolledCourses] = useState([]);
@@ -7,6 +7,9 @@ const useEnrolledCoursesFetcher = (userId) => {
 
   const BACKEND_API_URL = import.meta.env.VITE_BACKEND_URL;
   const isDev = process.env.NODE_ENV === 'development';
+
+  // Use useRef to persist AbortController across renders and allow cleanup
+  const abortControllerRef = useRef(null);
 
   const fetchEnrollments = useCallback(async () => {
     if (!userId) {
@@ -17,11 +20,15 @@ const useEnrolledCoursesFetcher = (userId) => {
       return;
     }
 
+    // Abort any ongoing request before starting a new one
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    abortControllerRef.current = new AbortController();
+    const signal = abortControllerRef.current.signal;
+
     setLoadingEnrolledCourses(true);
     setEnrolledCoursesError(null);
-
-    const controller = new AbortController();
-    const signal = controller.signal;
 
     try {
       const response = await fetch(`${BACKEND_API_URL}/api/users/get-enrollments`, {
@@ -87,12 +94,17 @@ const useEnrolledCoursesFetcher = (userId) => {
     } finally {
       setLoadingEnrolledCourses(false);
     }
-
-    return () => controller.abort();
   }, [userId, BACKEND_API_URL, isDev]);
 
   useEffect(() => {
     fetchEnrollments();
+
+    // Cleanup abort controller on unmount or when userId changes
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, [fetchEnrollments]);
 
   return {
