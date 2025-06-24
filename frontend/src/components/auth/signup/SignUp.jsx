@@ -1,27 +1,23 @@
-// src/pages/SignUp/SignUp.jsx
-
-import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useMemo
+} from "react";
 import { useSearchParams, useNavigate, useParams } from "react-router-dom";
-
-// Custom Hooks
 import useEnrollmentAndPayment from "../../../hooks/useEnrollmentAndPayment";
 import { usePrograms } from "../../../context/ProgramsContext";
-
-// Child Components
 import ProgramSelection from "./ProgramSelection";
 import AccountDetailsForm from "./AccountDetailsForm";
 import FormNavigation from "./FormNavigation";
-
-// Layout Component
 import AuthLayout from "../../layouts/auth/AuthLayout";
-
-// Styles
 import styles from "./SignUp.module.css";
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { programType } = useParams(); // e.g., 'bootcamp', 'course' from /signup/:programType
+  const { programType } = useParams();
   const accountDetailsFormRef = useRef();
 
   const {
@@ -40,260 +36,148 @@ const SignUp = () => {
     email: "",
     phoneNumber: "",
     password: "",
-    confirmPassword: "",
+    confirmPassword: ""
   });
   const [globalError, setGlobalError] = useState("");
 
   const {
     initiatePayment,
     isLoading: paymentLoading,
-    error: paymentError,
+    error: paymentError
   } = useEnrollmentAndPayment();
 
-  const isProgramSelectable = useCallback((programStatus) => {
-    return programStatus === 'available' || programStatus === 'beta';
-  }, []);
+  const isProgramSelectable = useCallback(status =>
+    ['available','beta'].includes(status)
+  , []);
 
   useEffect(() => {
     if (paymentError) {
-      setGlobalError(paymentError.message || "An unexpected payment error occurred. Please try again.");
-    } else if (globalError === (paymentError?.message || "An unexpected payment error occurred. Please try again.")) {
-      // Clear payment-related global error if it was the last one set
-      setGlobalError("");
+      setGlobalError(paymentError.message || "Unexpected payment issue. Try again.");
     }
-  }, [paymentError, globalError]);
+  }, [paymentError]);
 
   useEffect(() => {
-    // Only proceed with URL parameter logic once programs are loaded and no errors exist
-    if (!loadingPrograms && !programsError && Array.isArray(fetchedPrograms)) {
-      const programIdFromUrlQuery = searchParams.get("programId");
-      const initialProgramIdentifier = programType || programIdFromUrlQuery;
-
-      console.debug(`[SignUp] Init URL: Path='${programType || 'N/A'}', Query='${programIdFromUrlQuery || 'N/A'}', Effective='${initialProgramIdentifier || 'N/A'}'`);
-
-      if (initialProgramIdentifier) {
-        const foundProgram = fetchedPrograms.find(p => p.programId === initialProgramIdentifier);
-
-        if (foundProgram) {
-          if (isProgramSelectable(foundProgram.status)) {
-            if (!selectedProgramIds.includes(initialProgramIdentifier)) {
-              setSelectedProgramIds([initialProgramIdentifier]);
-              console.debug(`[SignUp] Program pre-selected from URL: ${initialProgramIdentifier}`);
-            }
-            if (currentStep !== 2) {
-              setCurrentStep(2);
-              console.debug("[SignUp] Transitioned to Step 2 due to URL pre-selection.");
-            }
-            setGlobalError("");
-          } else {
-            setGlobalError(`The program "${foundProgram.title}" is currently ${foundProgram.status === 'unavailable' ? 'unavailable' : 'full'}. Please choose an available program.`);
-            setSelectedProgramIds([]);
-            if (currentStep !== 1) {
-              setCurrentStep(1);
-              console.debug("[SignUp] Reverted to Step 1: Unselectable URL program.");
-            }
-          }
+    if (!loadingPrograms && !programsError && fetchedPrograms?.length) {
+      const urlId = programType || searchParams.get("programId");
+      if (urlId) {
+        const found = fetchedPrograms.find(p => p.programId === urlId);
+        if (found && isProgramSelectable(found.status)) {
+          setSelectedProgramIds([urlId]);
+          setCurrentStep(2);
+          setGlobalError("");
         } else {
-          setGlobalError("The program you selected from the URL is not found or available. Please choose from the list below.");
+          setGlobalError(`The program "${found?.title || urlId}" is not available.`);
           setSelectedProgramIds([]);
-          if (currentStep !== 1) {
-            setCurrentStep(1);
-            console.debug("[SignUp] Reverted to Step 1: Invalid/non-existent URL program.");
-          }
-        }
-      } else if (fetchedPrograms.length === 0 && !loadingPrograms) {
-        setGlobalError("No programs are currently available for enrollment. Please check back later.");
-        if (currentStep !== 1) {
           setCurrentStep(1);
         }
-        console.debug("[SignUp] No programs available; defaulted to Step 1.");
       }
     }
-  }, [programType, searchParams, selectedProgramIds, currentStep, fetchedPrograms, loadingPrograms, programsError, isProgramSelectable]);
+  }, [programType, searchParams, loadingPrograms, programsError, fetchedPrograms, isProgramSelectable]);
 
   const programsWithCourses = useMemo(() => {
-    if (!Array.isArray(fetchedPrograms) || fetchedPrograms.length === 0 || !Array.isArray(allCourses) || allCourses.length === 0) {
-      console.debug(`[SignUp] programsWithCourses: Data not ready. fetchedPrograms length: ${fetchedPrograms?.length || 0}, allCourses length: ${allCourses?.length || 0}`);
-      return [];
-    }
-
-    return fetchedPrograms.map(program => {
-      const includedCourses = allCourses.filter(course =>
-        Array.isArray(course.programIds) && course.programIds.includes(program.programId)
-      );
-      return {
-        ...program,
-        courses: includedCourses,
-        // Ensure price is a number with a fallback for robustness
-        price: typeof program.price === 'number' && !isNaN(program.price) ? program.price : (Number(program.price) || 0),
-      };
-    });
+    if (!Array.isArray(fetchedPrograms) || !Array.isArray(allCourses)) return [];
+    return fetchedPrograms.map(prog => ({
+      ...prog,
+      courses: allCourses.filter(c =>
+        Array.isArray(c.programIds) && c.programIds.includes(prog.programId)
+      ),
+      price: typeof prog.price === 'number' && !isNaN(prog.price)
+             ? prog.price
+             : Number(prog.price) || 0
+    }));
   }, [fetchedPrograms, allCourses]);
 
-  const currentlySelectedProgram = useMemo(() => {
-      if (selectedProgramIds.length > 0 && Array.isArray(fetchedPrograms)) {
-          return fetchedPrograms.find(p => p.programId === selectedProgramIds[0]);
-      }
-      return null;
-  }, [selectedProgramIds, fetchedPrograms]);
+  const currentlySelectedProgram = useMemo(() =>
+    fetchedPrograms.find(p => p.programId === selectedProgramIds[0]) || null
+  , [selectedProgramIds, fetchedPrograms]);
 
-  const totalPrice = useMemo(
-    () => {
-      if (!Array.isArray(selectedProgramIds) || selectedProgramIds.length === 0 || !Array.isArray(fetchedPrograms)) {
-        return 0; // Default to 0 if nothing selected or programs not yet available
-      }
+  const totalPrice = useMemo(() =>
+    selectedProgramIds.reduce((sum, id) => {
+      const prog = fetchedPrograms.find(p => p.programId === id);
+      return isProgramSelectable(prog?.status)
+        ? sum + (prog.price || 0)
+        : sum;
+    }, 0)
+  , [selectedProgramIds, fetchedPrograms, isProgramSelectable]);
 
-      const calculatedPrice = selectedProgramIds.reduce((total, id) => {
-        const program = fetchedPrograms.find((p) => p.programId === id);
-        const priceToAdd = (program && typeof program.price === 'number' && !isNaN(program.price))
-                           ? program.price
-                           : 0;
-        return total + (isProgramSelectable(program?.status) ? priceToAdd : 0);
-      }, 0);
-      console.debug("Calculated totalPrice:", calculatedPrice, "Type:", typeof calculatedPrice);
-      return calculatedPrice;
-    },
-    [selectedProgramIds, fetchedPrograms, isProgramSelectable]
-  );
-
-  const handleProgramSelection = useCallback((programId) => {
+  const handleProgramSelection = useCallback(programId => {
     setGlobalError("");
-    const programToSelect = fetchedPrograms.find(p => p.programId === programId);
-
-    if (programToSelect && isProgramSelectable(programToSelect.status)) {
-        setSelectedProgramIds((prev) =>
-            prev.includes(programId) ? [] : [programId]
-        );
+    const prog = fetchedPrograms.find(p => p.programId === programId);
+    if (prog && isProgramSelectable(prog.status)) {
+      setSelectedProgramIds(prev =>
+        prev.includes(programId) ? [] : [programId]
+      );
     } else {
-        setGlobalError(`The program "${programToSelect?.title || 'selected program'}" is currently ${programToSelect?.status === 'unavailable' ? 'unavailable' : programToSelect?.status === 'full' ? 'full' : 'not available'}. Please choose an available program.`);
-        setSelectedProgramIds([]);
+      setGlobalError(`"${prog?.title || 'This program'}" isn't available.`);
+      setSelectedProgramIds([]);
     }
   }, [fetchedPrograms, isProgramSelectable]);
 
-  const handleChange = useCallback(({ target: { name, value } }) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const handleChange = useCallback(e => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
     setGlobalError("");
   }, []);
 
-  const handleNextStep = useCallback(
-    (e) => {
-      e.preventDefault();
-      setGlobalError("");
+  const handleNextStep = useCallback(e => {
+    e.preventDefault();
+    if (currentStep === 1) {
+      if (loadingPrograms) return setGlobalError("Programs are still loading...");
+      if (programsError) return setGlobalError(`Error: ${programsError}`);
+      if (!selectedProgramIds.length) return setGlobalError("Select a program to continue.");
 
-      if (currentStep === 1) {
-        if (loadingPrograms) {
-          setGlobalError("Please wait, program options are still loading.");
-          return;
-        }
-        if (programsError) {
-          setGlobalError(`Cannot proceed due to a program loading error: ${programsError.message || programsError}. Please try reloading.`);
-          return;
-        }
-        if (selectedProgramIds.length === 0) {
-          setGlobalError("Please select a program module to proceed to account details.");
-          return;
-        }
-
-        const selectedProgram = fetchedPrograms.find(p => p.programId === selectedProgramIds[0]);
-        if (!selectedProgram || !isProgramSelectable(selectedProgram.status)) {
-            setGlobalError(`The selected program "${selectedProgram?.title || 'program'}" is currently ${selectedProgram?.status === 'unavailable' ? 'unavailable' : selectedProgram?.status === 'full' ? 'full' : 'not available'}. Please choose an available program.`);
-            setSelectedProgramIds([]);
-            return;
-        }
-
-        setCurrentStep(2);
-        console.debug("[SignUp] Moved to Step 2: Account Details.");
-      }
-    },
-    [currentStep, selectedProgramIds, loadingPrograms, programsError, fetchedPrograms, isProgramSelectable]
-  );
+      setCurrentStep(2);
+    }
+  }, [currentStep, loadingPrograms, programsError, selectedProgramIds]);
 
   const handlePreviousStep = useCallback(() => {
     setGlobalError("");
-    if (currentStep === 2) {
-      setCurrentStep(1);
-      console.debug("[SignUp] Moved back to Step 1: Program Selection.");
-    } else if (programType || searchParams.get("programId")) {
-      navigate("/");
-      console.debug("[SignUp] Navigated home from program-specific URL.");
-    }
-  }, [currentStep, programType, searchParams, navigate]);
+    if (currentStep === 2) return setCurrentStep(1);
+    navigate("/");
+  }, [currentStep, navigate]);
 
   const handleSubmitAccountDetails = useCallback(async () => {
     setGlobalError("");
-
     const isValid = accountDetailsFormRef.current?.triggerFormValidation();
-    if (!isValid) {
-      setGlobalError("Please correct the errors in your account details before proceeding.");
-      return;
+    if (!isValid) return setGlobalError("Please correct form errors.");
+    const prog = currentlySelectedProgram;
+    if (!prog || !isProgramSelectable(prog.status)) {
+      setSelectedProgramIds([]);
+      setCurrentStep(1);
+      return setGlobalError("Selected program is no longer available.");
     }
-
-    if (selectedProgramIds.length === 0) {
-      setGlobalError("No program selected for enrollment. Please go back to Step 1 and select a program.");
-      return;
-    }
-
-    const programForEnrollment = fetchedPrograms.find(p => p.programId === selectedProgramIds[0]);
-    if (!programForEnrollment || !isProgramSelectable(programForEnrollment.status)) {
-        setGlobalError(`Cannot enroll: The selected program "${programForEnrollment?.title || 'program'}" is no longer available or is full. Please re-select a program.`);
-        setSelectedProgramIds([]);
-        setCurrentStep(1);
-        return;
-    }
-
-    const customerDetails = {
-      firstName: formData.fName,
-      lastName: formData.lName,
-      email: formData.email,
-      phoneNumber: formData.phoneNumber,
-      password: formData.password,
-    };
-
-    const enrollmentDetails = {
-      programId: selectedProgramIds[0],
-    };
-
     try {
-      console.debug("[SignUp] Initiating payment...");
-      await initiatePayment({ customerDetails, enrollmentDetails });
-      console.debug("[SignUp] Payment initiated successfully!");
-    } catch (err) {
-      console.error("[SignUp] Payment initiation failed:", err);
-      setGlobalError(err.message || "Failed to initiate payment. Please review your details and try again.");
+      await initiatePayment({
+        customerDetails: {
+          firstName: formData.fName,
+          lastName: formData.lName,
+          email: formData.email,
+          phoneNumber: formData.phoneNumber,
+          password: formData.password
+        },
+        enrollmentDetails: { programId: prog.programId }
+      });
+    } catch (e) {
+      setGlobalError(e.message || "Payment initiation failed.");
     }
-  }, [formData, selectedProgramIds, initiatePayment, fetchedPrograms, isProgramSelectable]);
+  }, [accountDetailsFormRef, currentlySelectedProgram, formData, initiatePayment, isProgramSelectable]);
 
-  const layoutTitle = useMemo(() =>
-    currentStep === 1 ? "Choose Your Program Modules" : "Your Account Details",
-    [currentStep]
-  );
+  const layoutTitle = currentStep === 1
+    ? "Choose Your Program Modules"
+    : "Your Account Details";
 
-  const layoutInstruction = useMemo(() =>
-    currentStep === 1
-      ? "Please select the programs that best fit your learning goals."
-      : "Please provide your personal and account information to complete your enrollment.",
-    [currentStep]
-  );
+  const layoutInstruction = currentStep === 1
+    ? "Select the learning path that matches your goals."
+    : "Provide your account info to complete enrollment.";
 
-  const isLayoutWide = useMemo(() => currentStep === 1, [currentStep]);
-
-  const isNextButtonDisabled = useMemo(() => {
-    if (selectedProgramIds.length === 0) return true;
-    if (currentlySelectedProgram) {
-        return !isProgramSelectable(currentlySelectedProgram.status);
-    }
-    return true;
-  }, [selectedProgramIds, currentlySelectedProgram, isProgramSelectable]);
-
-  // Render based on data loading and error states
   if (loadingPrograms) {
     return (
       <AuthLayout
-        title="Loading Programs..."
-        instruction="Fetching available program options. Please wait a moment."
-        isWide={true}
+        title="Loading Programs…"
+        instruction="Fetching available program options..."
+        isWide
       >
-        <div className={styles.loadingMessage}>Loading program options...</div>
+        <div className={styles.loadingMessage}>Loading…</div>
       </AuthLayout>
     );
   }
@@ -302,27 +186,29 @@ const SignUp = () => {
     return (
       <AuthLayout
         title="Error Loading Programs"
-        instruction="We encountered an issue fetching program options. Please try refreshing the page."
-        isWide={true}
+        instruction="Please try again."
+        isWide
       >
         <div className={styles.errorMessage}>
-          {typeof programsError === 'string' ? programsError : programsError.message || "An unknown error occurred."}
+          {typeof programsError === 'string'
+            ? programsError
+            : programsError.message}
         </div>
         <button onClick={refetchPrograms} className={styles.retryButton}>
-          Retry Loading Programs
+          Retry
         </button>
       </AuthLayout>
     );
   }
 
-  if (!Array.isArray(fetchedPrograms) || fetchedPrograms.length === 0) {
+  if (!fetchedPrograms?.length) {
     return (
       <AuthLayout
         title="No Programs Available"
-        instruction="Currently, there are no programs available for enrollment. Please check back later."
-        isWide={true}
+        instruction="Check back later!"
+        isWide
       >
-        <p className={styles.infoMessage}>We are working to add new programs soon!</p>
+        <p className={styles.infoMessage}>New programs coming soon.</p>
       </AuthLayout>
     );
   }
@@ -331,14 +217,11 @@ const SignUp = () => {
     <AuthLayout
       title={layoutTitle}
       instruction={layoutInstruction}
-      isWide={isLayoutWide}
+      isWide={currentStep === 1}
       navLinkTo="/signin"
       navLinkLabel="Already have an account? Sign In"
     >
-      <form
-        onSubmit={(e) => e.preventDefault()}
-        className={styles.enrollmentForm}
-      >
+      <form onSubmit={e => e.preventDefault()} className={styles.enrollmentForm}>
         {currentStep === 1 && (
           <ProgramSelection
             programs={programsWithCourses}
@@ -366,7 +249,7 @@ const SignUp = () => {
           onNextStep={handleNextStep}
           onFinalSubmit={handleSubmitAccountDetails}
           selectedProgramIdsLength={selectedProgramIds.length}
-          isNextDisabled={currentStep === 1 ? isNextButtonDisabled : false}
+          isNextDisabled={currentStep === 1 && !selectedProgramIds.length}
         />
       </form>
     </AuthLayout>

@@ -1,412 +1,262 @@
-/* components/Programs/Programs.module.css */
+/* src/components/Programs/Programs.module.css */
 
-/* --- CSS Variables (Assuming these are globally available or imported) --- */
-/* :root {
-  --primary-blue: #3686FF;
-  --primary-blue-dark: #265EC1;
-  --primary-blue-light: #7CAEFF;
-  --hover-blue: #2c73e8;
-  --accent-cyan: #00D9FF;
-  --background-light: #FFFFFF;
-  --background-muted: #F7F9FC;
-  --text-dark: #222222;
-  --text-muted: #666666;
-  --text-light: #FFFFFF;
-  --text-light-alt: #F0F0F0;
-  --border-light: #D1D5DB;
-} */
-
+/* — Section & Layout */
 .programsSection {
-  padding: 6rem 1.5rem; /* Consistent padding */
-  background: linear-gradient(135deg, var(--background-muted) 0%, var(--background-light) 100%); /* Soft, light gradient */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Consistent font */
+  padding: 6rem 1.5rem;
+  background: linear-gradient(135deg, var(--background-muted), var(--background-light));
+  font-family: 'Outfit', sans-serif;
 }
-
 .sectionHeader {
   text-align: center;
-  margin-bottom: 4.5rem; /* More space below header */
+  margin-bottom: 4.5rem;
 }
-
-.mainHeading { /* New class for main section heading */
-  font-size: 3.2rem; /* Larger, impactful heading */
-  color: var(--primary-blue); /* Primary blue for main heading */
+.mainHeading {
+  font-size: 3.2rem;
+  color: var(--primary-blue);
+  font-weight: 800;
   margin-bottom: 1rem;
-  font-weight: 800; /* Extra bold */
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.05); /* Subtle text shadow */
+  text-shadow: 0.06rem 0.06rem 0.125rem rgba(0,0,0,0.05);
 }
-
 .sectionSubtitle {
-  color: var(--text-muted); /* Muted text color */
-  font-size: 1.25rem; /* Larger for readability */
-  max-width: 700px; /* Constrain width */
+  color: var(--text-secondary);
+  font-size: 1.25rem;
+  max-width: 44rem;
   margin: 0 auto;
   line-height: 1.6;
 }
 
+/* — Grid & Cards */
 .programsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Slightly wider min-width for cards */
-  gap: 3rem; /* Increased gap between cards */
-  max-width: 1280px; /* Wider grid for more space */
-  margin: 0 auto;
+  grid-template-columns: repeat(auto-fit, minmax(21.875rem, 1fr));
+  gap: 3rem;
+  max-width: 80rem;
+  margin: auto;
 }
-
 .programCard {
-  background: var(--background-light); /* White background */
-  border-radius: 1.5rem; /* Consistent rounded corners */
-  padding: 2.5rem; /* More generous padding */
+  background: var(--background-secondary);
+  border-radius: 1.5rem;
+  padding: 2.5rem;
   position: relative;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), /* Stronger, more professional shadow */
-              0 5px 10px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth transitions */
-  border: 1px solid var(--border-light); /* Subtle border */
-  display: flex; /* Use flex to ensure footer sticks to bottom if content varies */
+  display: flex;
   flex-direction: column;
+  box-shadow: 0 .9375rem 1.875rem rgba(0,0,0,.1), 0 .3125rem .625rem rgba(0,0,0,.05);
+  border: .0625rem solid var(--border-light);
+  transition: transform .3s ease, box-shadow .3s ease;
 }
-
 .programCard:hover {
-  transform: translateY(-8px); /* More pronounced lift */
-  box-shadow: 0 25px 40px rgba(0, 0, 0, 0.2), /* Even stronger shadow on hover */
-              0 10px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-.5rem);
+  box-shadow: 0 1.5625rem 2.5rem rgba(0,0,0,.2), 0 .625rem .9375rem rgba(0,0,0,.1);
 }
 
+/* — Badge (moved above title) */
 .programBadge {
   position: absolute;
-  top: 1.5rem; /* Adjusted position */
-  right: 1.5rem; /* Adjusted position */
-  background: linear-gradient(45deg, var(--accent-cyan), var(--primary-blue-light)); /* Gradient using brand colors */
-  color: var(--text-light); /* White text */
-  padding: 0.6rem 1.5rem; /* More padding */
-  border-radius: 50px;
-  font-size: 0.9rem; /* Slightly larger font */
-  font-weight: 700; /* Bolder */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Clearer shadow */
-  letter-spacing: 0.05em; /* Subtle letter spacing */
-}
-
-.cardHeader {
-  border-bottom: 1px solid var(--border-light); /* Lighter border for subtlety */
-  padding-bottom: 1.8rem; /* More space below header */
-  margin-bottom: 2rem; /* More space before body */
-}
-
-.cardTitle { /* New class for card title */
-  color: var(--primary-blue-dark); /* Dark primary blue for card titles */
-  font-size: 1.8rem; /* Larger title */
+  top: 1rem;
+  left: 1rem;
+  background: linear-gradient(45deg, var(--accent-cyan), var(--primary-blue-light));
+  color: var(--text-light);
+  padding: .5rem 1.25rem;
+  border-radius: 3rem;
+  font-size: .85rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+  box-shadow: 0 .25rem .5rem rgba(0,0,0,.2);
+  white-space: nowrap;
 }
 
+/* — Header Section */
+.cardHeader {
+  margin-top: 2rem;
+  /* badge height is ~2rem, so add top padding if needed */
+}
+.cardTitle {
+  font-size: 1.8rem;
+  color: var(--primary-blue-dark);
+  margin-bottom: .75rem;
+  word-break: break-word;
+}
 .pricing {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
-  gap: 1rem; /* More space in pricing */
+  gap: 1rem;
 }
-
 .priceMain {
   display: flex;
   align-items: baseline;
-  gap: 0.3rem; /* Slightly more space */
+  gap: .3rem;
 }
-
 .currency {
-  font-size: 1.5rem; /* Larger currency symbol */
-  color: var(--accent-cyan); /* Accent color for currency */
+  font-size: 1.5rem;
+  color: var(--accent-cyan);
   font-weight: 700;
 }
-
 .amount {
-  font-size: 3.5rem; /* Larger, more impactful amount */
-  font-weight: 800; /* Extra bold */
-  color: var(--text-dark); /* Dark text for amount */
-  line-height: 1; /* Ensure tight line height */
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
 }
-
 .duration {
-  color: var(--text-muted); /* Muted text */
-  font-size: 1.1rem; /* Slightly larger */
+  color: var(--text-secondary);
+  font-size: 1.1rem;
   font-weight: 500;
 }
-
 .fullCourse {
-  color: var(--text-muted); /* Muted text */
-  font-size: 0.95rem; /* Slightly larger */
-  margin-top: 0.5rem; /* More space */
+  color: var(--text-secondary);
+  font-size: .95rem;
 }
 
+/* — Body & Lists */
 .cardBody {
-  flex-grow: 1; /* Allows card body to expand and push footer down */
+  flex-grow: 1;
 }
-
-.listHeading { /* New class for list headings */
-  color: var(--primary-blue-dark); /* Dark primary blue for list headings */
-  font-size: 1.2rem; /* Consistent size */
-  margin-bottom: 1rem;
+.listHeading {
+  font-size: 1.2rem;
+  color: var(--primary-blue-dark);
   font-weight: 700;
+  margin-bottom: 1rem;
 }
-
 .courseList ul {
   list-style: none;
+  margin: 0;
   padding: 0;
-  margin-bottom: 2.5rem; /* More space below course list */
 }
-
 .courseList li {
-  padding: 0.6rem 0; /* More padding */
-  color: var(--text-dark); /* Dark text for list items */
   display: flex;
-  align-items: flex-start; /* Align marker to top of text */
-  gap: 0.75rem; /* More space between marker and text */
-  font-size: 1.05rem; /* Slightly larger font */
+  align-items: flex-start;
+  gap: .75rem;
+  font-size: 1.05rem;
+  padding: .6rem 0;
 }
-
 .listMarker {
-  color: var(--accent-cyan); /* Accent color for marker */
+  color: var(--accent-cyan);
   font-weight: 700;
-  font-size: 1.2em; /* Larger marker */
-  line-height: 1; /* Align vertically */
+  font-size: 1.2em;
+}
+.noCourseDetail,
+.noFeatureDetail {
+  font-style: italic;
+  color: var(--text-secondary);
+  font-size: .9rem;
+  margin-top: .5rem;
 }
 
+/* — Feature Items */
 .programFeatures {
-  margin-top: 2rem; /* More space above features */
+  margin-top: 2rem;
 }
-
 .featuresGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.2rem; /* Increased gap */
+  gap: 1.2rem;
 }
-
 .featureItem {
   display: flex;
   align-items: center;
-  gap: 0.75rem; /* More space */
-  padding: 0.9rem; /* More padding */
-  background: var(--background-muted); /* Muted background */
-  border-radius: 0.75rem; /* More rounded */
-  color: var(--text-dark); /* Dark text */
-  font-size: 0.95rem;
+  gap: .75rem;
+  padding: .9rem;
+  background: var(--background-muted);
+  border-radius: .75rem;
+  border: .0625rem solid var(--border-light);
+  font-size: .95rem;
   font-weight: 500;
-  border: 1px solid var(--border-light); /* Subtle border */
 }
-
 .featureIcon {
-  width: 28px; /* Larger icon container */
-  height: 28px;
-  background: var(--primary-blue); /* Primary blue for icon background */
-  color: var(--text-light); /* White checkmark */
+  width: 1.75rem;
+  height: 1.75rem;
+  background: var(--primary-blue);
+  color: var(--text-light);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 1.1rem; /* Larger checkmark */
-  flex-shrink: 0; /* Prevent icon from shrinking */
+  font-size: 1.1rem;
 }
 
+/* — Button & Footer */
 .cardFooter {
-  margin-top: auto; /* Pushes footer to the bottom of the card */
-  padding-top: 2rem; /* Space above the button */
+  margin-top: auto;
+  padding-top: 2rem;
 }
-
 .enrollButton {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
+  gap: .75rem;
+  padding: 1.35rem 2.2rem;
   width: 100%;
-  padding: 1.35rem 2.2rem; /* More padding for a substantial button */
-  background: linear-gradient(45deg, var(--primary-blue), var(--primary-blue-dark)); /* Gradient using brand blues */
-  color: var(--text-light); /* White text */
-  border-radius: 0.75rem; /* Consistent rounded corners */
-  text-decoration: none;
-  font-weight: 700; /* Bolder text */
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease; /* Smooth transitions */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Initial shadow */
-  letter-spacing: 0.03em; /* Subtle letter spacing */
-  border: none; /* Ensure button has no default border */
-  cursor: pointer; /* Indicate it's clickable */
+  background: linear-gradient(45deg, var(--primary-blue), var(--primary-blue-dark));
+  color: var(--text-light);
+  border-radius: .75rem;
+  font-weight: 700;
+  box-shadow: 0 .25rem .75rem rgba(0,0,0,.2);
+  transition: transform .2s ease, box-shadow .2s ease, background .3s ease;
 }
-
 .enrollButton:hover {
-  transform: translateY(-3px); /* More pronounced lift */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
-  background: linear-gradient(45deg, var(--hover-blue), var(--active-blue)); /* Darker gradient on hover */
+  transform: translateY(-.1875rem);
+  box-shadow: 0 .5rem 1.25rem rgba(0,0,0,.3);
+  background: linear-gradient(45deg, var(--hover-blue), var(--active-blue));
 }
-
 .enrollButton:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transform: none;
+  box-shadow: 0 .125rem .5rem rgba(0,0,0,.2);
 }
-
 .buttonPrice {
-  background: rgba(255, 255, 255, 0.2); /* Slightly more opaque white for better contrast */
-  padding: 0.3rem 0.8rem; /* More padding */
-  border-radius: 50px;
-  font-size: 0.95rem; /* Slightly larger */
+  background: rgba(255,255,255,0.2);
+  padding: .3rem .8rem;
+  border-radius: 3rem;
+  font-size: .95rem;
   font-weight: 600;
 }
 
-/* New style for disabled button */
+/* — Disabled / Retry */
 .disabledButton {
-  background: var(--border-light); /* Lighter, muted background for disabled state */
-  color: var(--text-muted); /* Muted text color */
-  cursor: not-allowed; /* Indicates non-clickable */
-  transform: none; /* No lift on hover */
-  box-shadow: none; /* No shadow on hover */
-  opacity: 0.7; /* Slightly transparent */
-  pointer-events: none; /* Prevents click events entirely */
-  justify-content: center; /* Center text when no price is displayed */
+  background: var(--border-light);
+  color: var(--text-secondary);
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: .7;
 }
-
 .disabledButton .buttonPrice {
-  display: none; /* Hide price badge when button is disabled */
+  display: none;
+}
+.retryButton {
+  background: var(--primary-blue);
+  color: var(--text-light);
+  padding: .8rem 1.5rem;
+  border-radius: .5rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  transition: background-color .2s ease, transform .2s ease;
+}
+.retryButton:hover {
+  background: var(--primary-blue-dark);
+  transform: translateY(-.125rem);
 }
 
-/* --- Responsive Styles --- */
+/* — Responsive Breakpoints */
 @media (max-width: 1200px) {
-  .mainHeading {
-    font-size: 2.8rem;
-  }
-  .sectionSubtitle {
-    font-size: 1.15rem;
-  }
-  .programsGrid {
-    gap: 2rem;
-  }
-  .programCard {
-    padding: 2rem;
-  }
-  .cardTitle {
-    font-size: 1.6rem;
-  }
-  .amount {
-    font-size: 3rem;
-  }
-  .enrollButton {
-    padding: 1.2rem 1.8rem;
-    font-size: 0.95rem;
-  }
+  .mainHeading { font-size: 2.8rem; }
+  .sectionSubtitle { font-size: 1.15rem; }
+  .programsGrid { gap: 2rem; }
+  .programCard { padding: 2rem; }
+  .cardTitle { font-size: 1.6rem; }
+  .amount { font-size: 3rem; }
+  .enrollButton { padding: 1.2rem 1.8rem; font-size: .95rem; }
 }
-
-@media (max-width: 992px) { /* Tablet breakpoint */
-  .programsSection {
-    padding: 5rem 1rem;
-  }
-  .mainHeading {
-    font-size: 2.4rem;
-    margin-bottom: 0.8rem;
-  }
-  .sectionSubtitle {
-    font-size: 1rem;
-    max-width: 500px;
-  }
-  .programsGrid {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust min-width for tablets */
-    gap: 1.5rem;
-  }
-  .programCard {
-    padding: 1.8rem;
-  }
-  .cardTitle {
-    font-size: 1.4rem;
-  }
-  .amount {
-    font-size: 2.8rem;
-  }
-  .listHeading {
-    font-size: 1.1rem;
-  }
-  .courseList li, .featureItem {
-    font-size: 0.95rem;
-  }
-  .enrollButton {
-    padding: 1rem 1.5rem;
-    font-size: 0.9rem;
-  }
+@media (max-width: 992px) {
+  .programsSection { padding: 5rem 1rem; }
+  .programsGrid { grid-template-columns: repeat(auto-fit, minmax(18.75rem,1fr)); gap: 1.5rem; }
 }
-
-@media (max-width: 768px) { /* Mobile breakpoint */
-  .programsSection {
-    padding: 4rem 1rem;
-  }
-  .mainHeading {
-    font-size: 2rem;
-  }
-  .sectionSubtitle {
-    font-size: 0.95rem;
-    margin-bottom: 2.5rem;
-  }
-  .programsGrid {
-    grid-template-columns: 1fr; /* Stack cards vertically */
-    gap: 2.5rem;
-  }
-  .programCard {
-    padding: 2rem 1.5rem;
-  }
-  .featuresGrid {
-    grid-template-columns: 1fr; /* Stack features vertically */
-    gap: 0.8rem;
-  }
-  .enrollButton {
-    padding: 1.2rem;
-    flex-direction: column; /* Stack text and price */
-    gap: 0.5rem;
-    text-align: center;
-  }
-  .buttonPrice {
-    margin-top: 0.25rem;
-    font-size: 0.85rem;
-  }
+@media (max-width: 768px) {
+  .mainHeading { font-size: 2rem; }
+  .programsGrid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .featuresGrid { grid-template-columns: 1fr; gap: .8rem; }
+  .enrollButton { flex-direction: column; padding: 1.2rem; gap: .5rem; }
+  .buttonPrice { font-size: .85rem; margin-top: .25rem; }
 }
-
-@media (max-width: 480px) { /* Smaller phones */
-  .programsSection {
-    padding: 3rem 0.8rem;
-  }
-  .mainHeading {
-    font-size: 1.8rem;
-  }
-  .sectionSubtitle {
-    font-size: 0.85rem;
-  }
-  .programCard {
-    padding: 1.5rem;
-    border-radius: 1rem;
-  }
-  .programBadge {
-    padding: 0.4rem 1rem;
-    font-size: 0.8rem;
-    top: 1rem;
-    right: 1rem;
-  }
-  .cardTitle {
-    font-size: 1.2rem;
-  }
-  .amount {
-    font-size: 2.5rem;
-  }
-  .currency {
-    font-size: 1.2rem;
-  }
-  .duration {
-    font-size: 0.9rem;
-  }
-  .fullCourse {
-    font-size: 0.85rem;
-  }
-  .listHeading {
-    font-size: 1rem;
-  }
-  .courseList li, .featureItem {
-    font-size: 0.85rem;
-  }
-  .featureIcon {
-    width: 24px;
-    height: 24px;
-    font-size: 1rem;
-  }
-  .enrollButton {
-    padding: 1rem;
-    font-size: 0.85rem;
-  }
+@media (max-width: 480px) {
+  .programCard { padding: 1.5rem; border-radius: 1rem; }
+  .programBadge { padding: .4rem 1rem; font-size: .8rem; top: 1rem; left: 1rem; }
 }
