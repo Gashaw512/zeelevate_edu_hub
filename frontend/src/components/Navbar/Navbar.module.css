@@ -88,7 +88,7 @@
   font-weight: 600;
   transition: all 0.3s ease;
   cursor: pointer;
-  display: inline-block; /* Keep this for desktop layout */
+  display: inline-block;
   text-align: center;
   margin-left: 18px;
 }
@@ -115,7 +115,7 @@
 
 .darkNav {
   background-color: var(--primary-blue);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4x 15px rgba(0, 0, 0, 0.35);
   padding: 0.6rem 2rem;
 }
 
@@ -298,18 +298,28 @@
     display: block;
   }
 
-  /* This is the key: Set full width properties here for all mobile sizes below 840px */
   .authLink {
     margin-left: 0;
     margin-top: 1.2rem;
-    display: block; /* Important for width: 100% to work correctly */
+    display: block;
     width: 100%; /* Make it full width */
     box-sizing: border-box; /* Ensure padding and border are included in the 100% width */
     border-color: var(--accent-cyan);
     color: var(--accent-cyan);
-    padding: 0.7rem 1.5rem; /* Default mobile padding */
-    font-size: 0.95rem; /* Default mobile font size */
+    padding: 0.7rem 1.5rem;
+    font-size: 0.95rem;
   }
+
+  .authLink:hover,
+  .authLink:focus {
+    color: var(--text-light);
+    background-color: var(--accent-cyan);
+  }
+
+
+
+
+
 
   .authLink:hover,
   .authLink:focus {
@@ -327,15 +337,11 @@
     height: 30px;
   }
 
-  /* No need to set width: 100% here again for authLink as it's inherited from above */
-  /* Just adjust padding and font-size */
-  .authLink {
-    padding: 0.6rem 1.2rem; /* Adjusted padding for smaller screen */
-    font-size: 0.85rem; /* Adjusted font size for smaller screen */
-  }
-
+  /* Adjust menu icon position as it's now part of the main navbar for the hamburger */
+  /* The .menuIcon inside .mobileMenuHeader will override this for the close button */
   .menuIcon {
     font-size: 1.5rem;
+    /* No need for top/right here as it's a block-level element now */
   }
 
   .navbarNav {
@@ -346,6 +352,11 @@
   .navItem > a {
     font-size: 0.95rem;
   }
+
+  .authLink {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+  }
 }
 
 @media (max-width: 360px) {
@@ -355,13 +366,6 @@
 
   .logoImg {
     height: 28px;
-  }
-
-  /* No need to set width: 100% here again for authLink as it's inherited from above */
-  /* Just adjust padding and font-size */
-  .authLink {
-    font-size: 0.78rem; /* Adjusted font size for even smaller screen */
-    padding: 0.5rem 1rem; /* Adjusted padding for even smaller screen */
   }
 
   .menuIcon {
@@ -380,6 +384,11 @@
   .navItem > a {
     font-size: 0.88rem;
     padding: 0.4rem 0;
+  }
+
+  .authLink {
+    font-size: 0.78rem;
+    padding: 0.5rem 1rem;
   }
 
   .profileAvatar, .profileAvatarIcon {

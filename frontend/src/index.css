@@ -1,7 +1,5 @@
-/* src/index.css */
-
 /* --------------------------------------------------------
-   Import Google Font 'Outfit' (Consider preloading fonts in HTML for production)
+   Import Google Font 'Outfit'
 -------------------------------------------------------- */
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
@@ -13,30 +11,25 @@
 @tailwind utilities;
 
 /* --------------------------------------------------------
+   Component-Specific Styles
+-------------------------------------------------------- */
+@import './components/Navbar/Navbar.css';
+/* @import './styles/sidebar-overrides.css'; */  /* Optional import if needed later */
+
+/* --------------------------------------------------------
    Base Reset & Font Family
 -------------------------------------------------------- */
-*,
-*::before,
-*::after {
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-  font-size: 16px; /* 1rem = 16px */
-}
-
-body {
   font-family: "Outfit", sans-serif;
-  background: var(--background-primary, #F5F5F5);
-  color: var(--text-primary, #222222);
-  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
   overflow-x: hidden;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased; /* Keep only supported property */
-  /* Removed deprecated -moz-osx-font-smoothing */
 }
 
 /* --------------------------------------------------------
@@ -58,28 +51,27 @@ body {
   --primary-blue: #3686FF;
   --primary-blue-dark: #265EC1;
   --primary-blue-light: #7CAEFF;
-  --accent-cyan: #00D9FF;
 
   /* Interactions */
   --hover-blue: #2c73e8;
   --active-blue: #265ec1;
 
-  /* Borders & Shadows */
+  /* Borders */
   --border-light: #D1D5DB;
   --border-dark: #374151;
-  --shadow-color-light: rgba(34, 34, 34, 0.08);
-  --shadow-color-dark-subtle: rgba(0, 0, 0, 0.15);
 
   /* Sidebar */
   --sidebar-bg: #1f2937;
   --sidebar-text: #f8f8f8;
-  --sidebar-border: #374151;
 
   /* Status Feedback */
   --success-green: #22c55e;
   --error-red: #ef4444;
   --warning-orange: #ffc107;
-  --cool-gray: #A0AEC0;
+
+  /* Shadows */
+  --shadow-color-light: rgba(34, 34, 34, 0.08);
+  --shadow-color-dark-subtle: rgba(0, 0, 0, 0.15);
 
   /* Layout Sizes */
   --collapsed-sidebar-width: 70px;
@@ -88,7 +80,7 @@ body {
 }
 
 /* --------------------------------------------------------
-   Dark Mode Overrides (requires `body.dark-mode` class)
+   Dark Mode Overrides (requires `body.dark-mode`)
 -------------------------------------------------------- */
 body.dark-mode {
   --background-primary: #1a202c;
@@ -123,7 +115,16 @@ body.dark-mode {
 }
 
 /* --------------------------------------------------------
-   Global Utility Elements & Helpers
+   Base Body Styles
+-------------------------------------------------------- */
+body {
+  background: var(--background-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* --------------------------------------------------------
+   Utility Elements
 -------------------------------------------------------- */
 a {
   text-decoration: none;
@@ -134,79 +135,53 @@ a {
 }
 
 .container {
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 1rem; /* Use fixed padding for consistent layout */
+  padding-left: 10%;
+  padding-right: 10%;
+  max-width: 100%;
 }
 
 /* --------------------------------------------------------
-   Button Styles (Global)
+   Button Styles
 -------------------------------------------------------- */
 .btn {
   background: var(--background-secondary);
   color: var(--text-primary);
-  padding: 0.875rem 1.5625rem; /* 14px 25px */
-  font-size: 1rem;
-  border-radius: 1.875rem; /* 30px */
+  padding: 14px 25px;
+  font-size: 16px;
+  border-radius: 30px;
   cursor: pointer;
-  border: none;
-  outline: none;
+  border: 0;
+  outline: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-  will-change: background-color, color, transform;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .btn:hover {
   background: var(--background-muted);
   color: var(--text-primary);
-  transform: translateY(-2px);
 }
 
 .btn img {
-  width: 1.25rem; /* 20px */
-  margin-left: 0.625rem; /* 10px */
-  flex-shrink: 0;
+  width: 20px;
+  margin-left: 10px;
 }
 
+/* Dark-Themed Button */
 .btn.dark-btn {
   background: var(--primary-blue-dark);
   color: var(--text-light);
-  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-  will-change: background-color, color, transform;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .btn.dark-btn:hover {
   background: var(--hover-blue);
   color: var(--text-light);
-  transform: translateY(-2px);
-}
-
-/* Accessibility focus styles */
-.btn:focus-visible {
-  outline: 2px solid var(--primary-blue);
-  outline-offset: 2px;
 }
 
 /* --------------------------------------------------------
-   Hero Section (Global, if applicable)
--------------------------------------------------------- */
-.hero-wrapper {
-  background: linear-gradient(rgba(8, 0, 58, 0.7), rgba(8, 0, 58, 0.7)),
-              url('/images/pp3.png') center/cover no-repeat;
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-}
-
-/* --------------------------------------------------------
-   Global Responsive Utilities
+   Responsive Utilities
 -------------------------------------------------------- */
 @media (max-width: 1200px) {
   .container {
@@ -215,23 +190,29 @@ a {
   }
 
   .btn {
-    padding: 0.875rem 1.375rem; /* 14px 22px */
+    padding: 14px 22px;
   }
 }
 
-@media (max-width: 768px) {
-  html {
-    font-size: 15px;
-  }
+/* --------------------------------------------------------
+   Hero Section
+-------------------------------------------------------- */
+.hero-wrapper {
+  background: linear-gradient(rgba(8, 0, 58, 0.7), rgba(8, 0, 58, 0.7)),
+              url('/images/pp3.png');
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  min-height: 100vh;
 }
 
-@media (max-width: 480px) {
-  html {
-    font-size: 14px;
-  }
-
-  .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
+/* --------------------------------------------------------
+   Dashboard Layout - Add in Component or Layout File
+-------------------------------------------------------- */
+/*
+@media (min-width: 1024px) {
+  .main-content {
+    margin-left: var(--expanded-sidebar-width);
   }
 }
+*/
