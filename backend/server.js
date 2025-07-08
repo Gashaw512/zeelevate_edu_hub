@@ -5,6 +5,7 @@ const cors = require('cors');
 const paymentRoutes = require('./routes/paymentRoutes');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const contactRoute = require('./routes/contactRoute'); 
 
 const app = express();
 app.use(cors());
@@ -14,7 +15,7 @@ app.use(express.json());
 app.use('/api/payments', paymentRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
-
+app.use('/api', contactRoute); 
 
 // Start Server
 const PORT = process.env.PORT || 3001;
