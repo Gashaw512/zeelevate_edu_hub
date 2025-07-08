@@ -1,6 +1,7 @@
 import { forwardRef, useImperativeHandle, useMemo, useCallback } from "react";
 import PropTypes from "prop-types";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
+
 import AuthForm from "../../common/AuthForm";
 import useFormValidation from "../../../hooks/useFormValidation";
 
@@ -53,16 +54,29 @@ const AccountDetailsForm = forwardRef(({ formData, onFormChange, isSubmitting },
       type: "tel",
       required: true,
       autoComplete: "tel",
-      placeholder: "+251912345678",
+      placeholder: "6122303456", // <- placeholder per your requirement
       validator: (value) => {
-        const phone = parsePhoneNumberFromString(value || '');
-        if (!phone || !phone.isValid()) {
-          return "Enter a valid phone number in international format (e.g., +251912345678).";
+        const trimmed = value?.trim() || "";
+
+        if (trimmed.startsWith("+")) {
+          const phone = parsePhoneNumberFromString(trimmed);
+          if (!phone || !phone.isValid()) {
+            return "Please enter a valid phone number in international format (e.g., +251912345678) or a 10-digit local format (e.g., 6122303456).";
+          }
+          return null;
         }
+
+        const tenDigitPattern = /^\d{10}$/;
+        if (!tenDigitPattern.test(trimmed)) {
+          return "Please enter a valid phone number in international format (e.g., +251912345678) or a 10-digit local format (e.g., 6122303456).";
+        }
+
         return null;
       },
-      errorMessage: "Phone number is invalid.",
-      hint: "Include country code (e.g., +251...).",
+      errorMessage:
+        "Please enter a valid phone number in international or 10-digit format.",
+      hint:
+        "Use +country code (e.g., +251912345678) or a 10-digit number (e.g., 6122303456).",
       inputMode: "tel",
     },
     {
@@ -74,8 +88,10 @@ const AccountDetailsForm = forwardRef(({ formData, onFormChange, isSubmitting },
       placeholder: "••••••••",
       minLength: 8,
       maxLength: 128,
-      regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}\[\]|\\:;"'<>,.?/~`]).{8,}$/,
-      errorMessage: "Password must be at least 8 characters and include uppercase, lowercase, number, and symbol.",
+      regex:
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}\[\]|\\:;"'<>,.?/~`]).{8,}$/,
+      errorMessage:
+        "Password must be at least 8 characters and include uppercase, lowercase, number, and symbol.",
       hint: "Include a mix of uppercase, lowercase, numbers, and symbols.",
       inputMode: "text",
     },

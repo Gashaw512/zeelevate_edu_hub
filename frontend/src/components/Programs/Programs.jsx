@@ -6,28 +6,49 @@ import LoadingSpinner from '../../components/common/LoadingSpinner';
 const Programs = () => {
   const { programs, allCourses, loadingPrograms, programsError, refetchPrograms } = usePrograms();
 
-  const getButtonContent = (status, price) => {
-    const priceBadge = <span className={styles.buttonPrice}>${price}/mo</span>;
+  // Calculates a rounded-up monthly price based on the total price over 3 months.
+  // Using Math.round to get 166 from 499.99 / 3, aligning closely with client's "166".
+  const calculateDisplayedMonthlyPrice = (totalPrice) => {
+    if (typeof totalPrice !== 'number' || isNaN(totalPrice) || totalPrice <= 0) {
+      return null; // Return null for invalid or zero prices
+    }
+    return Math.round(totalPrice / 3);
+  };
+
+  // Determines the content for the program's action button, including the monthly price badge.
+  const getButtonContent = (status, actualProgramPrice) => {
+    const monthlyPrice = calculateDisplayedMonthlyPrice(actualProgramPrice);
+    const priceBadge = monthlyPrice !== null && (
+      <span className={styles.buttonPrice}>${monthlyPrice}/mo</span>
+    );
+
     switch (status) {
-      case 'available': return <>Start Learning Now{priceBadge}</>;
-      case 'beta': return <>Request Beta Access{priceBadge}</>;
-      case 'inactive': return "Coming Soon";
-      case 'full': return "Program Full";
-      default: return "Learn More";
+      case 'available':
+        return <>Start Learning Now {priceBadge}</>;
+      case 'beta':
+        return <>Request Beta Access {priceBadge}</>;
+      case 'inactive':
+        return "Coming Soon";
+      case 'full':
+        return "Program Full";
+      default:
+        return "Learn More";
     }
   };
 
-  const isLinkActive = status => ['available', 'beta'].includes(status);
+  // Determines if the program's button should be an active link.
+  const isLinkActive = (status) => ['available', 'beta'].includes(status);
 
+  // --- Loading, Error, and No Programs States ---
   if (loadingPrograms) {
     return (
       <section className={styles.programsSection}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.mainHeading}>Loading Programs...</h2>
-          <p className={styles.sectionSubtitle}>Hang tight while we load our courses.</p>
+          <p className={styles.sectionSubtitle}>Fetching our exciting learning paths for you.</p>
         </div>
         <div style={{ textAlign: 'center', padding: '2rem' }}>
-          <LoadingSpinner message="Fetching programs..." />
+          <LoadingSpinner message="Please wait..." />
         </div>
       </section>
     );
@@ -37,11 +58,11 @@ const Programs = () => {
     return (
       <section className={styles.programsSection}>
         <div className={styles.sectionHeader}>
-          <h2 className={styles.mainHeading}>Error Loading Programs</h2>
-          <p className={styles.sectionSubtitle}>{programsError}</p>
+          <h2 className={styles.mainHeading}>Failed to Load Programs</h2>
+          <p className={styles.sectionSubtitle}>We're sorry, an error occurred. Please try again.</p>
         </div>
-        <div style={{ textAlign: 'center', padding: '2rem', color: 'red' }}>
-          <button onClick={refetchPrograms} className={styles.retryButton}>Retry</button>
+        <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-error)' }}>
+          <button onClick={refetchPrograms} className={styles.retryButton}>Retry Loading Programs</button>
         </div>
       </section>
     );
@@ -52,12 +73,13 @@ const Programs = () => {
       <section className={styles.programsSection}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.mainHeading}>No Programs Available</h2>
-          <p className={styles.sectionSubtitle}>Check back later for new offerings!</p>
+          <p className={styles.sectionSubtitle}>It looks like we don't have any programs listed right now. Please check back soon!</p>
         </div>
       </section>
     );
   }
 
+  // --- Main Programs Grid Display ---
   return (
     <section className={styles.programsSection}>
       <div className={styles.sectionHeader}>
@@ -67,11 +89,19 @@ const Programs = () => {
 
       <div className={styles.programsGrid}>
         {programs.map(program => {
-          const included = allCourses.filter(c => Array.isArray(c.programIds) && c.programIds.includes(program.programId));
-          const active = isLinkActive(program.status);
+          // Filter courses included in this specific program
+          const includedCourses = allCourses.filter(
+            c => Array.isArray(c.programIds) && c.programIds.includes(program.programId)
+          );
+          const activeLink = isLinkActive(program.status);
+
+          // The 'price' from your data is the total cost (e.g., 499.99)
+          const actualTotalProgramPrice = program.price;
+          // Calculate the monthly price to be displayed (e.g., 166 or 167)
+          const displayedMonthlyPrice = calculateDisplayedMonthlyPrice(actualTotalProgramPrice);
 
           return (
-            <div key={program.programId} className={styles.programCard} role="region" aria-label={program.title}>
+            <div key={program.programId} className={styles.programCard} role="region" aria-label={`Program: ${program.title}`}>
               {program.badge && <div className={styles.programBadge}>{program.badge}</div>}
 
               <div className={styles.cardHeader}>
@@ -79,10 +109,14 @@ const Programs = () => {
                 <div className={styles.pricing}>
                   <div className={styles.priceMain}>
                     <span className={styles.currency}>$</span>
-                    <span className={styles.amount}>{program.price}</span>
+                    {/* Display the calculated monthly price */}
+                    <span className={styles.amount}>{displayedMonthlyPrice || 'N/A'}</span>
                     <span className={styles.duration}>/month</span>
                   </div>
-                  {program.fullPrice && <p className={styles.fullCourse}>or ${program.fullPrice} full access</p>}
+                  {actualTotalProgramPrice && (
+                    // Display the full payment amount clearly
+                    <p className={styles.fullCourse}>Total Payment: ${actualTotalProgramPrice.toFixed(2)}</p>
+                  )}
                 </div>
               </div>
 
@@ -90,9 +124,13 @@ const Programs = () => {
                 <div className={styles.courseList}>
                   <h4 className={styles.listHeading}>Included Courses:</h4>
                   <ul>
-                    { included.length
-                      ? included.map(c => <li key={c.courseId}><span className={styles.listMarker}>🔷</span>{c.name}</li>)
-                      : <li className={styles.noCourseDetail}>No courses listed.</li>
+                    {includedCourses.length > 0
+                      ? includedCourses.map(c => (
+                          <li key={c.courseId}>
+                            <span className={styles.listMarker}>🔷</span>{c.name}
+                          </li>
+                        ))
+                      : <li className={styles.noCourseDetail}>No courses listed for this program.</li>
                     }
                   </ul>
                 </div>
@@ -100,26 +138,37 @@ const Programs = () => {
                 <div className={styles.programFeatures}>
                   <h4 className={styles.listHeading}>Features:</h4>
                   <div className={styles.featuresGrid}>
-                    { program.features?.length
-                      ? program.features.map((f,i) => (
+                    {program.features?.length > 0
+                      ? program.features.map((f, i) => (
                           <div key={i} className={styles.featureItem}>
                             <div className={styles.featureIcon}>✓</div>{f}
                           </div>
                         ))
-                      : <p className={styles.noFeatureDetail}>No features listed.</p>
+                      : <p className={styles.noFeatureDetail}>No features listed for this program.</p>
                     }
                   </div>
                 </div>
               </div>
 
               <div className={styles.cardFooter}>
-                { active
-                  ? <Link to={`/enroll/${program.programId}`} className={styles.enrollButton} onClick={() => sessionStorage.setItem('programType', program.programId)}>
-                      {getButtonContent(program.status, program.price)}
+                {activeLink
+                  ? (
+                    <Link
+                      to={`/enroll/${program.programId}`}
+                      className={styles.enrollButton}
+                      onClick={() => {
+                        // Store the program ID and the actual TOTAL price for enrollment
+                        sessionStorage.setItem('programType', program.programId);
+                        sessionStorage.setItem('programFullPrice', actualTotalProgramPrice);
+                      }}
+                    >
+                      {getButtonContent(program.status, actualTotalProgramPrice)}
                     </Link>
-                  : <button className={`${styles.enrollButton} ${styles.disabledButton}`} disabled>
-                      {getButtonContent(program.status, program.price)}
+                  ) : (
+                    <button className={`${styles.enrollButton} ${styles.disabledButton}`} disabled>
+                      {getButtonContent(program.status, actualTotalProgramPrice)}
                     </button>
+                  )
                 }
               </div>
             </div>

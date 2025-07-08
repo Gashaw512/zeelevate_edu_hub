@@ -60,7 +60,7 @@ const Footer = () => {
             <p className={styles.footerDescription}>
               Zeelevate is on a mission to bridge the digital divide by offering
               inclusive, accessible, and impactful courses that empower individuals
-              and communities across Africa.
+              and communities.
             </p>
           </div>
 
@@ -85,10 +85,10 @@ const Footer = () => {
           <div className={styles.footerContact}>
             <h5 className={styles.footerSectionTitle}>Connect With Us</h5>
             <div className={styles.socialIcons}>
-              <a href="https://facebook.com/zeelevate" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><FaFacebookF /></a>
+              {/* <a href="https://facebook.com/zeelevate" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><FaFacebookF /></a>
               <a href="https://twitter.com/zeelevate" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><FaTwitter /></a>
-              <a href="https://linkedin.com/company/zeelevate" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><FaLinkedinIn /></a>
-              <a href="https://instagram.com/zeelevate" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><FaInstagram /></a>
+              <a href="https://linkedin.com/company/zeelevate" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><FaLinkedinIn /></a> */}
+              <a href="https://www.instagram.com/zeelevate_?igsh=MXR1ZnY0aTJ5a2Z0aA==" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><FaInstagram /></a>
             </div>
           </div>
         </div>
@@ -97,7 +97,7 @@ const Footer = () => {
           <div className={styles.footerMeta}>
             <p>© {new Date().getFullYear()} <Link to="/" onClick={scrollToTop}>ZEELEVATE</Link> | All Rights Reserved</p>
             <p className={styles.madeWith}>
-              Made with <FaHeart aria-label="love" /> by ZEELEVATE
+              Made by ZEELEVATE
             </p>
           </div>
           <div className={styles.scrollTop} onClick={scrollToTop} role="button" aria-label="Scroll to top">

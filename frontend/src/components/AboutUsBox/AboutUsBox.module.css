@@ -264,18 +264,67 @@
   flex-wrap: wrap;
 }
 
+/* Enhancements for FounderCard Component only */
+
+/* Improve social icon link styling */
 .socialLinks a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-size: 1.15rem;
+  font-weight: 600;
   color: var(--primary-blue-dark);
-  font-size: 2rem;
-  transition: color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: color, transform;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  transition:
+    color 0.3s ease,
+    background-color 0.3s ease,
+    transform 0.2s ease;
+  text-decoration: none;
 }
 
 .socialLinks a:hover {
   color: var(--accent-cyan);
-  transform: translateY(-3px) scale(1.1);
+  background-color: rgba(0, 172, 193, 0.05); /* subtle hover bg */
+  transform: translateY(-2px);
 }
+
+/* Focus ring for accessibility */
+.socialLinks a:focus-visible {
+  outline: 2px dashed var(--accent-cyan);
+  outline-offset: 3px;
+}
+
+/* Match icon size and alignment inside social links */
+.socialLinks svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  vertical-align: middle;
+}
+
+/* Smoother transition for bio block expansion */
+.founderBio {
+  transition:
+    max-height 0.5s ease-in-out,
+    padding 0.3s ease-in-out,
+    color 0.3s ease-in-out;
+}
+
+/* Optional: cursor style for the founder card hover (if clickable) */
+/* .founderCard:hover {
+  cursor: default; 
+} */
+
+/* Motion preference support */
+@media (prefers-reduced-motion: reduce) {
+  .founderBio,
+  .readMoreButton,
+  .socialLinks a {
+    transition: none !important;
+  }
+}
+
 /* --- END FOUNDER CARD FOOTER --- */
 
 
@@ -535,4 +584,10 @@
   .whyChooseUsDescription { font-size: 0.85rem; }
   .founderBio.collapsed { max-height: 120px; font-size: 0.9rem; }
   .founderBio.collapsed::after { height: 25px; }
+}
+
+.roleIcon {
+  margin-right: 0.5rem;
+  color: var(--primary-blue-light);
+  font-size: 1rem;
 }

@@ -1,44 +1,64 @@
-// src/components/AboutUsBox/FounderCard.jsx
-
-import React, { useState, useRef, useEffect, useCallback, memo } from "react";
+import {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  memo,
+} from "react";
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLinkedin,
-  faXTwitter,
-  faFacebook,
-  faInstagram,
+  // faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
-import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronDown,
+  faChevronUp,
+  faUserTie,
+} from "@fortawesome/free-solid-svg-icons";
+
 import styles from "./AboutUsBox.module.css";
 
-const FounderCard = ({ name, role, bio, image, social = {} }) => {
+const FounderCard = ({
+  name,
+  role,
+  bio,
+  image,
+  social = {},
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showReadMoreButton, setShowReadMoreButton] = useState(false);
   const bioRef = useRef(null);
 
-  const toggleExpand = useCallback(() => setIsExpanded(prev => !prev), []);
+  const toggleExpand = useCallback(() => {
+    setIsExpanded((prev) => !prev);
+  }, []);
 
   useEffect(() => {
     if (bioRef.current) {
-      const collapseHeight = parseInt(
-        getComputedStyle(bioRef.current).maxHeight,
-        10
-      );
-      const isOverflowing = bioRef.current.scrollHeight > collapseHeight;
-      setShowReadMoreButton(isOverflowing);
+      const maxHeight = parseInt(getComputedStyle(bioRef.current).maxHeight, 10);
+      const needsTruncation = bioRef.current.scrollHeight > maxHeight;
+      setShowReadMoreButton(needsTruncation);
     }
   }, [bio]);
 
-  const fullBioContent = Array.isArray(bio)
-    ? bio.map((p, i) => <p key={i} className={styles.bioParagraph}>{p}</p>)
+  const renderBio = Array.isArray(bio)
+    ? bio.map((paragraph, index) => (
+        <p key={index} className={styles.bioParagraph}>
+          {paragraph}
+        </p>
+      ))
     : <p className={styles.bioParagraph}>{bio}</p>;
 
   const bioContentId = `bio-${name.replace(/\s+/g, "-").toLowerCase()}`;
   const hasSocialLinks = Object.values(social).some(Boolean);
 
   return (
-    <div className={styles.founderCard} role="article" aria-labelledby={`${bioContentId}-name`}>
+    <div
+      className={styles.founderCard}
+      role="article"
+      aria-labelledby={`${bioContentId}-name`}
+    >
       {image && (
         <picture>
           <source srcSet={image} type="image/webp" />
@@ -55,9 +75,16 @@ const FounderCard = ({ name, role, bio, image, social = {} }) => {
       )}
 
       <div className={styles.founderTextContent}>
-        <h3 id={`${bioContentId}-name`} className={styles.founderName}>{name}</h3>
-        {/* Comment out role if not being used now */}
-        {/* {role && <p className={styles.founderRole}>{role}</p>} */}
+        <h3 id={`${bioContentId}-name`} className={styles.founderName}>
+          {name}
+        </h3>
+
+        {role && (
+          <p className={styles.founderRole}>
+            <FontAwesomeIcon icon={faUserTie} className={styles.roleIcon} />
+            <span>{role}</span>
+          </p>
+        )}
 
         <div
           ref={bioRef}
@@ -65,16 +92,16 @@ const FounderCard = ({ name, role, bio, image, social = {} }) => {
           className={`${styles.founderBio} ${isExpanded ? styles.expanded : styles.collapsed}`}
           aria-live="polite"
         >
-          {fullBioContent}
+          {renderBio}
         </div>
 
         {showReadMoreButton && (
           <button
+            type="button"
             onClick={toggleExpand}
             className={styles.readMoreButton}
             aria-expanded={isExpanded}
             aria-controls={bioContentId}
-            type="button"
           >
             {isExpanded ? "Show Less" : "Read More"}
             <FontAwesomeIcon
@@ -87,27 +114,35 @@ const FounderCard = ({ name, role, bio, image, social = {} }) => {
 
         {hasSocialLinks && (
           <div className={styles.founderCardFooter}>
-            <div className={styles.socialLinks} role="group" aria-label={`Social links for ${name}`}>
+            <div
+              className={styles.socialLinks}
+              role="group"
+              aria-label={`Social links for ${name}`}
+            >
               {social.linkedin && (
-                <a href={social.linkedin} target="_blank" rel="noopener noreferrer" aria-label={`${name} on LinkedIn`}>
+                <a
+                  href={social.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${name} on LinkedIn`}
+                  title={`${name} on LinkedIn`}
+                >
                   <FontAwesomeIcon icon={faLinkedin} />
                 </a>
               )}
+
+              {/* Uncomment if Twitter is needed in the future
               {social.twitter && (
-                <a href={social.twitter} target="_blank" rel="noopener noreferrer" aria-label={`${name} on Twitter/X`}>
+                <a
+                  href={social.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${name} on Twitter`}
+                  title={`${name} on Twitter`}
+                >
                   <FontAwesomeIcon icon={faXTwitter} />
                 </a>
-              )}
-              {social.facebook && (
-                <a href={social.facebook} target="_blank" rel="noopener noreferrer" aria-label={`${name} on Facebook`}>
-                  <FontAwesomeIcon icon={faFacebook} />
-                </a>
-              )}
-              {social.instagram && (
-                <a href={social.instagram} target="_blank" rel="noopener noreferrer" aria-label={`${name} on Instagram`}>
-                  <FontAwesomeIcon icon={faInstagram} />
-                </a>
-              )}
+              )} */}
             </div>
           </div>
         )}
@@ -127,8 +162,6 @@ FounderCard.propTypes = {
   social: PropTypes.shape({
     linkedin: PropTypes.string,
     twitter: PropTypes.string,
-    facebook: PropTypes.string,
-    instagram: PropTypes.string,
   }),
 };
 

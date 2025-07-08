@@ -1,262 +1,372 @@
 /* src/components/Programs/Programs.module.css */
 
-/* — Section & Layout */
+/* --- Section & Layout --- */
 .programsSection {
-  padding: 6rem 1.5rem;
-  background: linear-gradient(135deg, var(--background-muted), var(--background-light));
-  font-family: 'Outfit', sans-serif;
+    padding: 6rem 1.5rem;
+    background: linear-gradient(135deg, var(--background-muted), var(--background-light)),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4" viewBox="0 0 4 4"><circle fill="%23e0e0e0" cx="2" cy="2" r="1" fill-opacity="0.05"/></svg>');
+    font-family: 'Outfit', sans-serif;
+    overflow-x: hidden;
 }
+
 .sectionHeader {
-  text-align: center;
-  margin-bottom: 4.5rem;
+    text-align: center;
+    margin-bottom: 4.5rem;
+    position: relative;
 }
+
 .mainHeading {
-  font-size: 3.2rem;
-  color: var(--primary-blue);
-  font-weight: 800;
-  margin-bottom: 1rem;
-  text-shadow: 0.06rem 0.06rem 0.125rem rgba(0,0,0,0.05);
+    font-size: 3.5rem;
+    color: var(--primary-blue);
+    font-weight: 800;
+    margin-bottom: 1rem;
+    text-shadow: 0 0.125rem 0.375rem rgba(0, 0, 0, 0.15);
+    letter-spacing: -0.03em;
 }
+
 .sectionSubtitle {
-  color: var(--text-secondary);
-  font-size: 1.25rem;
-  max-width: 44rem;
-  margin: 0 auto;
-  line-height: 1.6;
+    color: var(--text-secondary);
+    font-size: 1.35rem;
+    max-width: 48rem;
+    margin: 0 auto;
+    line-height: 1.6;
 }
 
-/* — Grid & Cards */
+/* --- Grid & Cards --- */
 .programsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(21.875rem, 1fr));
-  gap: 3rem;
-  max-width: 80rem;
-  margin: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(21.875rem, 1fr));
+    gap: 3.5rem;
+    max-width: 85rem;
+    margin: auto;
 }
+
 .programCard {
-  background: var(--background-secondary);
-  border-radius: 1.5rem;
-  padding: 2.5rem;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 .9375rem 1.875rem rgba(0,0,0,.1), 0 .3125rem .625rem rgba(0,0,0,.05);
-  border: .0625rem solid var(--border-light);
-  transition: transform .3s ease, box-shadow .3s ease;
+    background: var(--background-light);
+    border-radius: 1.75rem;
+    padding: 2.75rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0.625rem 1.25rem rgba(0, 0, 0, 0.08), 0 0.1875rem 0.375rem rgba(0, 0, 0, 0.04);
+    border: 0.0625rem solid var(--border-light);
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    overflow: hidden;
 }
+
 .programCard:hover {
-  transform: translateY(-.5rem);
-  box-shadow: 0 1.5625rem 2.5rem rgba(0,0,0,.2), 0 .625rem .9375rem rgba(0,0,0,.1);
+    transform: translateY(-0.75rem);
+    box-shadow: 0 1.875rem 3.75rem rgba(0, 0, 0, 0.2), 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-blue-light);
 }
 
-/* — Badge (moved above title) */
+/* --- Badge --- */
 .programBadge {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  background: linear-gradient(45deg, var(--accent-cyan), var(--primary-blue-light));
-  color: var(--text-light);
-  padding: .5rem 1.25rem;
-  border-radius: 3rem;
-  font-size: .85rem;
-  font-weight: 700;
-  box-shadow: 0 .25rem .5rem rgba(0,0,0,.2);
-  white-space: nowrap;
+    position: absolute;
+    top: 1.25rem;
+    left: 1.25rem;
+    background: linear-gradient(45deg, var(--accent-cyan), var(--primary-blue));
+    color: var(--text-light);
+    padding: 0.6rem 1.4rem;
+    border-radius: 3rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    box-shadow: 0 0.375rem 0.75rem rgba(0, 0, 0, 0.25);
+    white-space: nowrap;
+    z-index: 10;
+    transform: rotate(-3deg);
 }
 
-/* — Header Section */
+/* --- Header Section --- */
 .cardHeader {
-  margin-top: 2rem;
-  /* badge height is ~2rem, so add top padding if needed */
-}
-.cardTitle {
-  font-size: 1.8rem;
-  color: var(--primary-blue-dark);
-  margin-bottom: .75rem;
-  word-break: break-word;
-}
-.pricing {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 1rem;
-}
-.priceMain {
-  display: flex;
-  align-items: baseline;
-  gap: .3rem;
-}
-.currency {
-  font-size: 1.5rem;
-  color: var(--accent-cyan);
-  font-weight: 700;
-}
-.amount {
-  font-size: 3.5rem;
-  font-weight: 800;
-  color: var(--text-primary);
-  line-height: 1;
-}
-.duration {
-  color: var(--text-secondary);
-  font-size: 1.1rem;
-  font-weight: 500;
-}
-.fullCourse {
-  color: var(--text-secondary);
-  font-size: .95rem;
+    /* Adjusted top margin to ensure badge does not hide title */
+    /* Badge height is roughly (0.6rem * 2 padding) + font-size + some vertical space */
+    /* Let's say badge is about 2.5rem - 3rem tall. We need enough space below it. */
+    margin-top: 3.5rem; /* Increased to account for badge height and desired spacing */
+    margin-bottom: 1.5rem;
 }
 
-/* — Body & Lists */
+.cardTitle {
+    font-size: 2rem;
+    color: var(--primary-blue-dark);
+    margin-bottom: 0.75rem;
+    word-break: break-word;
+    line-height: 1.3;
+}
+
+.pricing {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.priceMain {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+}
+
+.currency {
+    font-size: 1.6rem;
+    color: var(--accent-cyan);
+    font-weight: 700;
+}
+
+.amount {
+    font-size: 3.8rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1;
+    letter-spacing: -0.05em;
+}
+
+.duration {
+    color: var(--text-secondary);
+    font-size: 1.15rem;
+    font-weight: 500;
+}
+
+/* In Programs.module.css */
+
+/* ... (other CSS rules above) ... */
+
+/* Full payment text below monthly price */
+.fullCourse {
+  color: var(--text-secondary); /* Uses your global secondary text color */
+  font-size: 0.9rem; /* Slightly smaller for subtle emphasis, adjust as needed */
+  font-weight: 500; /* Medium weight, less bold than the main price */
+  margin-top: 0.5rem; /* Increased top margin for better separation from monthly price */
+  opacity: 0.9; /* Slightly more opaque than before, for better readability */
+  /* text-align: center; */ /* Uncomment this if you want it centered in the card */
+}
+
+/* ... (other CSS rules below) ... */
+
+/* Responsive adjustments for .fullCourse */
+@media (max-width: 768px) {
+  .fullCourse {
+    font-size: 0.85rem; /* Slightly smaller on smaller devices for conciseness */
+    /* If pricing is flex-direction: row, you might want to adjust text-align here */
+    /* text-align: center; */ /* Consider uncommenting this if you want it centered */
+  }
+}
+
+/* For even smaller screens */
+@media (max-width: 480px) {
+  .fullCourse {
+    font-size: 0.8rem; /* Even smaller on very small screens */
+  }
+}
+
+/* --- Body & Lists --- */
 .cardBody {
-  flex-grow: 1;
+    flex-grow: 1;
+    margin-bottom: 2rem;
 }
+
 .listHeading {
-  font-size: 1.2rem;
-  color: var(--primary-blue-dark);
-  font-weight: 700;
-  margin-bottom: 1rem;
+    font-size: 1.25rem;
+    color: var(--primary-blue-dark);
+    font-weight: 700;
+    margin-bottom: 1rem;
 }
+
 .courseList ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
+
 .courseList li {
-  display: flex;
-  align-items: flex-start;
-  gap: .75rem;
-  font-size: 1.05rem;
-  padding: .6rem 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 1.05rem;
+    padding: 0.6rem 0;
+    color: var(--text-primary);
 }
+
 .listMarker {
-  color: var(--accent-cyan);
-  font-weight: 700;
-  font-size: 1.2em;
+    color: var(--accent-cyan);
+    font-weight: 700;
+    font-size: 1.2em;
+    flex-shrink: 0;
 }
+
 .noCourseDetail,
 .noFeatureDetail {
-  font-style: italic;
-  color: var(--text-secondary);
-  font-size: .9rem;
-  margin-top: .5rem;
+    font-style: italic;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    padding-left: 0.75rem;
 }
 
-/* — Feature Items */
+/* --- Feature Items --- */
 .programFeatures {
-  margin-top: 2rem;
+    margin-top: 2.5rem;
 }
+
 .featuresGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.2rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
 }
+
 .featureItem {
-  display: flex;
-  align-items: center;
-  gap: .75rem;
-  padding: .9rem;
-  background: var(--background-muted);
-  border-radius: .75rem;
-  border: .0625rem solid var(--border-light);
-  font-size: .95rem;
-  font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--background-muted);
+    border-radius: 0.8rem;
+    border: 0.0625rem solid var(--border-light);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-primary);
 }
+
 .featureIcon {
-  width: 1.75rem;
-  height: 1.75rem;
-  background: var(--primary-blue);
-  color: var(--text-light);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
+    width: 2rem;
+    height: 2rem;
+    background: var(--primary-blue);
+    color: var(--text-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
 }
 
-/* — Button & Footer */
+/* --- Button & Footer --- */
 .cardFooter {
-  margin-top: auto;
-  padding-top: 2rem;
-}
-.enrollButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: .75rem;
-  padding: 1.35rem 2.2rem;
-  width: 100%;
-  background: linear-gradient(45deg, var(--primary-blue), var(--primary-blue-dark));
-  color: var(--text-light);
-  border-radius: .75rem;
-  font-weight: 700;
-  box-shadow: 0 .25rem .75rem rgba(0,0,0,.2);
-  transition: transform .2s ease, box-shadow .2s ease, background .3s ease;
-}
-.enrollButton:hover {
-  transform: translateY(-.1875rem);
-  box-shadow: 0 .5rem 1.25rem rgba(0,0,0,.3);
-  background: linear-gradient(45deg, var(--hover-blue), var(--active-blue));
-}
-.enrollButton:active {
-  transform: none;
-  box-shadow: 0 .125rem .5rem rgba(0,0,0,.2);
-}
-.buttonPrice {
-  background: rgba(255,255,255,0.2);
-  padding: .3rem .8rem;
-  border-radius: 3rem;
-  font-size: .95rem;
-  font-weight: 600;
+    margin-top: auto;
+    padding-top: 2.5rem;
 }
 
-/* — Disabled / Retry */
+.enrollButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 1.4rem 2.4rem;
+    width: 100%;
+    background: linear-gradient(45deg, var(--primary-blue), var(--primary-blue-dark));
+    color: var(--text-light);
+    border-radius: 0.85rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    box-shadow: 0 0.375rem 1rem rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+    text-decoration: none;
+}
+
+.enrollButton:hover {
+    transform: translateY(-0.25rem);
+    box-shadow: 0 0.625rem 1.5rem rgba(0, 0, 0, 0.35);
+    background: linear-gradient(45deg, var(--hover-blue), var(--active-blue));
+}
+
+.enrollButton:active {
+    transform: none;
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.2);
+}
+
+.buttonPrice {
+    background: rgba(255, 255, 255, 0.25);
+    padding: 0.35rem 0.9rem;
+    border-radius: 3rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: 0.0625rem solid rgba(255, 255, 255, 0.3);
+}
+
+/* --- Disabled / Retry --- */
 .disabledButton {
-  background: var(--border-light);
-  color: var(--text-secondary);
-  cursor: not-allowed;
-  box-shadow: none;
-  opacity: .7;
+    background: var(--border-light);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.6;
+    pointer-events: none;
 }
 .disabledButton .buttonPrice {
-  display: none;
-}
-.retryButton {
-  background: var(--primary-blue);
-  color: var(--text-light);
-  padding: .8rem 1.5rem;
-  border-radius: .5rem;
-  font-weight: 600;
-  margin-top: 1.5rem;
-  transition: background-color .2s ease, transform .2s ease;
-}
-.retryButton:hover {
-  background: var(--primary-blue-dark);
-  transform: translateY(-.125rem);
+    display: none;
 }
 
-/* — Responsive Breakpoints */
+.retryButton {
+    background: var(--primary-blue);
+    color: var(--text-light);
+    padding: 0.9rem 1.8rem;
+    border-radius: 0.6rem;
+    font-weight: 600;
+    margin-top: 1.8rem;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.1);
+}
+.retryButton:hover {
+    background: var(--primary-blue-dark);
+    transform: translateY(-0.1875rem);
+    box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.2);
+}
+
+/* --- Responsive Breakpoints --- */
 @media (max-width: 1200px) {
-  .mainHeading { font-size: 2.8rem; }
-  .sectionSubtitle { font-size: 1.15rem; }
-  .programsGrid { gap: 2rem; }
-  .programCard { padding: 2rem; }
-  .cardTitle { font-size: 1.6rem; }
-  .amount { font-size: 3rem; }
-  .enrollButton { padding: 1.2rem 1.8rem; font-size: .95rem; }
+    .mainHeading { font-size: 3rem; }
+    .sectionSubtitle { font-size: 1.25rem; }
+    .programsGrid { gap: 2.5rem; max-width: 75rem; }
+    .programCard { padding: 2.25rem; border-radius: 1.5rem; }
+    /* Ensure .cardHeader adjusts on smaller screens too */
+    .cardHeader { margin-top: 3rem; } /* Slightly less on larger tablets */
+    .cardTitle { font-size: 1.8rem; }
+    .amount { font-size: 3.2rem; }
+    .enrollButton { padding: 1.2rem 2rem; font-size: 1rem; }
 }
 @media (max-width: 992px) {
-  .programsSection { padding: 5rem 1rem; }
-  .programsGrid { grid-template-columns: repeat(auto-fit, minmax(18.75rem,1fr)); gap: 1.5rem; }
+    .programsSection { padding: 4rem 1rem; }
+    .programsGrid { grid-template-columns: repeat(auto-fit, minmax(18.75rem,1fr)); gap: 2rem; max-width: 60rem; }
+    .programCard { padding: 2rem; }
+    .cardHeader { margin-top: 2.8rem; } /* Adjusted for smaller screen sizes */
+    .cardTitle { font-size: 1.6rem; }
+    .amount { font-size: 2.8rem; }
+    .fullCourse { font-size: 0.9rem; }
+    .featureItem { font-size: 0.9rem; padding: 0.8rem; }
+    .featureIcon { width: 1.8rem; height: 1.8rem; font-size: 1.1rem; }
 }
 @media (max-width: 768px) {
-  .mainHeading { font-size: 2rem; }
-  .programsGrid { grid-template-columns: 1fr; gap: 2.5rem; }
-  .featuresGrid { grid-template-columns: 1fr; gap: .8rem; }
-  .enrollButton { flex-direction: column; padding: 1.2rem; gap: .5rem; }
-  .buttonPrice { font-size: .85rem; margin-top: .25rem; }
+    .mainHeading { font-size: 2.5rem; }
+    .sectionSubtitle { font-size: 1.1rem; }
+    .programsGrid { grid-template-columns: 1fr; gap: 2.5rem; max-width: 28rem; }
+    .programCard { padding: 1.75rem; border-radius: 1.25rem; }
+    .cardHeader { margin-top: 2.5rem; } /* Final adjustment for mobile */
+    .cardTitle { font-size: 1.5rem; }
+    .amount { font-size: 3rem; }
+    .duration { font-size: 1rem; }
+    .pricing { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 1rem; }
+    .fullCourse { width: 100%; text-align: center; margin-top: 0.5rem; }
+    .featuresGrid { grid-template-columns: 1fr; gap: 0.8rem; }
+    .enrollButton { flex-direction: column; padding: 1.2rem; gap: 0.6rem; font-size: 1rem; }
+    .buttonPrice { font-size: 0.9rem; padding: 0.4rem 1rem; }
 }
 @media (max-width: 480px) {
-  .programCard { padding: 1.5rem; border-radius: 1rem; }
-  .programBadge { padding: .4rem 1rem; font-size: .8rem; top: 1rem; left: 1rem; }
+    .programsSection { padding: 3rem 0.8rem; }
+    .mainHeading { font-size: 2rem; margin-bottom: 0.75rem; }
+    .sectionSubtitle { font-size: 1rem; }
+    .programCard { padding: 1.25rem; border-radius: 1rem; }
+    .programBadge { padding: 0.35rem 0.9rem; font-size: 0.75rem; top: 0.8rem; left: 0.8rem; }
+    .cardHeader { margin-top: 2.2rem; } /* Smallest screen adjustment for header */
+    .cardTitle { font-size: 1.3rem; }
+    .amount { font-size: 2.5rem; }
+    .currency { font-size: 1.3rem; }
+    .duration { font-size: 0.9rem; }
+    .fullCourse { font-size: 0.85rem; }
+    .listHeading { font-size: 1.1rem; }
+    .courseList li { font-size: 0.95rem; padding: 0.5rem 0; }
+    .featureItem { font-size: 0.85rem; padding: 0.7rem; }
+    .featureIcon { width: 1.6rem; height: 1.6rem; font-size: 1rem; }
+    .enrollButton { padding: 1rem; font-size: 0.9rem; }
+    .buttonPrice { font-size: 0.8rem; padding: 0.3rem 0.7rem; }
 }
