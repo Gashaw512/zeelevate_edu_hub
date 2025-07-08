@@ -11,8 +11,8 @@ export const founders = [
     ],
     image: "/images/founders/Sami.webp",
     social: {
-      linkedin: "https://linkedin.com/in/sami-tech",
-      twitter: "https://twitter.com/sami_tech"
+      linkedin: "https://www.linkedin.com/in/samuel-d-748a30212?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app",
+      // twitter: "https://twitter.com/sami_tech"
     }
   },
   {
@@ -24,8 +24,8 @@ export const founders = [
     ],
     image: "/images/founders/Beza.webp",
     social: {
-      linkedin: "https://linkedin.com/in/beza-finance",
-      twitter: "https://twitter.com/beza_finance"
+      linkedin: "https://www.linkedin.com/in/bezaleticho200?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app",
+      // twitter: "https://twitter.com/beza_finance"
     }
   },
   {
@@ -38,7 +38,7 @@ export const founders = [
     ],
     image: "/images/founders/Kaleb.webp",
     social: {
-      linkedin: "https://linkedin.com/in/kaleb-data",
+      linkedin: "https://www.linkedin.com/in/kaleb-betwos?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app",
       twitter: "" // Can be conditionally rendered in JSX
     }
   }
