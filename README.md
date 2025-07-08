@@ -6,7 +6,7 @@
 ## 🌐 Live Demo
 
 > _Coming Soon_ — Firebase-hosted frontend with Teachable course integration.
-
+https://zeelevate.com/
 ---
 
 ## 📌 Key Features
