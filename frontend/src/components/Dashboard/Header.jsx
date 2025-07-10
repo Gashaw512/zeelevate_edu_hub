@@ -1,26 +1,34 @@
+// src/components/Layout/Header.jsx
 import { useState, useCallback, useMemo } from 'react';
 import { Bell, Menu } from 'lucide-react';
 import PropTypes from 'prop-types';
 import styles from './Header.module.css';
-import useClickOutside from '../../hooks/useClickOutside';
-// Import only the useNotifications hook for unreadCount here if desired,
-// otherwise the NotificationDropdown will handle its own hook instance.
-import useNotifications from '../../hooks/useNotifications';
-import NotificationDropdown from '../common/NotificationDropdown/NotificationDropdown';
-import { NOTIFICATION_MESSAGES } from '../../hooks/useNotifications'; // Import messages for general use
 
+// Import useClickOutside hook (if you still use it)
+import useClickOutside from '../../hooks/useClickOutside';
+
+// Import the NotificationsContext hook directly
+import { useNotificationsContext } from '../../context/NotificationsContext';
+
+// Import the NotificationDropdown component
+import NotificationDropdown from '../common/NotificationDropdown/NotificationDropdown';
 
 const Header = ({ toggleSidebar, user, role = 'student' }) => {
     const [showNotifications, setShowNotifications] = useState(false);
 
-    // Only get the unread count here if you need it for the badge
-    // The NotificationDropdown will create its own instance of useNotifications
-    const { notifications } = useNotifications(user?.uid);
+    // --- CRITICAL CHANGE: Use useNotificationsContext for notification data ---
+    // Get notifications and loading status from the shared context.
+    const { notifications, loading: notificationsLoading } = useNotificationsContext();
+    // --- END CRITICAL CHANGE ---
 
-    const unreadCount = useMemo(() =>
-        notifications ? notifications.filter(n => !n.read).length : 0,
-        [notifications]
-    );
+    // Calculate unread count based on the shared notifications state
+    const unreadCount = useMemo(() => {
+        // Only calculate if notifications are loaded and available
+        if (notificationsLoading || !notifications) {
+            return 0; // Or a placeholder if you want to indicate loading
+        }
+        return notifications.filter(n => !n.read).length;
+    }, [notifications, notificationsLoading]);
 
     const toggleNotifications = useCallback(() => {
         setShowNotifications(prev => !prev);
@@ -30,14 +38,13 @@ const Header = ({ toggleSidebar, user, role = 'student' }) => {
         setShowNotifications(false);
     }, []);
 
-    // Use a custom hook for click outside detection
+    // Use useClickOutside to close the notification dropdown when clicking elsewhere
     const dropdownRef = useClickOutside(closeNotifications, showNotifications);
 
     const userName =
         user?.displayName?.split(' ')[0] ||
         user?.email?.split('@')[0] ||
-        "Guest"; // Directly use "Guest" or import it if it's a global constant.
-                 // NOTIFICATION_MESSAGES.WELCOME_GUEST was not defined in the provided hook.
+        "Guest";
 
     const roleTitle = role === 'admin' ? 'Admin' : 'Student';
 
@@ -57,7 +64,7 @@ const Header = ({ toggleSidebar, user, role = 'student' }) => {
                 </div>
             </div>
 
-            <div className={styles.notificationsWrapper}>
+            <div className={styles.notificationsWrapper} ref={dropdownRef}> {/* Attach ref here */}
                 <button
                     onClick={toggleNotifications}
                     className={styles.notificationsButton}
@@ -73,13 +80,12 @@ const Header = ({ toggleSidebar, user, role = 'student' }) => {
                     )}
                 </button>
 
+                {/* NotificationDropdown should only render when showNotifications is true */}
+                {/* It will now get all its data from the context, so no userId prop is needed */}
                 {showNotifications && (
                     <NotificationDropdown
-                        userId={user?.uid} // Pass the userId down
-                        isOpen={showNotifications} // Pass isOpen state
-                        onClose={closeNotifications} // Pass the close handler
-                        // No need to pass notifications, loading, error, etc. anymore!
-                        // The NotificationDropdown uses its own instance of useNotifications.
+                        isOpen={showNotifications}
+                        onClose={closeNotifications}
                     />
                 )}
             </div>

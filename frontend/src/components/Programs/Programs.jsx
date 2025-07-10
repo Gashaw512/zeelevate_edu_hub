@@ -16,6 +16,9 @@ const Programs = () => {
     // Ensure durationDays is a valid number and positive.
     // If duration is 0 or less, or not a number, we can't calculate a meaningful monthly price.
     // Based on your previous instruction to fallback to 3 months if duration is not available.
+
+
+    // Some adjustments to ensure we handle the case where durationDays is not provided or invalid.
     if (typeof durationDays !== 'number' || isNaN(durationDays) || durationDays <= 0) {
       // Fallback to 3 months if duration is not available or invalid.
       return (totalPrice / 3).toFixed(2);
