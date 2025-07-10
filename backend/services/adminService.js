@@ -23,8 +23,32 @@ async function getStudentDetails(uid) {
 
 // PROGRAM MANAGEMENT FUNCTIONS
 async function getAllPrograms() {
-  const snapshot = await db.collection('programs').orderBy('order').get();
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  // Get all programs
+  const programsSnapshot = await db.collection('programs').orderBy('order').get();
+  const programs = programsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+ 
+  const coursesSnapshot = await db.collection('courses').get();
+  const allCourses = coursesSnapshot.docs.map(doc => ({
+    id: doc.id,
+    programIds: doc.data().programIds || [],
+    duration: Number(doc.data().duration) || 0 
+  }));
+  
+  return programs.map(program => {
+    const programCourses = allCourses.filter(course => 
+      course.programIds.includes(program.id)
+    );
+    
+    const totalDays = programCourses.reduce(
+      (sum, course) => sum + course.duration, 
+      0
+    );
+    
+    return {
+      ...program,
+      duration: totalDays
+    };
+  });
 }
 
 async function addProgram(programData) {
