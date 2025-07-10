@@ -370,3 +370,25 @@
     .enrollButton { padding: 1rem; font-size: 0.9rem; }
     .buttonPrice { font-size: 0.8rem; padding: 0.3rem 0.7rem; }
 }
+
+
+/* Programs.module.css */
+
+.registrationDeadline {
+  font-size: 0.9em;
+  color: var(--text-secondary); /* Or a color that highlights importance */
+  margin-top: 10px;
+  margin-bottom: 15px;
+  padding-left: 10px; /* Indent slightly if needed */
+  border-left: 3px solid var(--primary-color); /* A subtle visual cue */
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.deadlineLabel {
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+/* Existing styles remain above or below these */

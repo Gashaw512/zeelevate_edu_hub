@@ -6,27 +6,20 @@ import LoadingSpinner from '../../components/common/LoadingSpinner';
 const Programs = () => {
   const { programs, allCourses, loadingPrograms, programsError, refetchPrograms } = usePrograms();
 
-  // Calculates a rounded-up monthly price based on the total price over 3 months.
-  // Using Math.round to get 166 from 499.99 / 3, aligning closely with client's "166".
-  const calculateDisplayedMonthlyPrice = (totalPrice) => {
-    if (typeof totalPrice !== 'number' || isNaN(totalPrice) || totalPrice <= 0) {
-      return null; // Return null for invalid or zero prices
-    }
-    return Math.round(totalPrice / 3);
+  // Function to format the date for display
+  const formatDate = (dateString) => {
+    if (!dateString) return null;
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  // Determines the content for the program's action button, including the monthly price badge.
-  const getButtonContent = (status, actualProgramPrice) => {
-    const monthlyPrice = calculateDisplayedMonthlyPrice(actualProgramPrice);
-    const priceBadge = monthlyPrice !== null && (
-      <span className={styles.buttonPrice}>${monthlyPrice}/mo</span>
-    );
-
+  // Determines the content for the program's action button.
+  const getButtonContent = (status) => {
     switch (status) {
       case 'available':
-        return <>Start Learning Now {priceBadge}</>;
+        return "Start Learning Now";
       case 'beta':
-        return <>Request Beta Access {priceBadge}</>;
+        return "Request Beta Access";
       case 'inactive':
         return "Coming Soon";
       case 'full':
@@ -90,6 +83,7 @@ const Programs = () => {
       <div className={styles.programsGrid}>
         {programs.map(program => {
           // Filter courses included in this specific program
+          console.log(program)
           const includedCourses = allCourses.filter(
             c => Array.isArray(c.programIds) && c.programIds.includes(program.programId)
           );
@@ -97,8 +91,7 @@ const Programs = () => {
 
           // The 'price' from your data is the total cost (e.g., 499.99)
           const actualTotalProgramPrice = program.price;
-          // Calculate the monthly price to be displayed (e.g., 166 or 167)
-          const displayedMonthlyPrice = calculateDisplayedMonthlyPrice(actualTotalProgramPrice);
+          const formattedDeadline = formatDate(program.registrationDeadline);
 
           return (
             <div key={program.programId} className={styles.programCard} role="region" aria-label={`Program: ${program.title}`}>
@@ -109,18 +102,19 @@ const Programs = () => {
                 <div className={styles.pricing}>
                   <div className={styles.priceMain}>
                     <span className={styles.currency}>$</span>
-                    {/* Display the calculated monthly price */}
-                    <span className={styles.amount}>{displayedMonthlyPrice || 'N/A'}</span>
-                    <span className={styles.duration}>/month</span>
+                    {/* Display the total program price directly without "Total" */}
+                    <span className={styles.amount}>{actualTotalProgramPrice ? actualTotalProgramPrice.toFixed(2) : 'N/A'}</span>
+                    {/* Removed <span className={styles.duration}> Total</span> */}
                   </div>
-                  {actualTotalProgramPrice && (
-                    // Display the full payment amount clearly
-                    <p className={styles.fullCourse}>Total Payment: ${actualTotalProgramPrice.toFixed(2)}</p>
-                  )}
                 </div>
               </div>
 
               <div className={styles.cardBody}>
+                {formattedDeadline && (
+                  <p className={styles.registrationDeadline}>
+                    <span className={styles.deadlineLabel}>Registration Deadline:</span> {formattedDeadline}
+                  </p>
+                )}
                 <div className={styles.courseList}>
                   <h4 className={styles.listHeading}>Included Courses:</h4>
                   <ul>
@@ -153,22 +147,22 @@ const Programs = () => {
               <div className={styles.cardFooter}>
                 {activeLink
                   ? (
-                    <Link
-                      to={`/enroll/${program.programId}`}
-                      className={styles.enrollButton}
-                      onClick={() => {
-                        // Store the program ID and the actual TOTAL price for enrollment
-                        sessionStorage.setItem('programType', program.programId);
-                        sessionStorage.setItem('programFullPrice', actualTotalProgramPrice);
-                      }}
-                    >
-                      {getButtonContent(program.status, actualTotalProgramPrice)}
-                    </Link>
-                  ) : (
-                    <button className={`${styles.enrollButton} ${styles.disabledButton}`} disabled>
-                      {getButtonContent(program.status, actualTotalProgramPrice)}
-                    </button>
-                  )
+                      <Link
+                        to={`/enroll/${program.programId}`}
+                        className={styles.enrollButton}
+                        onClick={() => {
+                          // Store the program ID and the actual TOTAL price for enrollment
+                          sessionStorage.setItem('programType', program.programId);
+                          sessionStorage.setItem('programFullPrice', actualTotalProgramPrice);
+                        }}
+                      >
+                        {getButtonContent(program.status)}
+                      </Link>
+                    ) : (
+                      <button className={`${styles.enrollButton} ${styles.disabledButton}`} disabled>
+                        {getButtonContent(program.status)}
+                      </button>
+                    )
                 }
               </div>
             </div>
