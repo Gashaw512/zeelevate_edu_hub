@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import { useAuth } from './AuthContext';
 import useNotifications, {
-  NOTIFICATION_MESSAGES as HookMessages,
+    NOTIFICATION_MESSAGES as HookMessages,
 } from '../hooks/useNotifications';
 
 const NotificationsContext = createContext(undefined);
@@ -15,11 +15,11 @@ const NotificationsContext = createContext(undefined);
  * Throws an error if used outside of its provider.
  */
 export const useNotificationsContext = () => {
-  const context = useContext(NotificationsContext);
-  if (context === undefined) {
-    throw new Error('useNotificationsContext must be used within a <NotificationsProvider>');
-  }
-  return context;
+    const context = useContext(NotificationsContext);
+    if (context === undefined) {
+        throw new Error('useNotificationsContext must be used within a <NotificationsProvider>');
+    }
+    return context;
 };
 
 /**
@@ -28,47 +28,57 @@ export const useNotificationsContext = () => {
  * if user is not authenticated or still loading.
  */
 export const NotificationsProvider = ({ children }) => {
-  const { user, loading: authLoading } = useAuth();
+    const { user, loading: authLoading } = useAuth();
 
-  const notifications = useNotifications(user?.uid ?? null);
+    // The userId prop passed to useNotifications ensures it only listens when a user is authenticated.
+    const notificationsHookData = useNotifications(user?.uid ?? null);
 
-  const fallbackState = {
-    notifications: [],
-    loading: authLoading,
-    error: null,
-    clearing: false,
-    markingAll: false,
-    toastMessage: null,
-    requiresConfirmation: null,
-    notificationToDeleteId: null,
-    markAsRead: () => {},
-    markAllAsRead: () => {},
-    requestClearAllConfirmation: () => {},
-    confirmClearAllNotifications: () => {},
-    requestDeleteConfirmation: () => {},
-    confirmDeleteNotification: () => {},
-    cancelConfirmation: () => {},
-    NOTIFICATION_MESSAGES: HookMessages,
-  };
+    // Define a fallback state for when the user is not authenticated or still loading.
+    // This provides stable no-op functions and default values.
+    const fallbackState = useMemo(() => ({
+        notifications: [],
+        loading: authLoading, // Reflects auth loading state
+        error: null,
+        clearing: false,
+        markingAll: false,
+        toastMessage: null,
+        requiresConfirmation: null,
+        // notificationToDeleteId is INTERNAL to useNotifications hook, no need to expose
+        markAsRead: () => { /* no-op */ },
+        markAllAsRead: () => { /* no-op */ },
+        requestClearAllConfirmation: () => { /* no-op */ },
+        confirmClearAllNotifications: () => { /* no-op */ },
+        requestDeleteConfirmation: () => { /* no-op */ },
+        confirmDeleteNotification: () => { /* no-op */ },
+        cancelConfirmation: () => { /* no-op */ },
+        NOTIFICATION_MESSAGES: HookMessages, // Expose constants
+    }), [authLoading]); // Recalculate if authLoading changes
 
-  const contextValue = useMemo(() => {
-    return authLoading || !user?.uid
-      ? fallbackState
-      : {
-          ...notifications,
-          NOTIFICATION_MESSAGES: HookMessages,
+    // Memoize the context value to prevent unnecessary re-renders of consumers.
+    // If auth is loading or no user is logged in, provide the fallback state.
+    // Otherwise, provide the full state and actions from the useNotifications hook.
+    const contextValue = useMemo(() => {
+        if (authLoading || !user?.uid) {
+            return fallbackState;
+        }
+        // Destructure the hook's return value and specifically omit notificationToDeleteId
+        const { notificationToDeleteId, ...restOfNotificationsHookData } = notificationsHookData;
+
+        return {
+            ...restOfNotificationsHookData,
+            NOTIFICATION_MESSAGES: HookMessages, // Ensure constants are always part of the context
         };
-  }, [authLoading, user, notifications]);
+    }, [authLoading, user, notificationsHookData, fallbackState]);
 
-  return (
-    <NotificationsContext.Provider value={contextValue}>
-      {children}
-    </NotificationsContext.Provider>
-  );
+    return (
+        <NotificationsContext.Provider value={contextValue}>
+            {children}
+        </NotificationsContext.Provider>
+    );
 };
 
 NotificationsProvider.propTypes = {
-  children: PropTypes.node.isRequired,
+    children: PropTypes.node.isRequired,
 };
 
 // Optional re-export if needed elsewhere
