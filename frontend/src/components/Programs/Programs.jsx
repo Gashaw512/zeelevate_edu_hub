@@ -6,6 +6,31 @@ import LoadingSpinner from '../../components/common/LoadingSpinner';
 const Programs = () => {
   const { programs, allCourses, loadingPrograms, programsError, refetchPrograms } = usePrograms();
 
+  // Calculates a monthly price based on the total price and duration in days,
+  // using the exact formula: monthlyPrice = totalPrice / (durationDays / 30).
+  // The result is rounded to two decimal places for currency display.
+  const calculateMonthlyPrice = (totalPrice, durationDays) => {
+    if (typeof totalPrice !== 'number' || isNaN(totalPrice) || totalPrice <= 0) {
+      return null;
+    }
+    // Ensure durationDays is a valid number and positive.
+    // If duration is 0 or less, or not a number, we can't calculate a meaningful monthly price.
+    // Based on your previous instruction to fallback to 3 months if duration is not available.
+    if (typeof durationDays !== 'number' || isNaN(durationDays) || durationDays <= 0) {
+      // Fallback to 3 months if duration is not available or invalid.
+      return (totalPrice / 3).toFixed(2);
+    }
+
+    const numberOfMonths = durationDays / 30; // Direct division as per your instruction
+    // Ensure we don't divide by zero if numberOfMonths somehow becomes 0
+    if (numberOfMonths === 0) {
+      return null; // Cannot calculate monthly price if duration is effectively zero months
+    }
+
+    // Calculate price per month and format to two decimal places
+    return (totalPrice / numberOfMonths).toFixed(2);
+  };
+
   // Function to format the date for display
   const formatDate = (dateString) => {
     if (!dateString) return null;
@@ -13,13 +38,18 @@ const Programs = () => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  // Determines the content for the program's action button.
-  const getButtonContent = (status) => {
+  // Determines the content for the program's action button, including the monthly price badge.
+  const getButtonContent = (status, actualProgramPrice, durationDays) => {
+    const monthlyPrice = calculateMonthlyPrice(actualProgramPrice, durationDays);
+    const priceBadge = monthlyPrice !== null && (
+      <span className={styles.buttonPrice}>${monthlyPrice}/mo</span>
+    );
+
     switch (status) {
       case 'available':
-        return "Start Learning Now";
+        return <>Start Learning Now {priceBadge}</>;
       case 'beta':
-        return "Request Beta Access";
+        return <>Request Beta Access {priceBadge}</>;
       case 'inactive':
         return "Coming Soon";
       case 'full':
@@ -83,15 +113,14 @@ const Programs = () => {
       <div className={styles.programsGrid}>
         {programs.map(program => {
           // Filter courses included in this specific program
-          console.log(program)
           const includedCourses = allCourses.filter(
             c => Array.isArray(c.programIds) && c.programIds.includes(program.programId)
           );
           const activeLink = isLinkActive(program.status);
 
-          // The 'price' from your data is the total cost (e.g., 499.99)
           const actualTotalProgramPrice = program.price;
           const formattedDeadline = formatDate(program.registrationDeadline);
+          const displayedMonthlyPrice = calculateMonthlyPrice(actualTotalProgramPrice, program.duration);
 
           return (
             <div key={program.programId} className={styles.programCard} role="region" aria-label={`Program: ${program.title}`}>
@@ -100,12 +129,18 @@ const Programs = () => {
               <div className={styles.cardHeader}>
                 <h3 className={styles.cardTitle}>{program.title}</h3>
                 <div className={styles.pricing}>
-                  <div className={styles.priceMain}>
-                    <span className={styles.currency}>$</span>
-                    {/* Display the total program price directly without "Total" */}
-                    <span className={styles.amount}>{actualTotalProgramPrice ? actualTotalProgramPrice.toFixed(2) : 'N/A'}</span>
-                    {/* Removed <span className={styles.duration}> Total</span> */}
-                  </div>
+                  {displayedMonthlyPrice && ( // Only show monthly if it's calculable
+                    <div className={styles.monthlyPriceDisplay}>
+                      <span className={styles.currency}>$</span>
+                      <span className={styles.amount}>{displayedMonthlyPrice}</span>
+                      <span className={styles.duration}>/month</span>
+                    </div>
+                  )}
+                  {actualTotalProgramPrice && (
+                    <p className={styles.fullPaymentDisplay}>
+                      <span className={styles.fullPaymentLabel}>Full Payment:</span> ${actualTotalProgramPrice.toFixed(2)}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -151,16 +186,15 @@ const Programs = () => {
                         to={`/enroll/${program.programId}`}
                         className={styles.enrollButton}
                         onClick={() => {
-                          // Store the program ID and the actual TOTAL price for enrollment
                           sessionStorage.setItem('programType', program.programId);
                           sessionStorage.setItem('programFullPrice', actualTotalProgramPrice);
                         }}
                       >
-                        {getButtonContent(program.status)}
+                        {getButtonContent(program.status, actualTotalProgramPrice, program.duration)}
                       </Link>
                     ) : (
                       <button className={`${styles.enrollButton} ${styles.disabledButton}`} disabled>
-                        {getButtonContent(program.status)}
+                        {getButtonContent(program.status, actualTotalProgramPrice, program.duration)}
                       </button>
                     )
                 }
