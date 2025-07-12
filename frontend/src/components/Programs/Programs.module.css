@@ -98,7 +98,34 @@
     gap: 0.5rem; /* Space between monthly and full payment */
 }
 
-/* NEW: Monthly Price Display */
+/* --- NEW STYLES FOR PROGRAM DURATION --- */
+.programDuration {
+    font-size: 1rem; /* Slightly larger than secondary text, very readable */
+    color: var(--primary-blue-dark); /* Prominent, but not as large as monthly price */
+    font-weight: 600; /* Bolder to make it stand out */
+    margin-bottom: 0.75rem; /* Space above pricing details */
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-left: 0.5rem; /* Small indent for visual separation */
+    border-left: 3px solid var(--accent-cyan); /* A subtle accent line */
+}
+
+.durationLabel {
+    color: var(--text-secondary); /* Label slightly muted */
+    font-weight: 500; /* Regular weight for the label */
+}
+
+.noDuration {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 0.75rem; /* Consistent spacing with .programDuration */
+}
+/* --- END NEW STYLES --- */
+
+
+/* Monthly Price Display */
 .monthlyPriceDisplay {
     display: flex;
     align-items: baseline; /* Aligns the text baselines for better visual flow */
@@ -131,7 +158,7 @@
     font-weight: 500; /* Medium weight */
 }
 
-/* NEW: Full Payment Display */
+/* Full Payment Display */
 .fullPaymentDisplay {
     font-size: 0.95rem; /* Slightly larger than previous fullCourse for readability */
     color: var(--text-secondary); /* Consistent with other secondary text */
@@ -146,7 +173,15 @@
     margin-right: 5px;
 }
 
-/* NEW: Registration Deadline */
+.noMonthlyPrice,
+.noFullPrice {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 0.5rem 0;
+}
+
+/* Registration Deadline */
 .registrationDeadline {
     font-size: 0.95rem; /* Consistent with full payment text size */
     color: var(--text-secondary);
@@ -329,6 +364,7 @@
     .cardHeader { margin-top: 3rem; }
     .cardTitle { font-size: 1.8rem; }
     /* Adjusted new pricing styles for medium screens */
+    .programDuration { font-size: 0.95rem; margin-bottom: 0.6rem; }
     .monthlyPriceDisplay { font-size: 1.6rem; }
     .monthlyPriceDisplay .amount { font-size: 1em; } /* Inherits from parent */
     .fullPaymentDisplay { font-size: 0.9rem; }
@@ -342,6 +378,7 @@
     .cardHeader { margin-top: 2.8rem; }
     .cardTitle { font-size: 1.6rem; }
     /* Adjusted new pricing styles for smaller tablets */
+    .programDuration { font-size: 0.9rem; margin-bottom: 0.5rem; }
     .monthlyPriceDisplay { font-size: 1.4rem; }
     .monthlyPriceDisplay .amount { font-size: 1em; } /* Inherits from parent */
     .fullPaymentDisplay { font-size: 0.85rem; }
@@ -357,12 +394,13 @@
     .cardHeader { margin-top: 2.5rem; }
     .cardTitle { font-size: 1.5rem; }
     /* Mobile pricing: Stacked column by default, now made row for smaller gap */
-    .pricing { flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 1rem; }
+    .pricing { flex-direction: column; flex-wrap: nowrap; justify-content: flex-start; align-items: flex-start; gap: 0.5rem; } /* Back to column for better stacking with duration */
+    .programDuration { font-size: 0.9rem; margin-bottom: 0.5rem; } /* Keep consistent */
     .monthlyPriceDisplay { font-size: 1.6rem; } /* Make monthly prominent even on mobile */
     .monthlyPriceDisplay .amount { font-size: 1em; }
     .monthlyPriceDisplay .currency { font-size: 0.7em; }
     .monthlyPriceDisplay .duration { font-size: 0.6em; }
-    .fullPaymentDisplay { width: 100%; text-align: center; margin-top: 0; } /* Full width, centered below monthly */
+    .fullPaymentDisplay { width: auto; text-align: left; margin-top: 0; } /* Auto width, aligned with others */
     .fullPaymentLabel { display: inline; margin-right: 5px;} /* Ensure label is inline with text */
     .registrationDeadline { font-size: 0.85rem; margin-top: 1rem; margin-bottom: 1rem; text-align: left; }
     .featuresGrid { grid-template-columns: 1fr; gap: 0.8rem; }
@@ -378,6 +416,7 @@
     .cardHeader { margin-top: 2.2rem; }
     .cardTitle { font-size: 1.3rem; }
     /* Smaller pricing on very small screens */
+    .programDuration { font-size: 0.85rem; margin-bottom: 0.4rem; }
     .monthlyPriceDisplay { font-size: 1.4rem; }
     .monthlyPriceDisplay .amount { font-size: 1em; }
     .monthlyPriceDisplay .currency { font-size: 0.7em; }

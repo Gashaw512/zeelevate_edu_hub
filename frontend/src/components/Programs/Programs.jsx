@@ -34,7 +34,7 @@ const Programs = () => {
             return null;
         }
 
-        // Calculate number of months directly from days (assuming 30 days per month for monthly pricing)
+        // Calculate number of months directly from days (assuming 30 days per month for simplicity)
         const numberOfMonths = durationDays / 30;
 
         // Prevent division by zero if durationDays leads to zero months
@@ -66,6 +66,22 @@ const Programs = () => {
             console.error("formatDate: Error formatting date:", dateValue, error);
             return null;
         }
+    };
+
+    /**
+     * Formats the program duration from days into a human-readable string (e.g., "6 months", "90 days").
+     * @param {number} durationDays - The duration of the program in days.
+     * @returns {string | null} Formatted duration string, or null if input is invalid.
+     */
+    const formatDuration = (durationDays) => {
+        if (typeof durationDays !== 'number' || isNaN(durationDays) || durationDays <= 0) {
+            return null;
+        }
+        if (durationDays % 30 === 0) {
+            const months = durationDays / 30;
+            return `${months} month${months > 1 ? 's' : ''}`;
+        }
+        return `${durationDays} day${durationDays > 1 ? 's' : ''}`;
     };
 
     /**
@@ -159,7 +175,6 @@ const Programs = () => {
             <div className={styles.programsGrid}>
                 {programs.map(program => {
                     // Ensure program.programId exists before using as key
-                    console.log(program)
                     if (!program.programId) {
                         console.warn("Program missing programId, skipping:", program);
                         return null; // Skip rendering if essential ID is missing
@@ -174,6 +189,7 @@ const Programs = () => {
                     const actualTotalProgramPrice = program.price;
                     const formattedDeadline = formatDate(program.registrationDeadline);
                     const displayedMonthlyPrice = calculateMonthlyPrice(actualTotalProgramPrice, program.duration);
+                    const formattedProgramDuration = formatDuration(program.duration); // NEW: Formatted duration
 
                     return (
                         <div key={program.programId} className={styles.programCard} role="region" aria-label={`Program: ${program.title}`}>
@@ -182,6 +198,15 @@ const Programs = () => {
                             <div className={styles.cardHeader}>
                                 <h3 className={styles.cardTitle}>{program.title || 'Untitled Program'}</h3>
                                 <div className={styles.pricing}>
+                                    {/* Display program duration */}
+                                    {formattedProgramDuration ? (
+                                        <p className={styles.programDuration}>
+                                            <span className={styles.durationLabel}>Duration:</span> {formattedProgramDuration}
+                                        </p>
+                                    ) : (
+                                        <p className={styles.noDuration}>Duration not specified</p>
+                                    )}
+
                                     {/* Display monthly price if available */}
                                     {displayedMonthlyPrice !== null ? (
                                         <div className={styles.monthlyPriceDisplay}>
@@ -190,7 +215,6 @@ const Programs = () => {
                                             <span className={styles.duration}>/month</span>
                                         </div>
                                     ) : (
-                                        // Fallback for when monthly price cannot be calculated
                                         <p className={styles.noMonthlyPrice}>Monthly pricing not available</p>
                                     )}
 
@@ -200,7 +224,6 @@ const Programs = () => {
                                             <span className={styles.fullPaymentLabel}>Full Payment:</span> ${actualTotalProgramPrice.toFixed(2)}
                                         </p>
                                     ) : (
-                                        // Fallback for when total price is not available
                                         <p className={styles.noFullPrice}>Price details not available</p>
                                     )}
                                 </div>
